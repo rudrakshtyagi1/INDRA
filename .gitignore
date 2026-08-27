@@ -1,0 +1,21 @@
+# Node / Frontend
+node_modules/
+dist/
+.vite/
+*.log
+
+# Python / Backend
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+
+# Environment / OS
+.env
+.env.local
+.DS_Store
+Thumbs.db
