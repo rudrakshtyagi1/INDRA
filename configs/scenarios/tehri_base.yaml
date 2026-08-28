@@ -1,0 +1,76 @@
+# Tehri Dam - Bhagirathi River, Uttarakhand
+# Base scenario: overtopping failure (catastrophic what-if)
+#
+# Provenance notes:
+#   - structural specs below: REPORTED (THDC India Limited / CWC published data)
+#   - manning_n: ASSUMED (representative Himalayan gorge value)
+#   - reach_length_km, valley_width_m: REPORTED (CWC survey)
+
+scenario_id: tehri_base
+name: "Tehri Dam - Overtopping Breach (Base)"
+dam_name: "Tehri Dam"
+river: "Bhagirathi"
+state: "Uttarakhand"
+country: "India"
+latitude: 30.3783
+longitude: 78.4803
+
+# Structural parameters (REPORTED - THDC India Limited)
+dam_type: rockfill_earthfill_composite
+breach_mode: overtopping
+structural_height_m: 260.5
+hydraulic_head_m: 260.0
+reservoir_volume_m3: 3540000000  # 3.54 BCM
+crest_length_m: 575.0
+full_reservoir_level_msl: 830.0
+crest_elevation_msl: 839.5
+river_bed_elevation_msl: 570.0
+installed_capacity_mw: 2400
+operator: "THDC India Limited"
+
+# Valley geometry (REPORTED - CWC)
+reach_length_km: 100.0
+valley_width_m: 450.0
+bed_slope: 0.0055
+valley_type: mountain_gorge
+
+# Roughness (ASSUMED - representative Himalayan gorge value)
+manning_n: 0.042
+
+# Breach geometry defaults (MODELLED - calculated from empirical formulae)
+# These are computed, not stored here; see breach_model selection
+breach_model: froehlich_2008
+
+# Downstream stations of interest
+downstream_stations:
+  - id: tehri_dam_toe
+    name: "Dam Toe"
+    chainage_km: 0.0
+    landmark: "Bhagirathi confluence point"
+  - id: rishikesh
+    name: "Rishikesh"
+    chainage_km: 77.0
+    landmark: "Triveni Ghat"
+  - id: haridwar
+    name: "Haridwar"
+    chainage_km: 115.0
+    landmark: "Har Ki Pauri"
+  - id: roorkee
+    name: "Roorkee"
+    chainage_km: 165.0
+    landmark: "Upper Ganga Canal Head"
+  - id: bijnor
+    name: "Bijnor"
+    chainage_km: 265.0
+    landmark: "Bijnor Barrage"
+
+# Observation validation status
+# Tehri catastrophic breach is a HYPOTHETICAL scenario.
+# Observation validation: NOT_AVAILABLE
+observation_validation_status: NOT_AVAILABLE
+observation_validation_note: >
+  Tehri Dam catastrophic breach is a what-if planning scenario.
+  No historical event data exists for direct validation.
+  Solver methodology is benchmarked using independent events (e.g. Rishi Ganga 2021).
+
+is_hypothetical: true

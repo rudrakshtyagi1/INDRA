@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../services/api';
+import { formatFinite } from '../utils/units';
 
 export default function UncertaintyPanel({ selectedPreset }) {
   const [params, setParams] = useState({
@@ -13,6 +14,16 @@ export default function UncertaintyPanel({ selectedPreset }) {
 
   const [result, setResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (selectedPreset?.id) {
+      setParams((prev) => ({
+        ...prev,
+        preset_id: selectedPreset.id,
+      }));
+      setResult(null);
+    }
+  }, [selectedPreset]);
 
   const handleRunEnsemble = async () => {
     setIsLoading(true);
@@ -28,7 +39,7 @@ export default function UncertaintyPanel({ selectedPreset }) {
 
   useEffect(() => {
     handleRunEnsemble();
-  }, [selectedPreset]);
+  }, [selectedPreset?.id]);
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
@@ -39,21 +50,21 @@ export default function UncertaintyPanel({ selectedPreset }) {
             <span className="bg-purple-500/10 text-purple-400 border border-purple-500/20 text-xs font-semibold px-2.5 py-0.5 rounded-full">
               Monte Carlo Ensemble Engine
             </span>
-            <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-medium px-2 py-0.5 rounded-full">
-              MODEL ESTIMATE (Ensemble Bounds)
+            <span className="bg-purple-950 text-purple-300 border border-purple-800/60 text-xs font-mono px-2.5 py-0.5 rounded-full">
+              PROVENANCE: MODELLED
             </span>
           </div>
           <h1 className="text-2xl font-bold text-slate-100 mt-2">
-            Uncertainty & Sensitivity Ensemble Analysis
+            Uncertainty &amp; Sensitivity Ensemble Analysis
           </h1>
           <p className="text-sm text-slate-400 mt-1">
-            Quantifies flood prediction uncertainty by sampling plausible variations in breach geometry, formation time, reservoir level, and hydraulic roughness.
+            Quantifies flood arrival-time and depth uncertainty intervals by sampling parameter variations in breach geometry, formation time, reservoir level, and Manning's roughness.
           </p>
         </div>
         <button
           onClick={handleRunEnsemble}
           disabled={isLoading}
-          className="bg-purple-600 hover:bg-purple-500 text-white font-medium px-5 py-2.5 rounded-lg shadow-lg transition flex items-center gap-2 disabled:opacity-50"
+          className="bg-purple-600 hover:bg-purple-500 text-white font-medium px-5 py-2.5 rounded-lg shadow-lg transition flex items-center gap-2 disabled:opacity-50 text-xs"
         >
           {isLoading ? 'Sampling Ensemble...' : '🎲 Run Monte Carlo Ensemble'}
         </button>
@@ -68,7 +79,7 @@ export default function UncertaintyPanel({ selectedPreset }) {
 
           <div>
             <label className="text-xs text-slate-400 block mb-1">
-              Ensemble Size ($N$ simulations)
+              Ensemble Size (N simulations)
             </label>
             <input
               type="number"
@@ -82,7 +93,7 @@ export default function UncertaintyPanel({ selectedPreset }) {
 
           <div>
             <label className="text-xs text-slate-400 block mb-1">
-              Breach Width Variation ($\pm \% $)
+              Breach Width Variation (±%)
             </label>
             <input
               type="range"
@@ -93,13 +104,13 @@ export default function UncertaintyPanel({ selectedPreset }) {
               className="w-full accent-purple-500"
             />
             <span className="text-xs text-purple-400 font-mono block text-right mt-1">
-              $\pm$ {params.variation_breach_width_pct}%
+              ±{params.variation_breach_width_pct}%
             </span>
           </div>
 
           <div>
             <label className="text-xs text-slate-400 block mb-1">
-              Formation Time Variation ($\pm \% $)
+              Formation Time Variation (±%)
             </label>
             <input
               type="range"
@@ -110,13 +121,13 @@ export default function UncertaintyPanel({ selectedPreset }) {
               className="w-full accent-purple-500"
             />
             <span className="text-xs text-purple-400 font-mono block text-right mt-1">
-              $\pm$ {params.variation_formation_time_pct}%
+              ±{params.variation_formation_time_pct}%
             </span>
           </div>
 
           <div>
             <label className="text-xs text-slate-400 block mb-1">
-              Reservoir Water Head Uncertainty ($\pm$ meters)
+              Reservoir Water Head Uncertainty (± meters)
             </label>
             <input
               type="range"
@@ -127,13 +138,13 @@ export default function UncertaintyPanel({ selectedPreset }) {
               className="w-full accent-purple-500"
             />
             <span className="text-xs text-purple-400 font-mono block text-right mt-1">
-              $\pm$ {params.variation_reservoir_level_m} m
+              ±{params.variation_reservoir_level_m} m
             </span>
           </div>
 
           <div>
             <label className="text-xs text-slate-400 block mb-1">
-              Manning Friction Roughness Variation ($\pm \% $)
+              Manning Friction Roughness Variation (±%)
             </label>
             <input
               type="range"
@@ -144,7 +155,7 @@ export default function UncertaintyPanel({ selectedPreset }) {
               className="w-full accent-purple-500"
             />
             <span className="text-xs text-purple-400 font-mono block text-right mt-1">
-              $\pm$ {params.variation_manning_n_pct}%
+              ±{params.variation_manning_n_pct}%
             </span>
           </div>
         </div>
@@ -152,12 +163,12 @@ export default function UncertaintyPanel({ selectedPreset }) {
         {/* Results View */}
         {result ? (
           <div className="lg:col-span-2 space-y-6">
-            {/* Arrival Time Confidence Bounds Table */}
+            {/* Arrival Time Uncertainty Windows Table */}
             <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-xl">
               <h2 className="text-sm font-semibold text-slate-200 mb-3 flex items-center justify-between">
-                <span>⏱️ Station Arrival-Time Confidence Windows ($N={result.ensemble_size}$)</span>
+                <span>⏱️ Station Arrival-Time Uncertainty Intervals (N={result.ensemble_size})</span>
                 <span className="text-xs font-mono text-purple-400 bg-purple-950/60 px-2 py-0.5 rounded border border-purple-800">
-                  90% Confidence Interval
+                  80% Range (P10–P90) / 90% Range (P5–P95)
                 </span>
               </h2>
 
@@ -167,22 +178,26 @@ export default function UncertaintyPanel({ selectedPreset }) {
                     <tr>
                       <th className="p-2.5">Station Name</th>
                       <th className="p-2.5">Chainage</th>
-                      <th className="p-2.5 text-emerald-400">P10 (Earliest)</th>
+                      <th className="p-2.5 text-purple-300">P5 (90% Min)</th>
+                      <th className="p-2.5 text-emerald-400">P10 (80% Min)</th>
                       <th className="p-2.5 text-sky-400">P50 (Median)</th>
-                      <th className="p-2.5 text-amber-400">P90 (Latest)</th>
+                      <th className="p-2.5 text-amber-400">P90 (80% Max)</th>
+                      <th className="p-2.5 text-purple-300">P95 (90% Max)</th>
                       <th className="p-2.5 text-purple-400">Depth Range</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-800 font-mono">
-                    {result.station_uncertainties.map((st) => (
-                      <tr key={st.station_id} className="hover:bg-slate-800/40">
+                    {(result.station_uncertainties || []).map((st) => (
+                      <tr key={st.station_id || st.station_name} className="hover:bg-slate-800/40">
                         <td className="p-2.5 font-sans font-medium text-slate-200">{st.station_name}</td>
                         <td className="p-2.5 text-slate-400">{st.chainage_km} km</td>
-                        <td className="p-2.5 text-emerald-400 font-bold">{st.arrival_time_p10_min} min</td>
-                        <td className="p-2.5 text-sky-400 font-bold">{st.arrival_time_p50_min} min</td>
-                        <td className="p-2.5 text-amber-400 font-bold">{st.arrival_time_p90_min} min</td>
+                        <td className="p-2.5 text-purple-300">{formatFinite(st.arrival_time_p5_min, 1)} min</td>
+                        <td className="p-2.5 text-emerald-400 font-bold">{formatFinite(st.arrival_time_p10_min, 1)} min</td>
+                        <td className="p-2.5 text-sky-400 font-bold">{formatFinite(st.arrival_time_p50_min, 1)} min</td>
+                        <td className="p-2.5 text-amber-400 font-bold">{formatFinite(st.arrival_time_p90_min, 1)} min</td>
+                        <td className="p-2.5 text-purple-300">{formatFinite(st.arrival_time_p95_min, 1)} min</td>
                         <td className="p-2.5 text-purple-300">
-                          {st.max_depth_min_m} – {st.max_depth_max_m} m
+                          {formatFinite(st.max_depth_min_m, 1)} – {formatFinite(st.max_depth_max_m, 1)} m
                         </td>
                       </tr>
                     ))}
@@ -198,18 +213,18 @@ export default function UncertaintyPanel({ selectedPreset }) {
               </h2>
 
               <div className="space-y-3">
-                {result.sensitivity_rankings.map((item) => (
+                {(result.sensitivity_rankings || []).map((item) => (
                   <div key={item.parameter} className="space-y-1">
                     <div className="flex justify-between text-xs font-medium text-slate-300">
-                      <span>#{item.sensitivity_rank} — {item.parameter}</span>
+                      <span>#{item.sensitivity_rank || item.rank || 1} — {item.parameter}</span>
                       <span className="font-mono text-purple-400">
-                        Correlation: {item.correlation_coefficient} ({item.impact_level})
+                        Correlation: {formatFinite(item.correlation_coefficient || item.correlation, 3)} ({item.impact_level || item.impact || 'HIGH'})
                       </span>
                     </div>
                     <div className="h-2 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
                       <div
-                        className={`h-full ${item.impact_level === 'HIGH' ? 'bg-purple-500' : 'bg-sky-500'}`}
-                        style={{ width: `${item.correlation_coefficient * 100}%` }}
+                        className={`h-full ${(item.impact_level || item.impact) === 'HIGH' ? 'bg-purple-500' : 'bg-sky-500'}`}
+                        style={{ width: `${Math.abs((item.correlation_coefficient || item.correlation || 0.5) * 100)}%` }}
                       />
                     </div>
                   </div>
@@ -219,7 +234,7 @@ export default function UncertaintyPanel({ selectedPreset }) {
           </div>
         ) : (
           <div className="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-12 text-center text-slate-500">
-            Running Monte Carlo ensemble...
+            {isLoading ? 'Sampling Monte Carlo ensemble...' : 'Click "Run Monte Carlo Ensemble" to evaluate uncertainty intervals.'}
           </div>
         )}
       </div>

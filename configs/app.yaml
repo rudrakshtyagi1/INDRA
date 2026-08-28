@@ -1,0 +1,20 @@
+app:
+  name: FloodLab
+  version: 1.0.0
+  environment: development
+  debug: true
+  log_level: INFO
+
+api:
+  host: 0.0.0.0
+  port: 8000
+  cors_origins:
+    - http://localhost:5173
+    - http://localhost:3000
+
+storage:
+  root: ./storage
+  simulations_dir: ./storage/simulations
+
+data:
+  root: ./data

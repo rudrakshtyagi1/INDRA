@@ -1,0 +1,9 @@
+# Tehri Dam - Full overtopping breach (worst case)
+extends: tehri_base
+scenario_id: tehri_severe_breach
+name: "Tehri Dam - Full Overtopping Breach (100%)"
+breach_mode: overtopping
+breach_fraction: 1.0
+breach_model: froehlich_2008
+is_hypothetical: true
+observation_validation_status: NOT_AVAILABLE

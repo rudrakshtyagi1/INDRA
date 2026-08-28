@@ -1,0 +1,44 @@
+sph:
+  binary_dir: ${DUALSPHYSICS_BIN_DIR}
+  # version: discovered at runtime from binary, recorded in run manifest
+  version: null
+  default_kernel: Wendland
+  default_alpha_visc: 0.1
+  default_beta_visc: 0.2
+  default_gamma: 7.0
+  default_rho0: 1000.0
+  default_c0: 40.0
+  cfl: 0.2
+
+delft3d:
+  binary_dir: ${DFLOWFM_BIN_DIR}
+  # version: discovered at runtime from binary, recorded in run manifest
+  version: null
+  default_manning_n: 0.038
+  h_dry_threshold_m: 0.02
+  cfl: 0.45
+
+coupling:
+  default_target_dt_s: 30.0
+  mass_conservation_tolerance_pct: 5.0
+
+breach:
+  default_model: froehlich_2008
+  models_available:
+    - froehlich_2008
+    - macdonald_1984
+    - von_thun_1990
+    - ritter_instantaneous
+    - ldof_costa_schuster
+
+hydrology:
+  method: scs_cn
+  default_cn: 78.0
+  ia_coefficient: 0.2
+
+uncertainty:
+  default_ensemble_size: 50
+  breach_width_variation_pct: 25.0
+  formation_time_variation_pct: 30.0
+  head_variation_m: 5.0
+  manning_variation_pct: 20.0

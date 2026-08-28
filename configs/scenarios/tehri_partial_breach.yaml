@@ -1,0 +1,10 @@
+# Tehri Dam - Piping / Internal Erosion scenario (partial breach)
+extends: tehri_base
+scenario_id: tehri_partial_breach
+name: "Tehri Dam - Partial Piping Breach (40%)"
+breach_mode: piping
+breach_fraction: 0.4
+breach_height_m: 90.0
+breach_model: macdonald_1984
+is_hypothetical: true
+observation_validation_status: NOT_AVAILABLE

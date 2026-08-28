@@ -1,0 +1,21 @@
+# Tehri Dam - Controlled Emergency Spillway Release
+# This is NOT a breach event.
+scenario_id: emergency_release
+name: "Tehri Dam - Controlled Emergency Spillway Release"
+dam_name: "Tehri Dam"
+river: "Bhagirathi"
+state: "Uttarakhand"
+latitude: 30.3783
+longitude: 78.4803
+dam_type: rockfill_earthfill_composite
+breach_mode: null
+event_type: controlled_release
+structural_height_m: 260.5
+hydraulic_head_m: 260.0
+reservoir_volume_m3: 3540000000
+spillway_capacity_m3s: 15540.0
+release_duration_hrs: 72.0
+valley_type: mountain_gorge
+manning_n: 0.042
+is_hypothetical: false
+observation_validation_status: CONDITIONAL

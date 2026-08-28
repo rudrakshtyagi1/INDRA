@@ -1,0 +1,40 @@
+# Rishi Ganga landslide dam outburst flood - representative scenario
+# Based on the February 2021 Rishi Ganga / Chamoli event.
+# Used for METHODOLOGY BENCHMARKING only.
+# See docs/validation_strategy.md for scope of this event.
+scenario_id: natural_blockage_failure
+name: "Rishi Ganga - Landslide Dam Outburst (2021 Event Benchmark)"
+dam_name: "Rishi Ganga Landslide Dam"
+river: "Rishi Ganga / Dhauliganga"
+state: "Uttarakhand"
+latitude: 30.4792
+longitude: 79.7983
+dam_type: landslide_dam
+breach_mode: landslide_outburst
+structural_height_m: 30.0
+hydraulic_head_m: 25.0
+reservoir_volume_m3: 15000000  # approx 15 million m3
+valley_type: mountain_gorge
+manning_n: 0.045
+reach_length_km: 45.0
+valley_width_m: 100.0
+bed_slope: 0.010
+downstream_stations:
+  - id: rishi_ganga_mouth
+    name: "Rishi Ganga Mouth"
+    chainage_km: 12.0
+  - id: raini_village
+    name: "Raini Village"
+    chainage_km: 14.0
+  - id: tapovan_ntpc
+    name: "Tapovan NTPC Plant"
+    chainage_km: 16.0
+
+# This scenario IS based on a historical event and is used to benchmark
+# the observation-comparison workflow. It does NOT validate Tehri Dam breach.
+is_hypothetical: false
+observation_validation_status: AVAILABLE
+observation_note: >
+  Based on the 7 February 2021 Rishi Ganga disaster.
+  Used to benchmark observation-comparison methodology only.
+  Sentinel-1 post-event imagery available for flood extent comparison.

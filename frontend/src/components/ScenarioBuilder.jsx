@@ -33,12 +33,12 @@ export default function ScenarioBuilder({
   useEffect(() => {
     if (selectedPreset) {
       const updated = {
-        dam_name: selectedPreset.name,
-        dam_type: selectedPreset.dam_type || 'earthen',
-        dam_height_m: selectedPreset.dam_height_m || 45.0,
-        reservoir_volume_m3: selectedPreset.reservoir_volume_m3 || 5400000.0,
-        hydraulic_head_m: selectedPreset.hydraulic_head_m || 40.0,
-        crest_length_m: selectedPreset.crest_length_m || 200.0,
+        dam_name: selectedPreset.name || selectedPreset.dam_name || 'Tehri Dam',
+        dam_type: selectedPreset.dam_type || 'rockfill',
+        dam_height_m: selectedPreset.dam_height_m || 260.5,
+        reservoir_volume_m3: selectedPreset.reservoir_volume_m3 || 3540000000.0,
+        hydraulic_head_m: selectedPreset.hydraulic_head_m || 260.0,
+        crest_length_m: selectedPreset.crest_length_m || 575.0,
         breach_mode: selectedPreset.breach_mode || 'overtopping',
         reach_length_km: selectedPreset.reach_length_km || 25.0,
         valley_width_m: selectedPreset.valley_width_m || 200.0,
@@ -170,12 +170,14 @@ export default function ScenarioBuilder({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {presets.map((preset) => {
-            const isSelected = selectedPreset?.id === preset.id;
+          {(presets || []).map((preset) => {
+            const isSelected = selectedPreset?.id === preset?.id;
+            const height = preset?.dam_height_m ?? 260.5;
+            const volumeMm3 = preset?.reservoir_volume_m3 ? (preset.reservoir_volume_m3 / 1e6).toFixed(1) : '3540.0';
             return (
               <div
-                key={preset.id}
-                onClick={() => onSelectPreset(preset.id)}
+                key={preset?.id || preset?.name || Math.random()}
+                onClick={() => preset?.id && onSelectPreset(preset.id)}
                 className={`cursor-pointer p-3.5 rounded-xl border transition-all relative overflow-hidden ${
                   isSelected
                     ? 'bg-slate-900 border-cyan-500 ring-2 ring-cyan-500/20 shadow-lg shadow-cyan-950'
@@ -188,20 +190,20 @@ export default function ScenarioBuilder({
                   </div>
                 )}
                 <div className="text-[11px] font-semibold text-cyan-400 uppercase tracking-wider mb-1">
-                  {preset.state}
+                  {preset?.state || 'Uttarakhand / Himalaya'}
                 </div>
                 <h3 className="text-sm font-bold text-slate-100 mb-1 leading-snug">
-                  {preset.name}
+                  {preset?.name || preset?.id || 'Tehri Dam'}
                 </h3>
                 <p className="text-xs text-slate-400 line-clamp-2 mb-2">
-                  {preset.description}
+                  {preset?.description || 'Himalayan dam breach hydrodynamic benchmark'}
                 </p>
                 <div className="flex items-center space-x-2 text-[10px] text-slate-400">
                   <span className="bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700">
-                    Height: {preset.dam_height_m}m
+                    Height: {height}m
                   </span>
                   <span className="bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700">
-                    Vol: {(preset.reservoir_volume_m3 / 1e6).toFixed(1)} Mm³
+                    Vol: {volumeMm3} Mm³
                   </span>
                 </div>
               </div>
@@ -423,7 +425,7 @@ export default function ScenarioBuilder({
                   </span>
                 </div>
                 <p className="text-[11px] text-slate-400">
-                  SPH resolves violent near-field breach hydraulics ($0–2\text{ km}$), extracting $Q(t)$ at coupling boundary to feed directly into Delft3D FM far-field propagation.
+                  SPH resolves violent near-field breach hydraulics (0–2 km), extracting Q(t) at coupling boundary to feed directly into Delft3D FM far-field propagation.
                 </p>
               </div>
 

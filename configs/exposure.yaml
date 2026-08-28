@@ -1,0 +1,26 @@
+population:
+  source: WorldPop
+  resolution_m: 100
+
+infrastructure:
+  critical_asset_types:
+    - hospital
+    - school
+    - fire_station
+    - police
+    - power_plant
+    - dam
+    - bridge
+    - road_junction
+
+depth_damage:
+  residential_curves: reference/depth_damage_curves/jrc_residential.csv
+  commercial_curves: reference/depth_damage_curves/jrc_commercial.csv
+  agricultural_curves: reference/depth_damage_curves/cwc_agricultural.csv
+
+hazard_rating:
+  # CWC / Defra flood hazard rating formula
+  formula: "HR = d * (v + 0.5) + DF"
+  debris_factor_mountain_gorge: 1.0
+  debris_factor_semi_urban: 0.7
+  debris_factor_plains_alluvial: 0.5

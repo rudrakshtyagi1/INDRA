@@ -1,0 +1,33 @@
+osm:
+  road_types:
+    - motorway
+    - trunk
+    - primary
+    - secondary
+    - tertiary
+    - residential
+    - track
+    - path
+  default_speed_kmh:
+    motorway: 100
+    trunk: 80
+    primary: 60
+    secondary: 50
+    tertiary: 40
+    residential: 30
+    track: 20
+    path: 10
+
+flooding:
+  # passable_depth_threshold_m: set by agency when thresholds are configured.
+  # null = vehicle-class-aware routing is not enabled; edge depth values are
+  # recorded but no binary passable/impassable classification is applied.
+  passable_depth_threshold_m: null
+  flood_arrival_buffer_min: 10.0
+
+evacuation:
+  lead_time_safety_factor: 1.3
+
+rescue:
+  # default_ndrf_base_coords: set per scenario in scenario YAML
+  default_ndrf_base_coords: null

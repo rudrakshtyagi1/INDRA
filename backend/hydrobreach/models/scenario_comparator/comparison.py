@@ -81,46 +81,80 @@ class ScenarioComparator:
                     "diff_grid": [[round(val, 2) for val in row] for row in diff_grid]
                 })
 
+        if not sph_frames or not delft_frames or num_frames == 0:
+            return {
+                "status": "COMPARISON_UNAVAILABLE",
+                "is_valid": False,
+                "overall_metrics": {
+                    "critical_success_index_csi": 0.0,
+                    "probability_of_detection_pod": 0.0,
+                    "false_alarm_ratio_far": 0.0,
+                    "mean_absolute_error_depth_m": 0.0,
+                    "target_csi_met": False,
+                    "benchmark_status": "COMPARISON_UNAVAILABLE",
+                },
+                "summary_comparison": {
+                    "sph": sph_summary,
+                    "delft3d": delft_summary,
+                    "key_findings": [
+                        "Model comparison unavailable: solver frames are missing or incomplete.",
+                    ],
+                },
+                "frame_comparisons": [],
+                "gauge_comparisons": {},
+                "provenance": "DERIVED (Model Comparison)",
+            }
+
         # Overall aggregate contingency metrics
         total_denom = total_hits + total_false_alarms + total_misses
-        overall_csi = round(total_hits / total_denom, 3) if total_denom > 0 else 0.88
-        overall_pod = round(total_hits / (total_hits + total_misses), 3) if (total_hits + total_misses) > 0 else 0.92
-        overall_far = round(total_false_alarms / (total_hits + total_false_alarms), 3) if (total_hits + total_false_alarms) > 0 else 0.08
-        mae_depth = round(float(np.mean(depth_diffs_all)), 2) if depth_diffs_all else 0.35
+        overall_csi = round(total_hits / total_denom, 3) if total_denom > 0 else 0.0
+        overall_pod = round(total_hits / (total_hits + total_misses), 3) if (total_hits + total_misses) > 0 else 0.0
+        overall_far = round(total_false_alarms / (total_hits + total_false_alarms), 3) if (total_hits + total_false_alarms) > 0 else 0.0
+        mae_depth = round(float(np.mean(depth_diffs_all)), 2) if depth_diffs_all else 0.0
+        target_met = bool(overall_csi >= 0.70 and total_denom > 0)
 
         # Gauge Hydrograph Cross-Validation
         gauge_comparisons = cls._compare_gauges(
             sph_result.get("gauges", {}), delft3d_result.get("gauges", {})
         )
 
+        csi_finding = (
+            f"Overall Critical Success Index (CSI) is {overall_csi:.3f}, meeting operational threshold (>= 0.70)."
+            if target_met
+            else f"Overall Critical Success Index (CSI) is {overall_csi:.3f}, below target operational threshold (>= 0.70)."
+        )
+
         return {
+            "status": "COMPLETED",
+            "is_valid": True,
             "overall_metrics": {
                 "critical_success_index_csi": overall_csi,
                 "probability_of_detection_pod": overall_pod,
                 "false_alarm_ratio_far": overall_far,
                 "mean_absolute_error_depth_m": mae_depth,
-                "target_csi_met": overall_csi >= 0.70,
-                "benchmark_status": "EXCELLENT (CSI >= 0.70)" if overall_csi >= 0.70 else "SATISFACTORY"
+                "target_csi_met": target_met,
+                "benchmark_status": "PASSED (CSI >= 0.70)" if target_met else "FAILED / BELOW_THRESHOLD (CSI < 0.70)",
             },
             "summary_comparison": {
                 "sph": {
                     "peak_surge_velocity_ms": sph_summary.get("peak_surge_velocity_ms", 0.0),
                     "max_inundated_area_km2": sph_summary.get("max_inundated_area_km2", 0.0),
-                    "solver_type": "Lagrangian Mesh-Free Particle (WCSPH)"
+                    "solver_type": "Lagrangian Mesh-Free Particle (WCSPH)",
                 },
                 "delft3d": {
                     "peak_surge_velocity_ms": delft_summary.get("peak_surge_velocity_ms", 0.0),
                     "max_inundated_area_km2": delft_summary.get("max_inundated_area_km2", 0.0),
-                    "solver_type": "Eulerian Flexible Mesh Finite Volume (2D SWE)"
+                    "solver_type": "Eulerian Flexible Mesh Finite Volume (2D SWE)",
                 },
                 "key_findings": [
                     f"SPH resolves steep front surge velocities ({sph_summary.get('peak_surge_velocity_ms', 'N/A')} m/s) with sharper dynamic shock resolution.",
                     f"Delft3D provides smooth downstream floodplain lateral inundation diffusion ({delft_summary.get('max_inundated_area_km2', 'N/A')} km²).",
-                    f"Overall Critical Success Index (CSI) is {overall_csi}, exceeding the target operational threshold of 0.70."
-                ]
+                    csi_finding,
+                ],
             },
             "frame_comparisons": frame_comparisons,
-            "gauge_comparisons": gauge_comparisons
+            "gauge_comparisons": gauge_comparisons,
+            "provenance": "DERIVED (Model Comparison)",
         }
 
     @classmethod

@@ -128,11 +128,14 @@ export default function Navbar({
               onChange={(e) => onSelectPreset(e.target.value)}
               className="bg-slate-800 text-slate-200 text-xs rounded-lg px-2.5 py-1.5 border border-slate-700 focus:outline-none focus:border-cyan-500"
             >
-              {presets.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name.length > 32 ? p.name.substring(0, 30) + '...' : p.name}
-                </option>
-              ))}
+              {presets && presets.map((p) => {
+                const label = p?.name || p?.id || 'Scenario';
+                return (
+                  <option key={p?.id || label} value={p?.id || ''}>
+                    {label.length > 32 ? label.substring(0, 30) + '...' : label}
+                  </option>
+                );
+              })}
             </select>
 
             <button

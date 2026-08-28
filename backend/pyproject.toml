@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "floodlab"
+version = "1.0.0"
+description = "FloodLab: Dam Break & Flash Flood Simulation Platform"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.28.0",
+    "pydantic>=2.6.0",
+    "pydantic-settings>=2.2.0",
+    "sqlalchemy>=2.0.0",
+    "alembic>=1.13.0",
+    "asyncpg>=0.29.0",
+    "psycopg2-binary>=2.9.0",
+    "aiosqlite>=0.20.0",
+    "numpy>=1.26.0",
+    "scipy>=1.12.0",
+    "networkx>=3.2.0",
+    "pyshp>=3.1.0",
+    "celery>=5.3.0",
+    "redis>=5.0.0",
+    "httpx>=0.27.0",
+    "python-dotenv>=1.0.0",
+    "pyyaml>=6.0.0",
+    "shapely>=2.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-cov>=4.1.0",
+    "httpx>=0.27.0",
+    "flake8>=7.0.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["floodlab*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

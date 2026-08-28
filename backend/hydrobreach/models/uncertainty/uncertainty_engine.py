@@ -30,9 +30,11 @@ class StationUncertainty(BaseModel):
     station_id: str
     station_name: str
     chainage_km: float
-    arrival_time_p10_min: float  # 10th percentile (earliest plausible arrival)
-    arrival_time_p50_min: float  # 50th percentile (median arrival)
-    arrival_time_p90_min: float  # 90th percentile (latest arrival)
+    arrival_time_p5_min: float = 0.0  # 5th percentile (90% lower bound)
+    arrival_time_p10_min: float  # 10th percentile (80% lower bound)
+    arrival_time_p50_min: float  # 50th percentile (median)
+    arrival_time_p90_min: float  # 90th percentile (80% upper bound)
+    arrival_time_p95_min: float = 0.0  # 95th percentile (90% upper bound)
     max_depth_min_m: float
     max_depth_max_m: float
     max_depth_median_m: float
@@ -132,9 +134,11 @@ class UncertaintyEngine:
             arrs = np.array(station_arrivals[sid])
             deps = np.array(station_depths[sid])
 
+            p5_arr = float(np.percentile(arrs, 5))
             p10_arr = float(np.percentile(arrs, 10))
             p50_arr = float(np.percentile(arrs, 50))
             p90_arr = float(np.percentile(arrs, 90))
+            p95_arr = float(np.percentile(arrs, 95))
 
             min_d = float(np.min(deps))
             max_d = float(np.max(deps))
@@ -145,20 +149,28 @@ class UncertaintyEngine:
                 station_id=sid,
                 station_name=st.get("name", sid),
                 chainage_km=st.get("chainage_km", 0.0),
+                arrival_time_p5_min=round(p5_arr, 1),
                 arrival_time_p10_min=round(p10_arr, 1),
                 arrival_time_p50_min=round(p50_arr, 1),
                 arrival_time_p90_min=round(p90_arr, 1),
+                arrival_time_p95_min=round(p95_arr, 1),
                 max_depth_min_m=round(min_d, 1),
                 max_depth_max_m=round(max_d, 1),
                 max_depth_median_m=round(med_d, 1),
                 inundation_probability_pct=round(prob_inundated, 1)
             ))
 
+        def _safe_corr(x: list, y: list) -> float:
+            if len(x) < 2 or np.std(x) <= 1e-9 or np.std(y) <= 1e-9:
+                return 0.0
+            val = float(np.corrcoef(x, y)[0, 1])
+            return 0.0 if math.isnan(val) else val
+
         # Sensitivity Correlation Analysis against Peak Outflow
-        corr_head = float(np.corrcoef(ensemble_head_levels, ensemble_peak_flows)[0, 1])
-        corr_width = float(np.corrcoef(ensemble_breach_widths, ensemble_peak_flows)[0, 1])
-        corr_time = float(np.corrcoef(ensemble_formation_times, ensemble_peak_flows)[0, 1])
-        corr_n = float(np.corrcoef(ensemble_roughnesses, ensemble_peak_flows)[0, 1])
+        corr_head = _safe_corr(ensemble_head_levels, ensemble_peak_flows)
+        corr_width = _safe_corr(ensemble_breach_widths, ensemble_peak_flows)
+        corr_time = _safe_corr(ensemble_formation_times, ensemble_peak_flows)
+        corr_n = _safe_corr(ensemble_roughnesses, ensemble_peak_flows)
 
         sens_list = [
             {"param": "Initial Reservoir Hydraulic Head (m)", "corr": abs(corr_head)},

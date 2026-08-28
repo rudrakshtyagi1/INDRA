@@ -115,13 +115,21 @@ async def run_simulation(req: RunSimulationRequest):
 
     result_payload = {
         "run_id": run_id,
+        "scenario_id": req.preset_id,
         "scenario_params": params,
+        "status": "COMPLETED_ADAPTER",
         "solver_type": req.solver_type,
         "breach_mechanics": breach_res.model_dump(),
         "sph_result": sph_res,
         "delft3d_result": delft_res,
         "comparison_result": comparison_res,
         "damage_assessment": damage_assessment,
+        "provenance": {
+            "level": "MODELLED",
+            "source": f"HydroBreach Physics Engine ({req.solver_type})",
+            "scenario_id": req.preset_id,
+            "run_id": run_id,
+        },
         "execution_time_seconds": elapsed_s,
         "created_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     }

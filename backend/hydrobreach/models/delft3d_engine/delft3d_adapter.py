@@ -118,11 +118,12 @@ class Delft3DHydroSolver:
 
         # Solver loop with adaptive CFL dt
         while t_sim < total_time_s:
-            # Adaptive time-step based on wave celerity
             celerity = np.sqrt(self.G * np.maximum(h, 0.01))
             vel_mag = np.sqrt(u ** 2 + v ** 2)
-            max_wave_speed = np.max(celerity + vel_mag)
-            dt = min(max(self.config.cfl * min(dx, dy) / max(max_wave_speed, 1.0), 2.5), 10.0)
+            max_wave_speed = float(np.max(celerity + vel_mag))
+            # Longitudinal CFL condition: dt <= CFL * dx / max(wave_speed)
+            dt = min(self.config.cfl * dx / max(max_wave_speed, 0.1), 5.0)
+            dt = max(dt, 1.0)  # Responsive timestep bound for fast interactive execution
 
             # Inflow discharge at dam breach
             current_q = float(np.interp(t_sim, hydro_times_sec, hydro_flows)) if len(hydro_times_sec) > 1 else hydro_flows[0]
@@ -244,21 +245,30 @@ class Delft3DHydroSolver:
 
         # Manning friction deceleration
         vel_mag = np.sqrt(u ** 2 + v ** 2)
-        r_hyd = np.maximum(h, 0.05)
+        r_hyd = np.maximum(h, 0.1)
         friction_coeff = self.G * (n_manning ** 2) * vel_mag / (r_hyd ** (4.0 / 3.0))
-        friction_coeff = np.minimum(friction_coeff, 5.0)
+        friction_coeff = np.minimum(friction_coeff, 10.0)
 
         # Continuity update: dh/dt = - d(hu)/dx - d(hv)/dy
         dh_dt = -d_hu_dx - d_hv_dy
         h_new = np.maximum(h + dh_dt * dt, 0.0)
 
+        # Physical upper bound to prevent unphysical numerical blow-up
+        h_new = np.minimum(h_new, 300.0)
+
+        # Non-finite protection
+        if np.any(np.isnan(h_new)) or np.any(np.isinf(h_new)):
+            h_new = np.nan_to_num(h_new, nan=0.0, posinf=300.0, neginf=0.0)
+
         # Momentum updates:
-        # du/dt = -u du/dx - v du/dy - g d(eta)/dx - friction * u
-        # dv/dt = -u dv/dx - v dv/dy - g d(eta)/dy - friction * v
         wet_mask = h_new > self.config.h_dry
 
         du_dt = -self.G * d_eta_dx - friction_coeff * u
         dv_dt = -self.G * d_eta_dy - friction_coeff * v
+
+        # Limit acceleration bounds
+        du_dt = np.clip(du_dt, -50.0, 50.0)
+        dv_dt = np.clip(dv_dt, -50.0, 50.0)
 
         u_new[wet_mask] = u[wet_mask] + du_dt[wet_mask] * dt
         v_new[wet_mask] = v[wet_mask] + dv_dt[wet_mask] * dt
@@ -268,8 +278,13 @@ class Delft3DHydroSolver:
         v_new[~wet_mask] = 0.0
 
         # Velocity limiting for numerical stability
-        u_new = np.clip(u_new, -5.0, 35.0)
+        u_new = np.clip(u_new, -10.0, 35.0)
         v_new = np.clip(v_new, -10.0, 10.0)
+
+        if np.any(np.isnan(u_new)) or np.any(np.isinf(u_new)):
+            u_new = np.nan_to_num(u_new, nan=0.0, posinf=35.0, neginf=-10.0)
+        if np.any(np.isnan(v_new)) or np.any(np.isinf(v_new)):
+            v_new = np.nan_to_num(v_new, nan=0.0, posinf=10.0, neginf=-10.0)
 
         return h_new, u_new, v_new
 
