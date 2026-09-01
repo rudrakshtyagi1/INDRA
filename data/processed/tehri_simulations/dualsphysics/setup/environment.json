@@ -1,0 +1,12 @@
+{
+  "os": "macOS",
+  "kernel": "Darwin 25.3.0",
+  "architecture": "arm64",
+  "cpu": "Apple M4",
+  "ram_bytes": 17179869184,
+  "gpu": "Apple M4",
+  "cuda_available": false,
+  "docker_available": false,
+  "docker_notes": "Docker CLI is present but daemon is not running.",
+  "virtualization_available": true
+}
