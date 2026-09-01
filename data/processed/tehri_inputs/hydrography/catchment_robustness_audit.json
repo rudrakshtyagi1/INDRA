@@ -1,0 +1,36 @@
+{
+  "MINIMUM_TOPOLOGY_PRESERVING_CONDITIONING_M": 14.0,
+  "STABLE_PARAMETER_RANGE_M": [
+    14.0,
+    18.0
+  ],
+  "PLATEAU_CATCHMENT_AREA_STATS": {
+    "mean_area_km2": 7300.3,
+    "std_area_km2": 0.0,
+    "coefficient_of_variation_pct": 0.0,
+    "mean_pairwise_iou": 1.0,
+    "min_pairwise_iou": 1.0
+  },
+  "SELECTED_PARAMETER_EVALUATION": {
+    "chosen_burn_depth_m": 15.0,
+    "selection_rationale": "Selected as an interior parameter of the 14.0m\u201318.0m invariant topological plateau. Captures the complete dual-tributary drainage network with zero variance across the plateau (CV = 0.000%, Pairwise IoU = 1.0000). Chosen strictly on DEM topological criteria independent of external benchmark values.",
+    "final_catchment_area_km2": 7300.3,
+    "outlet_original_coord": [
+      30.378,
+      78.481
+    ],
+    "outlet_snapped_coord": [
+      30.36792,
+      78.47958
+    ],
+    "distance_dam_to_outlet_m": 1129.9,
+    "distance_reach_centroid_to_outlet_m": 975.7,
+    "bhagirathi_connected": "YES",
+    "bhilangna_connected": "YES",
+    "iou_hydrobasins_l08": 0.9438,
+    "iou_hydrobasins_l10": 0.9643,
+    "authoritative_cwc_reference_area_km2": 7287.0,
+    "difference_from_cwc_area_km2": 13.3,
+    "difference_from_cwc_percentage": 0.18
+  }
+}

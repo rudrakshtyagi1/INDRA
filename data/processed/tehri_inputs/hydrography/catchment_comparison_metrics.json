@@ -1,0 +1,28 @@
+{
+  "DEM_CONDITIONED_CATCHMENT_AREA_KM2": 7299.24,
+  "HYDROBASINS_LEVEL08_AREA_KM2": 7642.08,
+  "HYDROBASINS_LEVEL10_AREA_KM2": 7478.67,
+  "AUTHORITATIVE_CWC_REFERENCE_AREA_KM2": 7287.0,
+  "TRIBUTARY_CONNECTIVITY": {
+    "BHAGIRATHI_REACH_CONNECTED_TO_OUTLET": "YES",
+    "BHILANGNA_REACH_CONNECTED_TO_OUTLET": "YES"
+  },
+  "DEM_VS_LEVEL08": {
+    "absolute_difference_km2": 342.84,
+    "percentage_difference": 4.49,
+    "intersection_area_km2": 7254.09,
+    "union_area_km2": 7687.23,
+    "iou_overlap": 0.9437
+  },
+  "DEM_VS_LEVEL10": {
+    "absolute_difference_km2": 179.43,
+    "percentage_difference": 2.4,
+    "intersection_area_km2": 7254.09,
+    "union_area_km2": 7523.82,
+    "iou_overlap": 0.9641
+  },
+  "DEM_VS_AUTHORITATIVE": {
+    "absolute_difference_km2": 12.24,
+    "percentage_difference": 0.17
+  }
+}

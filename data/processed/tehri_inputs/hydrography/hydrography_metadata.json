@@ -1,0 +1,18 @@
+{
+  "dataset_name": "hydrography_study_region",
+  "hydrobasins_product": "HydroBASINS Asia v1c (Levels 06, 08, 10)",
+  "hydrorivers_product": "HydroRIVERS Asia v1.0",
+  "regional_river_features_count": 4677,
+  "total_river_length_km": 17915.64,
+  "bhagirathi_ganga_topology_verified": true,
+  "tehri_upstream_catchment_candidate": {
+    "hybas_level": "Level 08",
+    "hybas_id_dam": 4080760950,
+    "upstream_basin_count": 3,
+    "reported_upstream_catchment_area_km2": 7646.5,
+    "provenance": "DERIVED FROM HYDROBASINS TOPOLOGY \u2014 REQUIRES DEM-BASED VERIFICATION",
+    "notes": "Upstream hydrologic catchment for rainfall/inflow. Distinct from downstream hydrodynamic flood domain."
+  },
+  "river_bathymetry_status": "NOT AVAILABLE",
+  "notes": "DEM pixel elevations do NOT equal river bathymetry."
+}
