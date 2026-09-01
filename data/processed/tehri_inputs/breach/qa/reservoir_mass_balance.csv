@@ -1,0 +1,4 @@
+scenario,initial_storage_mcm,inflow_volume_mcm,breach_release_mcm,final_storage_mcm,mass_balance_residual_m3,mass_balance_error_pct,peak_Q_breach_m3s,time_to_peak_hrs,drawdown_m
+SCENARIO_LOW,925.0,498.13,466.88,956.25,-204.47,-4.4e-05,8660.69,48.47,-1.8
+SCENARIO_BASE,2934.17,581.65,3273.43,242.39,98.82,3e-06,723731.33,46.58,133.75
+SCENARIO_HIGH,3540.0,692.89,4228.6,4.29,0.0,0.0,2246710.45,45.83,228.99

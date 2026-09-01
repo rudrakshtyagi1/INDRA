@@ -1,0 +1,32 @@
+{
+  "BREACH_LOW": {
+    "description": "Partial localized embankment notch / controlled internal erosion scenario",
+    "max_breach_width_m": 120.0,
+    "final_invert_elevation_m_msl": 740.0,
+    "formation_time_hrs": 3.5,
+    "side_slope_z": 0.9,
+    "discharge_coefficient_Cd": 1.5,
+    "initiation_hour_from_event": 45.0,
+    "provenance": "ASSUMED EMERGENCY-PLANNING PARAMETER"
+  },
+  "BREACH_BASE": {
+    "description": "Froehlich (2008) central empirical regression for 260m rockfill embankment",
+    "max_breach_width_m": 220.0,
+    "final_invert_elevation_m_msl": 680.0,
+    "formation_time_hrs": 2.0,
+    "side_slope_z": 1.0,
+    "discharge_coefficient_Cd": 1.65,
+    "initiation_hour_from_event": 45.0,
+    "provenance": "ASSUMED EMERGENCY-PLANNING PARAMETER (Froehlich 2008 Regression)"
+  },
+  "BREACH_HIGH": {
+    "description": "Severe rapid overtopping deep breach / extensive structural collapse",
+    "max_breach_width_m": 350.0,
+    "final_invert_elevation_m_msl": 600.0,
+    "formation_time_hrs": 1.2,
+    "side_slope_z": 1.4,
+    "discharge_coefficient_Cd": 1.85,
+    "initiation_hour_from_event": 45.0,
+    "provenance": "ASSUMED EMERGENCY-PLANNING PARAMETER (Upper Bound Severe Scenario)"
+  }
+}

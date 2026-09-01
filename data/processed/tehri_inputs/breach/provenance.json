@@ -1,0 +1,28 @@
+{
+  "step": "STEP 8",
+  "project": "FloodLab \u2014 Tehri Dam Emergency-Planning Prototype",
+  "study_mode": "WHAT-IF EMERGENCY-PLANNING SCENARIO",
+  "dam_name": "Tehri Dam",
+  "provenance_classifications": {
+    "CWC_Tekhla_Discharge": "OBSERVED",
+    "Tehri_Design_FRL_and_Capacity": "REPORTED DESIGN SPECIFICATION",
+    "Initial_Scenario_Reservoir_Elevation": "ASSUMED INITIAL CONDITION",
+    "Step_7_Total_Inflow": "MODELLED / DERIVED",
+    "Breach_Width_and_Formation_Time": "ASSUMED / TIME-EVOLVING MODEL PARAMETER",
+    "Q_breach_t": "MODELLED BREACH OUTFLOW",
+    "Current_Reservoir_Level": "DATA UNAVAILABLE"
+  },
+  "artifacts_generated": {
+    "stage_storage_benchmark": "data/processed/tehri_inputs/breach/reservoir_reference/verified_stage_storage_benchmark.csv",
+    "stage_storage_metadata": "data/processed/tehri_inputs/breach/reservoir_reference/verified_stage_storage_metadata.json",
+    "breach_scenario_parameters": "data/processed/tehri_inputs/breach/scenarios/breach_scenario_parameters.json",
+    "reservoir_initial_scenarios": "data/processed/tehri_inputs/breach/scenarios/reservoir_initial_scenarios.json",
+    "breach_hydrograph_low": "data/processed/tehri_inputs/breach/hydrographs/breach_hydrograph_low.csv",
+    "breach_hydrograph_base": "data/processed/tehri_inputs/breach/hydrographs/breach_hydrograph_base.csv",
+    "breach_hydrograph_high": "data/processed/tehri_inputs/breach/hydrographs/breach_hydrograph_high.csv",
+    "breach_boundary_hydrograph": "data/processed/tehri_inputs/breach/hydrographs/breach_boundary_hydrograph.csv",
+    "reservoir_mass_balance": "data/processed/tehri_inputs/breach/qa/reservoir_mass_balance.csv",
+    "timestep_sensitivity": "data/processed/tehri_inputs/breach/qa/timestep_sensitivity.csv",
+    "breach_qa_report": "data/processed/tehri_inputs/breach/qa/breach_qa_report.md"
+  }
+}

@@ -1,0 +1,5 @@
+timestep_seconds,peak_Q_breach_m3s,time_to_peak_hrs,total_release_mcm,drawdown_m,mass_balance_residual_m3,mass_balance_error_pct
+60.0,729141.01,46.5833,3273.43,133.75,596.33,1.8e-05
+30.0,725866.47,46.5833,3273.43,133.75,297.14,9e-06
+10.0,723731.33,46.5806,3273.43,133.75,98.82,3e-06
+5.0,723192.28,46.5806,3273.43,133.75,49.38,2e-06
