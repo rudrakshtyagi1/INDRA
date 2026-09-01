@@ -36,7 +36,9 @@
     "baseflow_storage_volume_mcm": 125.91,
     "total_discharge_volume_mcm": 325.26,
     "storm_runoff_coefficient_excluding_baseflow": 0.6644,
-    "total_runoff_ratio_including_baseflow": 1.084
+    "total_runoff_ratio_including_baseflow": 1.084,
+    "baseflow_note": "parameterized antecedent/baseflow contribution (~200 m3/s); specific glacial-melt attribution is unverified."
   },
-  "koteshwar_status": "Observed downstream regulated-flow behavior; attribution to specific dam release operations is not verified because timestamped operational release records are unavailable."
+  "koteshwar_status": "Observed downstream regulated-flow behavior; attribution to specific dam release operations is not verified because timestamped operational release records are unavailable.",
+  "unmodelled_dynamics": "Diurnal baseline oscillations represent POSSIBLE UNMODELLED SNOW / GLACIAL MELT CONTRIBUTION rather than directly simulated melt processes."
 }

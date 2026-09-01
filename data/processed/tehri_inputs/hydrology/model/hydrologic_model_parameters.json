@@ -1,10 +1,10 @@
 {
-  "model_architecture": "Parsimonious Conceptual Event Rainfall-Runoff Model (Loss Model + Nash Cascade Quickflow + Linear Baseflow/Melt Reservoir)",
+  "model_architecture": "Parsimonious Conceptual Event Rainfall-Runoff Model (Loss Model + Nash Cascade Quickflow + Linear Baseflow/Storage Reservoir)",
   "subcatchments": {
     "Upper_Bhagirathi_Tekhla": {
       "area_km2": 4577.29,
       "percentage_of_basin": 62.7,
-      "calibration_status": "PARTIALLY CALIBRATED / PARAMETER-FITTED (Peak and storm volume matched; sub-daily variation influenced by unmodelled high-altitude melt)",
+      "calibration_status": "PARTIALLY CALIBRATED / PARAMETER-FITTED (Peak and storm volume matched; sub-daily variation influenced by POSSIBLE UNMODELLED SNOW / GLACIAL MELT CONTRIBUTION)",
       "parameters": {
         "C_runoff": {
           "value": 0.6712,
@@ -54,7 +54,7 @@
         "Q_base0_m3s": {
           "value": 200.0,
           "units": "m3/s",
-          "description": "Glacial melt and antecedent baseflow datum",
+          "description": "parameterized antecedent/baseflow contribution (~200 m3/s); specific glacial-melt attribution is unverified.",
           "bounds": [
             150.0,
             350.0
@@ -113,5 +113,6 @@
     "INTERMEDIATE_AREA_KM2": 1250.66,
     "BHILANGNA_AREA_KM2": 1472.15,
     "TOTAL_TEHRI_BASIN_AREA_KM2": 7300.3
-  }
+  },
+  "meteorological_forcing_description": "ERA5-Land hourly precipitation sampled at nearest model-grid locations via Open-Meteo and spatially weighted over each hydrologic subcatchment (using 140 ERA5-Land sampling/grid-support cells used in the catchment-weighting workflow)."
 }
