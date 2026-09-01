@@ -48,6 +48,62 @@ async def health():
     return {"status": "ok", "version": "1.0.0"}
 
 
+@app.get("/api/system/services")
+async def get_system_services_status():
+    """
+    Returns public health/readiness status of integrated external services.
+    Never exposes credentials, tokens, or private endpoints.
+    """
+    from floodlab.services.nasa_earthdata import nasa_service
+    settings = get_settings()
+    nasa = nasa_service.get_service_status()
+
+    return {
+        "carto": {
+            "name": "CARTO Basemap",
+            "layer": "2D High-Contrast Operational Basemap",
+            "tier": "Client-side (VITE_CARTO_BASEMAP_KEY)",
+            "status": "CONFIGURED",
+        },
+        "cesium_ion": {
+            "name": "Cesium Ion",
+            "layer": "3D Himalayan Terrain Engine",
+            "tier": "Client-side (VITE_CESIUM_ION_ACCESS_TOKEN)",
+            "status": "CONFIGURED",
+        },
+        "nasa_earthdata": {
+            "name": "NASA Earthdata (GPM / IMERG)",
+            "layer": "Hydrometeorological Precipitation Data",
+            "tier": "Backend Authenticated (NASA_EARTHDATA_TOKEN)",
+            "configured": nasa["configured"],
+            "status": nasa["status"],
+        },
+        "google_earth_engine": {
+            "name": "Google Earth Engine",
+            "layer": "Satellite Surface Water Monitoring",
+            "tier": "Project-based Authentication",
+            "configured": bool(settings.gee_project_id or settings.gee_service_account),
+            "status": "NOT_CONNECTED",
+        },
+        "copernicus": {
+            "name": "Copernicus Data Space",
+            "layer": "Sentinel-1/2 SAR Outburst Surveillance",
+            "tier": "OAuth2 Client Credentials",
+            "configured": bool(settings.copernicus_client_id),
+            "status": "NOT_CONFIGURED",
+        },
+    }
+
+
+@app.get("/api/system/services/verify-nasa")
+async def verify_nasa_earthdata_connectivity():
+    """
+    Lightweight backend authentication check against NASA Earthdata CMR.
+    """
+    from floodlab.services.nasa_earthdata import nasa_service
+    return await nasa_service.verify_connectivity()
+
+
 @app.get("/")
 async def root():
     return {

@@ -4,6 +4,7 @@ frontend/node_modules/
 dist/
 frontend/dist/
 .vite/
+frontend/.vite/
 *.log
 
 # Python / Backend
@@ -21,13 +22,30 @@ htmlcov/
 *.db
 
 # Data and Simulation Storage
-storage/simulations/*
-!storage/simulations/.gitkeep
+storage/
+cache/
+backend/storage/
+*.tif
+*.tiff
+*.zip
+data/raw/hydrosheds/
+data/raw/gee/
+data/raw/admin/*.geojson
+data/raw/osm/chunks/
+data/raw/discharge/*.csv
+FloodLab_Data_Acquisition_Pack/
 data/cache/*
 !data/cache/.gitkeep
 
 # Environment / OS
 .env
 .env.local
+.env.*.local
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+backend/.env
+backend/.env.local
+backend/.env.*.local
 .DS_Store
 Thumbs.db

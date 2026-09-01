@@ -38,9 +38,17 @@ class Settings(BaseSettings):
     storage_root: str = "./storage"
     data_root: str = "./data"
 
-    # Google Earth Engine
+    # External Services Authentication (Backend Only — Never exposed in API responses)
+    nasa_earthdata_token: Optional[str] = None
+
+    # Google Earth Engine (Project-based authentication)
+    gee_project_id: Optional[str] = None
     gee_service_account: Optional[str] = None
     gee_key_file: Optional[str] = None
+
+    # Copernicus Data Space (OAuth2)
+    copernicus_client_id: Optional[str] = None
+    copernicus_client_secret: Optional[str] = None
 
     # Redis / Celery
     redis_url: str = "redis://localhost:6379/0"

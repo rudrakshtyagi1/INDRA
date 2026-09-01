@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { getDepthColor, getVelocityColor } from '../utils/colorScales';
 import { formatFinite, m3ToBillionM3 } from '../utils/units';
+import { createBasemapLayer } from '../utils/mapTiles';
 
 export default function SimulationViewer({
   simulationResult,
@@ -321,10 +322,7 @@ export default function SimulationViewer({
         zoomControl: false,
       });
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; CartoDB & OpenStreetMap',
-        maxZoom: 18,
-      }).addTo(map);
+      createBasemapLayer(map).addTo(map);
 
       // Station Markers
       stations.forEach((st, idx) => {

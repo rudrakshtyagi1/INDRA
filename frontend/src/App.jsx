@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import Sidebar from './components/navigation/Sidebar';
-import Topbar from './components/navigation/Topbar';
+import WorkspaceShell from './layout/WorkspaceShell';
 import Overview from './pages/Overview';
 import DamOperations from './pages/DamOperations';
 import SimulationLab from './pages/SimulationLab';
@@ -15,22 +13,19 @@ import { api, FALLBACK_PRESETS } from './services/api';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('overview');
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [presets, setPresets] = useState(FALLBACK_PRESETS);
   const [selectedPreset, setSelectedPreset] = useState(FALLBACK_PRESETS[0]);
   const [simulationResult, setSimulationResult] = useState(null);
   const [isSimulating, setIsSimulating] = useState(false);
 
-  // Full-Screen Visualization Modes
-  const [isFullScreenSimOpen, setIsFullScreenSimOpen] = useState(false);
-  const [isFullScreenHadrOpen, setIsFullScreenHadrOpen] = useState(false);
-
-  // Modals & Drawers State
+  // Modals & drawers
   const [isScenarioDrawerOpen, setIsScenarioDrawerOpen] = useState(false);
   const [isDemModalOpen, setIsDemModalOpen] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
 
-  // Load initial preset scenarios from backend on mount
+  // Cross-page navigation state
+  const [simTimeMin, setSimTimeMin] = useState(30);
+
   useEffect(() => {
     api.getPresets()
       .then((data) => {
@@ -38,11 +33,7 @@ export default function App() {
         if (list.length > 0) {
           setPresets(list);
           setSelectedPreset(list[0]);
-          handleRunSimulation({
-            scenario_id: list[0].id,
-            preset_id: list[0].id,
-            solver_type: 'coupled',
-          }, false); // don't open fullscreen on initial mount
+          handleRunSimulation({ scenario_id: list[0].id, preset_id: list[0].id, solver_type: 'coupled' }, false);
         }
       })
       .catch((err) => console.error('Failed to load presets:', err));
@@ -52,44 +43,34 @@ export default function App() {
     const found = presets.find((p) => p.id === presetId);
     if (found) {
       setSelectedPreset(found);
-      if (
-        simulationResult &&
-        simulationResult.scenario_id !== found.id &&
-        simulationResult.scenario_params?.id !== found.id
-      ) {
+      if (simulationResult && simulationResult.scenario_id !== found.id) {
         setSimulationResult(null);
       }
     }
   };
 
-  const handleRunSimulation = async (payload = {}, openFullScreen = true) => {
+  const handleRunSimulation = async (payload = {}, openSim = true) => {
     setIsSimulating(true);
-    if (openFullScreen) {
-      setActiveTab('simulation');
-      setIsFullScreenSimOpen(true);
-    }
+    if (openSim) setActiveTab('simulation');
     try {
-      const scenarioId =
-        payload.scenario_id || payload.preset_id || selectedPreset?.id || 'tehri_dam_bhagirathi';
-      const runPayload = {
-        ...payload,
-        scenario_id: scenarioId,
-        preset_id: scenarioId,
-        solver_type: payload.solver_type || 'coupled',
-      };
-      const res = await api.runSimulation(runPayload);
+      const scenarioId = payload.scenario_id || payload.preset_id || selectedPreset?.id || 'tehri_dam_bhagirathi';
+      const res = await api.runSimulation({ ...payload, scenario_id: scenarioId, preset_id: scenarioId, solver_type: payload.solver_type || 'coupled' });
       setSimulationResult(res);
     } catch (err) {
-      console.error('Simulation execution failed:', err);
+      console.error('Simulation failed:', err);
     } finally {
       setIsSimulating(false);
     }
   };
 
+  const handleNavigateToHadr = () => {
+    setActiveTab('hadr');
+  };
+
   const handleTriggerScenarioFromLake = (alertData) => {
     const customParams = {
       id: `outburst_${alertData.alert_id || 'custom'}`,
-      name: `Outburst Flood - ${alertData.zone_name}`,
+      name: `Outburst Flood — ${alertData.zone_name}`,
       dam_name: `Detected Landslide Dam (${alertData.zone_name})`,
       dam_type: 'landslide_dam',
       breach_mode: 'landslide_outburst',
@@ -106,140 +87,88 @@ export default function App() {
       lat: alertData.coordinates?.[0]?.[1] || 30.485,
       lon: alertData.coordinates?.[0]?.[0] || 79.738,
     };
-
     setSelectedPreset(customParams);
     setSimulationResult(null);
+    handleRunSimulation({ scenario_id: customParams.id, custom_params: customParams, solver_type: 'coupled', breach_model: 'landslide' }, true);
+  };
 
-    handleRunSimulation({
-      scenario_id: customParams.id,
-      custom_params: customParams,
-      solver_type: 'coupled',
-      breach_model: 'landslide',
-    }, true);
+  const renderPage = () => {
+    switch (activeTab) {
+      case 'overview':
+        return (
+          <Overview
+            selectedPreset={selectedPreset}
+            simulationResult={simulationResult}
+            onNavigate={setActiveTab}
+            onRunSimulation={() => handleRunSimulation({ scenario_id: selectedPreset?.id, preset_id: selectedPreset?.id, solver_type: 'coupled' }, true)}
+            isSimulating={isSimulating}
+          />
+        );
+      case 'operations':
+        return (
+          <DamOperations
+            selectedPreset={selectedPreset}
+            simulationResult={simulationResult}
+            onOpenScenarioDrawer={() => setIsScenarioDrawerOpen(true)}
+            onRunSimulation={(payload) => handleRunSimulation(payload, true)}
+            isSimulating={isSimulating}
+          />
+        );
+      case 'simulation':
+        return (
+          <SimulationLab
+            simulationResult={simulationResult}
+            selectedPreset={selectedPreset}
+            onRunSimulation={() => handleRunSimulation({ scenario_id: selectedPreset?.id, preset_id: selectedPreset?.id, solver_type: 'coupled' }, false)}
+            isSimulating={isSimulating}
+            onNavigateToHadr={handleNavigateToHadr}
+            initialTimeMin={simTimeMin}
+            onTimeChange={setSimTimeMin}
+          />
+        );
+      case 'hadr':
+        return (
+          <HADRDashboard
+            selectedPreset={selectedPreset}
+            simulationResult={simulationResult}
+            onOpenExport={() => setIsExportModalOpen(true)}
+          />
+        );
+      case 'satellite':
+        return <SatelliteMonitor onTriggerScenarioFromLake={handleTriggerScenarioFromLake} />;
+      case 'comparison':
+        return (
+          <ScenarioComparison
+            simulationResult={simulationResult}
+            selectedPreset={selectedPreset}
+            onRunSimulation={() => handleRunSimulation({ scenario_id: selectedPreset?.id, preset_id: selectedPreset?.id, solver_type: 'coupled' }, true)}
+            isSimulating={isSimulating}
+          />
+        );
+      default:
+        return null;
+    }
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-row font-sans selection:bg-cyan-500 selection:text-slate-950 antialiased">
-      {/* 1. Left Fixed Sidebar */}
-      <Sidebar
+    <>
+      <WorkspaceShell
         activeTab={activeTab}
         onSelectTab={setActiveTab}
-        isCollapsed={isSidebarCollapsed}
-        onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+        selectedPreset={selectedPreset}
+        presets={presets}
+        onSelectPreset={handleSelectPreset}
+        simulationResult={simulationResult}
+        isSimulating={isSimulating}
+        onRunSimulation={() => handleRunSimulation({ scenario_id: selectedPreset?.id, preset_id: selectedPreset?.id, solver_type: 'coupled' }, true)}
+        onOpenScenarioDrawer={() => setIsScenarioDrawerOpen(true)}
         onOpenDem={() => setIsDemModalOpen(true)}
         onOpenExport={() => setIsExportModalOpen(true)}
-      />
+      >
+        {renderPage()}
+      </WorkspaceShell>
 
-      {/* 2. Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">
-        {/* Topbar */}
-        <Topbar
-          selectedPreset={selectedPreset}
-          presets={presets}
-          onSelectPreset={handleSelectPreset}
-          simulationResult={simulationResult}
-          isSimulating={isSimulating}
-          onRunSimulation={() =>
-            handleRunSimulation({
-              scenario_id: selectedPreset?.id,
-              preset_id: selectedPreset?.id,
-              solver_type: 'coupled',
-            }, true)
-          }
-          onOpenScenarioDrawer={() => setIsScenarioDrawerOpen(true)}
-          onOpenDem={() => setIsDemModalOpen(true)}
-          onOpenExport={() => setIsExportModalOpen(true)}
-        />
-
-        {/* Page Content with Subtle Transitions */}
-        <main className="flex-1">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.2, ease: 'easeOut' }}
-            >
-              {activeTab === 'overview' && (
-                <Overview
-                  selectedPreset={selectedPreset}
-                  simulationResult={simulationResult}
-                  onNavigate={setActiveTab}
-                  onRunSimulation={() =>
-                    handleRunSimulation({
-                      scenario_id: selectedPreset?.id,
-                      preset_id: selectedPreset?.id,
-                      solver_type: 'coupled',
-                    }, true)
-                  }
-                  isSimulating={isSimulating}
-                />
-              )}
-
-              {activeTab === 'operations' && (
-                <DamOperations
-                  selectedPreset={selectedPreset}
-                  simulationResult={simulationResult}
-                  onOpenScenarioDrawer={() => setIsScenarioDrawerOpen(true)}
-                  onRunSimulation={(payload) => handleRunSimulation(payload, true)}
-                  isSimulating={isSimulating}
-                />
-              )}
-
-              {activeTab === 'simulation' && (
-                <SimulationLab
-                  simulationResult={simulationResult}
-                  selectedPreset={selectedPreset}
-                  onRunSimulation={() =>
-                    handleRunSimulation({
-                      scenario_id: selectedPreset?.id,
-                      preset_id: selectedPreset?.id,
-                      solver_type: 'coupled',
-                    }, false)
-                  }
-                  isSimulating={isSimulating}
-                  isFullScreenMode={isFullScreenSimOpen}
-                  onToggleFullScreen={() => setIsFullScreenSimOpen(!isFullScreenSimOpen)}
-                />
-              )}
-
-              {activeTab === 'hadr' && (
-                <HADRDashboard
-                  selectedPreset={selectedPreset}
-                  simulationResult={simulationResult}
-                  onOpenExport={() => setIsExportModalOpen(true)}
-                  isFullScreenMode={isFullScreenHadrOpen}
-                  onToggleFullScreen={() => setIsFullScreenHadrOpen(!isFullScreenHadrOpen)}
-                />
-              )}
-
-              {activeTab === 'satellite' && (
-                <SatelliteMonitor
-                  onTriggerScenarioFromLake={handleTriggerScenarioFromLake}
-                />
-              )}
-
-              {activeTab === 'comparison' && (
-                <ScenarioComparison
-                  simulationResult={simulationResult}
-                  selectedPreset={selectedPreset}
-                  onRunSimulation={() =>
-                    handleRunSimulation({
-                      scenario_id: selectedPreset?.id,
-                      preset_id: selectedPreset?.id,
-                      solver_type: 'coupled',
-                    }, true)
-                  }
-                  isSimulating={isSimulating}
-                />
-              )}
-            </motion.div>
-          </AnimatePresence>
-        </main>
-      </div>
-
-      {/* 3. Sliding Drawers & Modals */}
+      {/* Drawers & Modals (outside shell) */}
       <ScenarioDrawer
         isOpen={isScenarioDrawerOpen}
         onClose={() => setIsScenarioDrawerOpen(false)}
@@ -249,19 +178,17 @@ export default function App() {
         onRunSimulation={(payload) => handleRunSimulation(payload, true)}
         isSimulating={isSimulating}
       />
-
       <ElevationProfileModal
         isOpen={isDemModalOpen}
         onClose={() => setIsDemModalOpen(false)}
         selectedPreset={selectedPreset}
       />
-
       <ExportModal
         isOpen={isExportModalOpen}
         onClose={() => setIsExportModalOpen(false)}
         simulationResult={simulationResult}
         selectedPreset={selectedPreset}
       />
-    </div>
+    </>
   );
 }

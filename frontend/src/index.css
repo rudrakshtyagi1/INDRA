@@ -2,62 +2,218 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─────────────────────────────────────────────────────────────
+   FloodLab Design Tokens
+   Scientific GIS Workstation & Emergency Operations Console Aesthetic.
+   Dark navy/slate surfaces, crisp high-readability typography,
+   and high-contrast medium-dark topographic mapping.
+───────────────────────────────────────────────────────────── */
+:root {
+  --surface-0: #0d131f;     /* Deep slate workstation canvas */
+  --surface-1: #131c2c;     /* Dark navy container background */
+  --surface-2: #1a2538;     /* Toolbars, navigation rail, panel surfaces */
+  --surface-3: #223148;     /* Elevated inspectors, active cards, dropdowns */
+  --surface-border: rgba(255, 255, 255, 0.11);
+  --surface-border-strong: rgba(255, 255, 255, 0.20);
+
+  --accent: #3b82f6;        /* Blue-500, primary GIS action */
+  --accent-dim: rgba(59, 130, 246, 0.18);
+  --accent-hover: #60a5fa;  /* Blue-400 */
+
+  --cyan: #06b6d4;          /* Hydrological feature accent */
+  --cyan-dim: rgba(6, 182, 212, 0.15);
+
+  --danger: #ef4444;        /* Critical hazard */
+  --danger-dim: rgba(239, 68, 68, 0.16);
+
+  --warning: #f59e0b;       /* Cautionary threshold */
+  --warning-dim: rgba(245, 158, 11, 0.16);
+
+  --safe: #22c55e;          /* Safe ground / Verified buffer */
+  --safe-dim: rgba(34, 197, 94, 0.16);
+
+  --text-primary: #f8fafc;   /* Slate-50, crisp high-contrast body */
+  --text-secondary: #94a3b8; /* Slate-400, readable secondary text */
+  --text-muted: #64748b;     /* Slate-500, metadata & units */
+
+  --nav-width: 68px;
+  --context-bar-height: 48px;
+  --inspector-width: 340px;
+}
+
 @layer base {
+  html, body, #root {
+    height: 100%;
+    overflow: hidden;
+  }
   body {
-    @apply bg-slate-950 text-slate-100 selection:bg-cyan-500 selection:text-white;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background: var(--surface-0);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  * {
+    box-sizing: border-box;
   }
 }
 
-/* Custom scrollbars */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #020617;
-}
-::-webkit-scrollbar-thumb {
-  background: #1e293b;
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #334155;
-}
+/* ─── Workstation Scrollbars ─────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #26354a; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #3b4d66; }
 
-/* Glow effects */
-.glow-cyan {
-  box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.35);
-}
-
-.glow-red {
-  box-shadow: 0 0 25px -5px rgba(239, 68, 68, 0.35);
-}
-
-.glow-orange {
-  box-shadow: 0 0 25px -5px rgba(249, 115, 22, 0.35);
-}
-
-/* Leaflet Map overrides for dark theme */
+/* ─── Leaflet Medium-Dark Topographic Basemap ─────────────── */
 .leaflet-container {
-  background: #090d16 !important;
+  background: #151e2d !important; /* Visible medium-dark slate rather than pitch black */
   font-family: inherit;
 }
+
+/* Elevate basemap brightness & contrast so contours, valley roads, place names, and river channels are crisp */
+.leaflet-tile {
+  filter: brightness(1.36) contrast(1.18) saturate(0.92);
+}
+
+.leaflet-control-zoom {
+  display: none; /* Controlled via floating workstation controls */
+}
 .leaflet-bar a {
-  background-color: #0f172a !important;
-  color: #94a3b8 !important;
-  border-color: #334155 !important;
+  background-color: var(--surface-2) !important;
+  color: var(--text-secondary) !important;
+  border-color: var(--surface-border-strong) !important;
 }
 .leaflet-bar a:hover {
-  background-color: #1e293b !important;
-  color: #38bdf8 !important;
+  background-color: var(--surface-3) !important;
+  color: var(--text-primary) !important;
 }
 .leaflet-popup-content-wrapper {
-  background: #0f172a !important;
-  color: #f1f5f9 !important;
-  border: 1px solid #334155;
+  background: var(--surface-2) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--surface-border-strong);
   border-radius: 8px !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
 }
-.leaflet-popup-tip {
-  background: #0f172a !important;
+.leaflet-popup-tip { background: var(--surface-2) !important; }
+.leaflet-control-attribution {
+  background: rgba(19, 28, 44, 0.88) !important;
+  color: var(--text-muted) !important;
+  font-size: 10px !important;
+  border-top-left-radius: 4px !important;
+}
+.leaflet-control-attribution a { color: var(--text-secondary) !important; }
+
+/* ─── Operational Map Utilities ──────────────────────────── */
+
+.map-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Floating GIS control toolbar chip */
+.floating-control {
+  background: rgba(19, 28, 44, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--surface-border-strong);
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+/* Status Badges */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.status-pill--active {
+  background: var(--safe-dim);
+  color: var(--safe);
+  border: 1px solid rgba(34,197,94,0.3);
+}
+.status-pill--running {
+  background: var(--warning-dim);
+  color: var(--warning);
+  border: 1px solid rgba(245,158,11,0.3);
+}
+.status-pill--prototype {
+  background: var(--accent-dim);
+  color: var(--accent-hover);
+  border: 1px solid rgba(59,130,246,0.3);
+}
+.status-pill--danger {
+  background: var(--danger-dim);
+  color: var(--danger);
+  border: 1px solid rgba(239,68,68,0.3);
+}
+
+/* Surface Divider */
+.surface-divider {
+  height: 1px;
+  background: var(--surface-border);
+}
+
+/* Inspector Table Rows */
+.inspector-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--surface-border);
+  gap: 12px;
+}
+.inspector-row:last-child { border-bottom: none; }
+.inspector-row__label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.inspector-row__value {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: right;
+}
+
+/* Scrubber Range Input */
+input[type="range"].scrubber {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--surface-3);
+  outline: none;
+  cursor: pointer;
+}
+input[type="range"].scrubber::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 2px rgba(59,130,246,0.3);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+input[type="range"].scrubber::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+input[type="range"].scrubber::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid #ffffff;
+  cursor: pointer;
 }
