@@ -1,0 +1,117 @@
+{
+  "model_architecture": "Parsimonious Conceptual Event Rainfall-Runoff Model (Loss Model + Nash Cascade Quickflow + Linear Baseflow/Melt Reservoir)",
+  "subcatchments": {
+    "Upper_Bhagirathi_Tekhla": {
+      "area_km2": 4577.29,
+      "percentage_of_basin": 62.7,
+      "calibration_status": "PARTIALLY CALIBRATED / PARAMETER-FITTED (Peak and storm volume matched; sub-daily variation influenced by unmodelled high-altitude melt)",
+      "parameters": {
+        "C_runoff": {
+          "value": 0.6712,
+          "units": "dimensionless",
+          "description": "Effective runoff coefficient governing infiltration partitioning",
+          "bounds": [
+            0.2,
+            0.75
+          ]
+        },
+        "f_loss_mm_hr": {
+          "value": 0.05,
+          "units": "mm/hr",
+          "description": "Continuing loss/interception threshold",
+          "bounds": [
+            0.0,
+            1.0
+          ]
+        },
+        "N_nash": {
+          "value": 1.875,
+          "units": "reservoirs",
+          "description": "Number of linear reservoirs in routing cascade",
+          "bounds": [
+            1.5,
+            4.0
+          ]
+        },
+        "K_nash_hr": {
+          "value": 10.75,
+          "units": "hours",
+          "description": "Routing storage time constant",
+          "bounds": [
+            5.0,
+            20.0
+          ]
+        },
+        "K_base_hr": {
+          "value": 38.125,
+          "units": "hours",
+          "description": "Baseflow/subsurface retention constant",
+          "bounds": [
+            24.0,
+            120.0
+          ]
+        },
+        "Q_base0_m3s": {
+          "value": 200.0,
+          "units": "m3/s",
+          "description": "Glacial melt and antecedent baseflow datum",
+          "bounds": [
+            150.0,
+            350.0
+          ]
+        }
+      }
+    },
+    "Bhilangna": {
+      "area_km2": 1472.15,
+      "percentage_of_basin": 20.17,
+      "calibration_status": "UNGAUGED / TRANSFERRED PARAMETERS (Uncertainty Scenarios LOW, BASE, HIGH)",
+      "scenarios": {
+        "LOW": {
+          "C_runoff": 0.35,
+          "K_nash_hr": 12.0,
+          "Q_base0_m3s": 50.0
+        },
+        "BASE": {
+          "C_runoff": 0.5,
+          "K_nash_hr": 8.0,
+          "Q_base0_m3s": 80.0
+        },
+        "HIGH": {
+          "C_runoff": 0.7,
+          "K_nash_hr": 5.0,
+          "Q_base0_m3s": 120.0
+        }
+      }
+    },
+    "Lateral_Intermediate": {
+      "area_km2": 1250.66,
+      "percentage_of_basin": 17.13,
+      "calibration_status": "UNGAUGED / TRANSFERRED PARAMETERS (Uncertainty Scenarios LOW, BASE, HIGH)",
+      "scenarios": {
+        "LOW": {
+          "C_runoff": 0.3,
+          "K_nash_hr": 6.0,
+          "Q_base0_m3s": 20.0
+        },
+        "BASE": {
+          "C_runoff": 0.45,
+          "K_nash_hr": 4.0,
+          "Q_base0_m3s": 40.0
+        },
+        "HIGH": {
+          "C_runoff": 0.65,
+          "K_nash_hr": 2.5,
+          "Q_base0_m3s": 60.0
+        }
+      }
+    }
+  },
+  "area_reconciliation": {
+    "TEKHLA_GAUGED_AREA_KM2": 4577.29,
+    "BHAGIRATHI_TO_TEHRI_TOTAL_AREA_KM2": 5827.95,
+    "INTERMEDIATE_AREA_KM2": 1250.66,
+    "BHILANGNA_AREA_KM2": 1472.15,
+    "TOTAL_TEHRI_BASIN_AREA_KM2": 7300.3
+  }
+}

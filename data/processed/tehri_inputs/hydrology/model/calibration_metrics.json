@@ -1,0 +1,42 @@
+{
+  "station_name": "Tekhla (CWC)",
+  "subcatchment": "Upper_Bhagirathi_Tekhla",
+  "calibration_classification": "PARTIALLY CALIBRATED / PARAMETER-FITTED",
+  "evaluation_windows": {
+    "event_only_window_144h": {
+      "period": "2024-07-30 00:00:00 to 2024-08-04 23:00:00 UTC",
+      "NSE": -0.4436,
+      "KGE": 0.3096,
+      "Pearson_r": 0.3179,
+      "RMSE_m3s": 148.18,
+      "MAE_m3s": 123.99,
+      "volume_bias_pct": 8.58,
+      "observed_peak_m3s": 852.93,
+      "observed_peak_time": "2024-07-31 21:00:00+00:00",
+      "modelled_peak_m3s": 866.81,
+      "modelled_peak_time": "2024-08-01 02:00:00+00:00",
+      "peak_discharge_error_pct": 1.63,
+      "peak_timing_error_hours": 5
+    },
+    "full_simulation_window_264h": {
+      "period": "2024-07-25 00:00:00 to 2024-08-04 23:00:00 UTC",
+      "NSE": -1.2102,
+      "KGE": 0.1032,
+      "Pearson_r": 0.1254,
+      "RMSE_m3s": 157.57,
+      "MAE_m3s": 131.93,
+      "volume_bias_pct": -5.39,
+      "peak_discharge_error_pct": 1.63,
+      "peak_timing_error_hours": 5
+    }
+  },
+  "water_balance_separation": {
+    "event_rainfall_volume_mcm": 300.05,
+    "event_quickflow_volume_mcm": 199.35,
+    "baseflow_storage_volume_mcm": 125.91,
+    "total_discharge_volume_mcm": 325.26,
+    "storm_runoff_coefficient_excluding_baseflow": 0.6644,
+    "total_runoff_ratio_including_baseflow": 1.084
+  },
+  "koteshwar_status": "Observed downstream regulated-flow behavior; attribution to specific dam release operations is not verified because timestamped operational release records are unavailable."
+}
