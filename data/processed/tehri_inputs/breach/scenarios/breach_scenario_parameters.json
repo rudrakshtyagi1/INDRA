@@ -1,32 +1,36 @@
 {
   "BREACH_LOW": {
-    "description": "Partial localized embankment notch / controlled internal erosion scenario",
+    "description": "Partial localized embankment notch / controlled internal erosion theoretical scenario",
     "max_breach_width_m": 120.0,
     "final_invert_elevation_m_msl": 740.0,
     "formation_time_hrs": 3.5,
     "side_slope_z": 0.9,
     "discharge_coefficient_Cd": 1.5,
     "initiation_hour_from_event": 45.0,
-    "provenance": "ASSUMED EMERGENCY-PLANNING PARAMETER"
+    "provenance": "ASSUMED THEORETICAL BREACH PARAMETER (Hypothetical Planning Scenario)",
+    "application_status": "ASSUMED BENCHMARK NOTCH (Not an identified dam weakness)"
   },
   "BREACH_BASE": {
-    "description": "Froehlich (2008) central empirical regression for 260m rockfill embankment",
+    "description": "Froehlich (2008) empirical regression for rockfill embankment breach parameters",
     "max_breach_width_m": 220.0,
     "final_invert_elevation_m_msl": 680.0,
     "formation_time_hrs": 2.0,
     "side_slope_z": 1.0,
     "discharge_coefficient_Cd": 1.65,
     "initiation_hour_from_event": 45.0,
-    "provenance": "ASSUMED EMERGENCY-PLANNING PARAMETER (Froehlich 2008 Regression)"
+    "empirical_formula": "B_avg = 0.27 * Ko * V_w^0.32 * h_b^0.04; t_f = 63.2 * sqrt(V_w / (g * h_b^2))",
+    "provenance": "EXTRAPOLATED THEORETICAL BENCHMARK (Froehlich 2008 Empirical Regression)",
+    "applicability_warning": "Froehlich (2008) dataset comprises primarily small-to-medium dams (median height ~20m, max ~90m). Applying to a 260.5m mega-dam with 3.5 BCM storage is an extreme mathematical extrapolation. Results represent an upper theoretical benchmark rather than an engineering prediction."
   },
   "BREACH_HIGH": {
-    "description": "Severe rapid overtopping deep breach / extensive structural collapse",
+    "description": "Severe rapid overtopping deep breach / extensive structural collapse benchmark",
     "max_breach_width_m": 350.0,
     "final_invert_elevation_m_msl": 600.0,
     "formation_time_hrs": 1.2,
     "side_slope_z": 1.4,
     "discharge_coefficient_Cd": 1.85,
     "initiation_hour_from_event": 45.0,
-    "provenance": "ASSUMED EMERGENCY-PLANNING PARAMETER (Upper Bound Severe Scenario)"
+    "provenance": "EXTRAPOLATED THEORETICAL BENCHMARK (Extreme Upper Bound Scenario)",
+    "applicability_warning": "Represents instantaneous/near-instantaneous massive collapse under maximum hydrostatic head for solver stress-testing."
   }
 }

@@ -1,0 +1,55 @@
+{
+  "dataset_name": "assumed_theoretical_stage_storage_benchmark",
+  "study_mode": "SIMPLIFIED THEORETICAL BREACH BENCHMARK",
+  "tehri_specific_stage_storage_status": "NOT AVAILABLE",
+  "tehri_specific_reservoir_routing_status": "BLOCKED_STAGE_STORAGE_DATA",
+  "benchmark_hypsometry_status": "AVAILABLE FOR THEORETICAL TESTING ONLY",
+  "dam_name": "Tehri Dam",
+  "river": "Bhagirathi",
+  "operator": "THDC India Limited",
+  "reported_design_specifications": {
+    "crest_elevation_m_msl": {
+      "value": 839.5,
+      "provenance": "REPORTED DESIGN SPECIFICATION (THDC / CWC Published Data)"
+    },
+    "full_reservoir_level_m_msl": {
+      "value": 830.0,
+      "provenance": "REPORTED DESIGN SPECIFICATION (THDC / CWC Published Data)"
+    },
+    "minimum_drawdown_level_m_msl": {
+      "value": 740.0,
+      "provenance": "REPORTED DESIGN SPECIFICATION (THDC / CWC Published Data)"
+    },
+    "riverbed_elevation_m_msl": {
+      "value": 570.0,
+      "provenance": "REPORTED DESIGN SPECIFICATION (THDC / CWC Published Data)"
+    },
+    "structural_height_m": {
+      "value": 260.5,
+      "provenance": "REPORTED DESIGN SPECIFICATION (THDC / CWC Published Data)"
+    },
+    "crest_length_m": {
+      "value": 575.0,
+      "provenance": "REPORTED DESIGN SPECIFICATION (THDC / CWC Published Data)"
+    },
+    "gross_storage_capacity_m3": {
+      "value": 3540000000.0,
+      "provenance": "REPORTED DESIGN SPECIFICATION (THDC / CWC Published Data)"
+    },
+    "live_storage_capacity_m3": {
+      "value": 2615000000.0,
+      "provenance": "REPORTED DESIGN SPECIFICATION (THDC / CWC Published Data)"
+    },
+    "dead_storage_capacity_m3": {
+      "value": 925000000.0,
+      "provenance": "REPORTED DESIGN SPECIFICATION (THDC / CWC Published Data)"
+    }
+  },
+  "assumed_theoretical_hypsometry": {
+    "equation": "S(z) = a * (z - 570.0)^b",
+    "exponent_b": 3.165,
+    "coefficient_a": 8.434e-05,
+    "provenance": "ASSUMED THEORETICAL RESERVOIR HYPSOMETRY (Simplified Emergency-Planning Benchmark)",
+    "scientific_qualification": "Official hydrographic elevation-storage relationship is unobserved/proprietary. This mathematical canyon hypsometry connects reported anchor points for theoretical solver integration testing. It does NOT represent verified Tehri reservoir routing."
+  }
+}

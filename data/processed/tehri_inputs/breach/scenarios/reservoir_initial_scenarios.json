@@ -4,23 +4,23 @@
     "scenario_initial_storage_m3": 925000000.0,
     "storage_mcm": 925.0,
     "fraction_of_gross_storage": 0.2613,
-    "provenance": "ASSUMED INITIAL CONDITION (Minimum Operating Drawdown Level MDDL)",
+    "provenance": "ASSUMED THEORETICAL EMERGENCY-PLANNING STATE (Minimum Operating Drawdown Level MDDL)",
     "rationale": "Conservative lower envelope scenario representing pre-monsoon drawdown state."
   },
   "RESERVOIR_BASE": {
     "scenario_initial_elevation_m": 815.0,
-    "scenario_initial_storage_m3": 2934169969.3,
+    "scenario_initial_storage_m3": 2934173872.0,
     "storage_mcm": 2934.17,
     "fraction_of_gross_storage": 0.8289,
-    "provenance": "ASSUMED INITIAL CONDITION (Mid-Monsoon Target Conservation Pool)",
-    "rationale": "Central prototype scenario representing active monsoon filling stage prior to major storm."
+    "provenance": "ASSUMED THEORETICAL EMERGENCY-PLANNING STATE (Derived from Assumed Benchmark Hypsometry, NOT Reported Tehri Storage)",
+    "rationale": "Central theoretical prototype scenario representing active monsoon filling stage."
   },
   "RESERVOIR_HIGH": {
     "scenario_initial_elevation_m": 830.0,
     "scenario_initial_storage_m3": 3540000000.0,
     "storage_mcm": 3540.0,
     "fraction_of_gross_storage": 1.0,
-    "provenance": "ASSUMED INITIAL CONDITION (Full Reservoir Level FRL)",
+    "provenance": "ASSUMED THEORETICAL EMERGENCY-PLANNING STATE (Full Reservoir Level FRL)",
     "rationale": "Upper envelope catastrophic scenario representing full reservoir capacity at flood onset."
   }
 }
