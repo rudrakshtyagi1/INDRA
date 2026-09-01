@@ -1,0 +1,19 @@
+{
+  "dataset_name": "tehri_upstream_validation_dem_glo30",
+  "bounding_box_wgs84": {
+    "west": 78.0,
+    "south": 30.0,
+    "east": 79.6,
+    "north": 31.6
+  },
+  "width_pixels": 5760,
+  "height_pixels": 5760,
+  "pixel_size_approx_m": 30.0,
+  "elevation_min_m": 0.0,
+  "elevation_max_m": 7733.85,
+  "elevation_mean_m": 3195.27,
+  "elevation_median_m": 3034.7,
+  "elevation_std_m": 1625.48,
+  "nodata_percentage": 0.0,
+  "provenance": "OBSERVED SOURCE DATA / REMOTE-SENSING PRODUCT (Digital Surface Model)"
+}

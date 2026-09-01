@@ -1,0 +1,95 @@
+{
+  "dataset_name": "downstream_dem_glo30",
+  "product": "Copernicus DEM GLO-30 (2024 Release)",
+  "vertical_datum": "EGM2008 geoid",
+  "horizontal_crs": "EPSG:4326",
+  "width_pixels": 3240,
+  "height_pixels": 4500,
+  "pixel_size_deg": [
+    0.0002777777777777778,
+    0.0002777777777777778
+  ],
+  "pixel_size_approx_m": 30.0,
+  "bounding_box_wgs84": {
+    "west": 77.8,
+    "south": 29.25,
+    "east": 78.7,
+    "north": 30.5
+  },
+  "total_pixels": 14580000,
+  "nodata_pixels": 0,
+  "nodata_percentage": 0.0,
+  "elevation_min_m": 0.0,
+  "elevation_max_m": 2765.37,
+  "elevation_mean_m": 620.56,
+  "elevation_median_m": 352.82,
+  "elevation_std_m": 499.08,
+  "provenance_statement": "COPERNICUS DEM GLO-30 IS A DIGITAL SURFACE MODEL (DSM). It reflects surface elevations including canopy/structures and DOES NOT provide submerged river bathymetry.",
+  "river_bathymetry_status": "NOT AVAILABLE",
+  "sampled_corridor_elevations": [
+    {
+      "location": "DEM SAMPLE NEAR TEHRI",
+      "latitude": 30.378,
+      "longitude": 78.481,
+      "pixel_row": 439,
+      "pixel_col": 2451,
+      "sampled_elevation_m_msl": 833.47
+    },
+    {
+      "location": "DEM SAMPLE NEAR KOTESHWAR",
+      "latitude": 30.278,
+      "longitude": 78.512,
+      "pixel_row": 799,
+      "pixel_col": 2563,
+      "sampled_elevation_m_msl": 1081.56
+    },
+    {
+      "location": "DEM SAMPLE NEAR DEVPRAYAG",
+      "latitude": 30.146,
+      "longitude": 78.598,
+      "pixel_row": 1274,
+      "pixel_col": 2872,
+      "sampled_elevation_m_msl": 468.3
+    },
+    {
+      "location": "DEM SAMPLE NEAR KAUDIYALA",
+      "latitude": 30.125,
+      "longitude": 78.462,
+      "pixel_row": 1350,
+      "pixel_col": 2383,
+      "sampled_elevation_m_msl": 925.0
+    },
+    {
+      "location": "DEM SAMPLE NEAR SHIVPURI",
+      "latitude": 30.113,
+      "longitude": 78.396,
+      "pixel_row": 1393,
+      "pixel_col": 2145,
+      "sampled_elevation_m_msl": 671.77
+    },
+    {
+      "location": "DEM SAMPLE NEAR RISHIKESH",
+      "latitude": 30.086,
+      "longitude": 78.267,
+      "pixel_row": 1490,
+      "pixel_col": 1681,
+      "sampled_elevation_m_msl": 363.77
+    },
+    {
+      "location": "DEM SAMPLE NEAR HARIDWAR",
+      "latitude": 29.945,
+      "longitude": 78.164,
+      "pixel_row": 1998,
+      "pixel_col": 1310,
+      "sampled_elevation_m_msl": 292.0
+    },
+    {
+      "location": "DEM SAMPLE NEAR BIJNOR BOUNDARY",
+      "latitude": 29.375,
+      "longitude": 78.13,
+      "pixel_row": 4050,
+      "pixel_col": 1188,
+      "sampled_elevation_m_msl": 235.87
+    }
+  ]
+}
