@@ -1,0 +1,9 @@
+class_value,class_name,pixel_count,percentage_of_valid_area,percentage_of_total_raster,source
+10,Tree cover,94167897,58.13,58.13,ESA WorldCover 2021 v200 (10m)
+40,Cropland,47163908,29.11,29.11,ESA WorldCover 2021 v200 (10m)
+30,Grassland,11234270,6.93,6.93,ESA WorldCover 2021 v200 (10m)
+50,Built-up,5820225,3.59,3.59,ESA WorldCover 2021 v200 (10m)
+80,Permanent water bodies,1751980,1.08,1.08,ESA WorldCover 2021 v200 (10m)
+60,Bare / sparse vegetation,1214791,0.75,0.75,ESA WorldCover 2021 v200 (10m)
+20,Shrubland,592348,0.37,0.37,ESA WorldCover 2021 v200 (10m)
+90,Herbaceous wetland,54581,0.03,0.03,ESA WorldCover 2021 v200 (10m)

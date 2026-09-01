@@ -1,0 +1,73 @@
+{
+  "dataset_name": "downstream_worldcover_2021",
+  "product": "ESA WorldCover 10m 2021 v200",
+  "spatial_resolution_m": 10.0,
+  "crs": "EPSG:4326",
+  "width_pixels": 10800,
+  "height_pixels": 15000,
+  "bounding_box_wgs84": {
+    "west": 77.8,
+    "south": 29.25,
+    "east": 78.7,
+    "north": 30.5
+  },
+  "classes_present": [
+    {
+      "class_value": 10,
+      "class_name": "Tree cover",
+      "pixel_count": 76600102,
+      "percentage": 47.28,
+      "source": "ESA WorldCover 2021 v200 (10m)"
+    },
+    {
+      "class_value": 40,
+      "class_name": "Cropland",
+      "pixel_count": 32309192,
+      "percentage": 19.94,
+      "source": "ESA WorldCover 2021 v200 (10m)"
+    },
+    {
+      "class_value": 30,
+      "class_name": "Grassland",
+      "pixel_count": 9928191,
+      "percentage": 6.13,
+      "source": "ESA WorldCover 2021 v200 (10m)"
+    },
+    {
+      "class_value": 50,
+      "class_name": "Built-up",
+      "pixel_count": 4203550,
+      "percentage": 2.59,
+      "source": "ESA WorldCover 2021 v200 (10m)"
+    },
+    {
+      "class_value": 80,
+      "class_name": "Permanent water bodies",
+      "pixel_count": 1690388,
+      "percentage": 1.04,
+      "source": "ESA WorldCover 2021 v200 (10m)"
+    },
+    {
+      "class_value": 60,
+      "class_name": "Bare / sparse vegetation",
+      "pixel_count": 907089,
+      "percentage": 0.56,
+      "source": "ESA WorldCover 2021 v200 (10m)"
+    },
+    {
+      "class_value": 20,
+      "class_name": "Shrubland",
+      "pixel_count": 314337,
+      "percentage": 0.19,
+      "source": "ESA WorldCover 2021 v200 (10m)"
+    },
+    {
+      "class_value": 90,
+      "class_name": "Herbaceous wetland",
+      "pixel_count": 47151,
+      "percentage": 0.03,
+      "source": "ESA WorldCover 2021 v200 (10m)"
+    }
+  ],
+  "manning_roughness_note": "WorldCover provides LAND-COVER CLASS ONLY. It does NOT directly provide Manning roughness n. Roughness priors must be assigned via documented calibration lookup in subsequent phase."
+}
