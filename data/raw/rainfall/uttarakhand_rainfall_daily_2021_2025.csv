@@ -1,0 +1,470 @@
+SlNo,Station,Agency,State LGD Code,State,District LGD Code,District,Tehsil,Block,Village,River,Basin,Tributary,Subtributary,SubSubtributary,Local River,Latitude,Longitude,Data Acquisition Time,Manual Daily Rainfall (mm)
+1,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,24-07-2022 08:00,16.4
+2,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,25-07-2022 08:00,45
+3,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,26-07-2022 08:00,31
+4,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,27-07-2022 08:00,5
+5,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,27-07-2022 16:00,3.2
+6,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,28-07-2022 08:00,10
+7,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,29-07-2022 08:00,119.6
+8,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,29-07-2022 14:00,10.4
+9,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,29-07-2022 16:00,10.4
+10,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,30-07-2022 08:00,12
+11,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,30-07-2022 16:00,2.2
+12,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,30-07-2022 22:00,4.2
+13,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,31-07-2022 08:00,18.6
+14,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,01-08-2022 08:00,21.8
+15,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,02-08-2022 08:00,35.4
+16,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,03-08-2022 08:00,5.6
+17,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,04-08-2022 08:00,52.8
+18,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,05-08-2022 08:00,65.2
+19,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,06-08-2022 08:00,9.6
+20,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,07-08-2022 08:00,23.6
+21,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,09-08-2022 08:00,28.8
+22,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,11-08-2022 08:00,30.8
+23,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,12-08-2022 08:00,0.6
+24,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,14-08-2022 08:00,32.6
+25,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,14-08-2022 16:00,12.2
+26,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,15-08-2022 08:00,34.4
+27,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,17-08-2022 08:00,20
+28,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,18-08-2022 08:00,10.4
+29,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,19-08-2022 08:00,19.2
+30,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,19-08-2022 14:00,3.2
+31,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,19-08-2022 16:00,6.2
+32,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,20-08-2022 08:00,23.2
+33,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,20-08-2022 14:00,1
+34,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,21-08-2022 08:00,1.2
+35,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,22-08-2022 08:00,2
+36,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,23-08-2022 08:00,0.6
+37,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,23-08-2022 16:00,0.4
+38,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,24-08-2022 08:00,2.8
+39,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,25-08-2022 08:00,8
+40,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,26-08-2022 08:00,5.6
+41,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,27-08-2022 08:00,16.6
+42,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,27-08-2022 16:00,1.2
+43,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,28-08-2022 08:00,5.2
+44,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,28-08-2022 16:00,1.8
+45,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,29-08-2022 08:00,73.6
+46,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,29-08-2022 14:00,0.6
+47,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,29-08-2022 16:00,0.6
+48,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,31-08-2022 08:00,7
+49,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,31-08-2022 16:00,4.6
+50,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,02-09-2022 08:00,113.6
+51,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,02-09-2022 12:00,0.8
+52,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,02-09-2022 14:00,0.8
+53,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,03-09-2022 08:00,25.2
+54,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,03-09-2022 16:00,0.4
+55,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,04-09-2022 08:00,26.4
+56,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,04-09-2022 14:00,2.4
+57,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,04-09-2022 16:00,2.4
+58,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,05-09-2022 08:00,14.4
+59,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,05-09-2022 14:00,1.8
+60,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,05-09-2022 16:00,1.8
+61,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,06-09-2022 08:00,1.8
+62,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,08-09-2022 08:00,13
+63,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,09-09-2022 08:00,22.6
+64,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,10-09-2022 08:00,132.2
+65,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,11-09-2022 08:00,56.4
+66,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,12-09-2022 08:00,16.4
+67,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,13-09-2022 08:00,26.2
+68,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,14-09-2022 08:00,27.8
+69,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,14-09-2022 14:00,1.4
+70,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,14-09-2022 16:00,2.2
+71,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,14-09-2022 18:00,2.6
+72,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,15-09-2022 08:00,26.8
+73,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,15-09-2022 14:00,3.4
+74,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,15-09-2022 16:00,5.6
+75,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,16-09-2022 08:00,9.6
+76,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,16-09-2022 16:00,2
+77,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,17-09-2022 08:00,30
+78,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,17-09-2022 14:00,0.2
+79,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,17-09-2022 16:00,0.2
+80,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,18-09-2022 08:00,25
+81,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,19-09-2022 08:00,1.4
+82,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,20-09-2022 08:00,15.4
+83,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,21-09-2022 08:00,0.4
+84,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,22-09-2022 08:00,0.8
+85,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,23-09-2022 08:00,1.4
+86,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,24-09-2022 08:00,16.6
+87,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,24-09-2022 14:00,3.8
+88,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,24-09-2022 16:00,3.8
+89,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,25-09-2022 08:00,50.4
+90,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,25-09-2022 14:00,20
+91,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,25-09-2022 16:00,21.2
+92,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,25-09-2022 18:00,21.2
+93,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,26-09-2022 08:00,21.2
+94,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,02-10-2022 08:00,40.4
+95,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,05-10-2022 08:00,0.4
+96,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,06-10-2022 08:00,0.2
+97,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,07-10-2022 08:00,28.6
+98,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,07-10-2022 14:00,17.6
+99,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,07-10-2022 16:00,21.2
+100,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,08-10-2022 08:00,36.6
+101,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,08-10-2022 14:00,12.8
+102,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,08-10-2022 16:00,18.8
+103,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,08-10-2022 18:00,20.6
+104,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,09-10-2022 08:00,51.6
+105,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,09-10-2022 14:00,21.2
+106,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,09-10-2022 16:00,22.6
+107,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,10-10-2022 08:00,39.6
+108,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,10-10-2022 14:00,6
+109,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,10-10-2022 16:00,8
+110,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,11-10-2022 08:00,10.4
+111,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,15-06-2023 08:00,25.5
+112,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,17-06-2023 08:00,4
+113,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,19-06-2023 08:00,23
+114,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,20-06-2023 08:00,19.4
+115,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,22-06-2023 08:00,13.2
+116,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,23-06-2023 08:00,21
+117,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,24-06-2023 08:00,1.5
+118,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,25-06-2023 08:00,29
+119,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,25-06-2023 14:00,1
+120,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,25-06-2023 17:00,1
+121,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,26-06-2023 08:00,4.8
+122,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,26-06-2023 14:00,0.8
+123,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,26-06-2023 16:00,0.8
+124,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,27-06-2023 08:00,0.8
+125,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,28-06-2023 08:00,19
+126,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,29-06-2023 08:00,17
+127,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,30-06-2023 08:00,37.2
+128,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,01-07-2023 15:00,3
+129,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,02-07-2023 08:00,4
+130,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,03-07-2023 08:00,7
+131,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,19-06-2024 08:00,0.4
+132,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,20-06-2024 08:00,28.4
+133,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,23-06-2024 08:00,0.6
+134,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,24-06-2024 02:30,0.4
+135,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,24-06-2024 08:00,6.6
+136,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,30-06-2024 08:00,25.4
+137,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,01-07-2024 08:00,72.6
+138,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,03-07-2024 08:00,86
+139,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,04-07-2024 08:00,31.2
+140,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,18-08-2024 15:00,0.2
+141,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,27-08-2024 08:00,8
+142,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,29-08-2024 08:00,8
+143,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,30-08-2024 08:00,61.2
+144,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,01-09-2024 08:00,26
+145,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,02-09-2024 08:00,55.4
+146,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,02-09-2024 15:00,24.2
+147,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,03-09-2024 08:00,24.2
+148,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,04-09-2024 08:00,23.6
+149,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,06-09-2024 08:00,34
+150,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,08-09-2024 08:00,41.6
+151,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,09-09-2024 08:00,1.6
+152,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,10-09-2024 08:00,26.6
+153,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,11-09-2024 08:00,0.2
+154,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,12-09-2024 08:00,18.6
+155,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,12-09-2024 15:00,9.8
+156,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,13-09-2024 08:00,38.2
+157,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,13-09-2024 14:00,24.4
+158,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,14-09-2024 08:00,29.6
+159,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,16-09-2024 08:00,0.6
+160,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,18-09-2024 08:00,11.2
+161,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,22-09-2024 08:00,56.8
+162,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,25-09-2024 08:00,8
+163,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,05-10-2024 08:00,3
+164,Dharchula,Uttarakhand,5,Uttarakhand,53,Pithoragarh,DHARCHULA,-,-,Kali,Ganga,-,-,-,-,29.88000000,80.54000000,15-10-2024 08:00,0.2
+165,ID Lohaghat,Uttarakhand,5,Uttarakhand,53,Pithoragarh,PITHORAGARH,-,-,Ganga,Ganga,Kali,-,-,Kali,28.99611111,80.10861111,30-06-2023 08:00,59
+166,ID Lohaghat,Uttarakhand,5,Uttarakhand,53,Pithoragarh,PITHORAGARH,-,-,Ganga,Ganga,Kali,-,-,Kali,28.99611111,80.10861111,20-06-2024 08:00,2
+167,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,12-10-2022 16:00,1
+168,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,26-06-2023 22:00,18
+169,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,27-06-2023 06:00,8
+170,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,27-06-2023 14:00,8
+171,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,29-06-2023 16:00,2.4
+172,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,01-07-2023 10:00,1
+173,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,01-07-2023 12:00,1
+174,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,01-07-2023 18:00,1
+175,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,01-07-2023 20:00,1
+176,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,01-07-2023 22:00,1
+177,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,02-07-2023 06:00,12
+178,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,02-07-2023 08:00,12
+179,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,02-07-2023 10:00,12
+180,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,02-07-2023 12:00,12
+181,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,02-07-2023 14:00,12
+182,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,02-07-2023 16:00,12
+183,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,02-07-2023 18:00,12
+184,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,02-07-2023 20:00,12
+185,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,02-07-2023 22:00,12
+186,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,04-07-2023 18:00,1
+187,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,04-07-2023 20:00,1
+188,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,04-07-2023 22:00,1
+189,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,20-06-2024 08:00,3
+190,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,20-06-2024 10:00,3
+191,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,20-06-2024 14:00,2
+192,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,20-06-2024 16:00,3
+193,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,20-06-2024 18:00,3
+194,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,20-06-2024 20:00,3
+195,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,20-06-2024 22:00,3
+196,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,22-06-2024 06:00,1
+197,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,22-06-2024 08:00,1
+198,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,22-06-2024 10:00,1
+199,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,22-06-2024 12:00,1
+200,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,22-06-2024 14:00,1
+201,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,22-06-2024 16:00,1
+202,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,22-06-2024 18:00,1
+203,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,22-06-2024 20:00,1
+204,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,22-06-2024 22:00,1
+205,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,03-07-2024 06:00,2
+206,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,03-07-2024 08:00,2
+207,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,03-07-2024 10:00,2
+208,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,03-07-2024 12:00,2
+209,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,03-07-2024 14:00,2
+210,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,03-07-2024 16:00,2
+211,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,03-07-2024 18:00,2
+212,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,03-07-2024 20:00,2
+213,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,03-07-2024 22:00,2
+214,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,04-07-2024 06:00,3
+215,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,04-07-2024 08:00,3
+216,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,04-07-2024 10:00,3
+217,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,04-07-2024 12:00,3
+218,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,04-07-2024 16:00,3
+219,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,04-07-2024 18:00,3
+220,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,04-07-2024 20:00,3
+221,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,04-07-2024 22:00,3
+222,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,05-07-2024 06:00,23
+223,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,05-07-2024 08:00,23
+224,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,05-07-2024 10:00,23
+225,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,20-07-2024 12:00,14
+226,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,21-07-2024 06:00,4
+227,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,21-07-2024 08:00,4
+228,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,21-07-2024 12:00,4
+229,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,21-07-2024 14:00,4
+230,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,21-07-2024 16:00,4
+231,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,21-07-2024 22:00,4
+232,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,22-07-2024 08:00,17
+233,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,22-07-2024 10:00,17
+234,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,22-07-2024 14:00,17
+235,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,22-07-2024 22:00,17
+236,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,23-07-2024 06:00,4
+237,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,23-07-2024 08:00,4
+238,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,23-07-2024 10:00,4
+239,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,23-07-2024 12:00,4
+240,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,23-07-2024 14:00,4
+241,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,23-07-2024 16:00,4
+242,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,23-07-2024 20:00,4
+243,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,23-07-2024 22:00,4
+244,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,01-08-2024 06:00,25
+245,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,01-08-2024 08:00,25
+246,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,01-08-2024 14:00,25
+247,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,01-08-2024 16:00,25
+248,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,01-08-2024 18:00,25
+249,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,03-08-2024 06:00,4.2
+250,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,03-08-2024 08:00,4.2
+251,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,03-08-2024 10:00,4.2
+252,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,03-08-2024 14:00,4.2
+253,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,03-08-2024 16:00,4.2
+254,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,03-08-2024 18:00,4.2
+255,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,06-08-2024 06:00,16
+256,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,06-08-2024 08:00,16
+257,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,06-08-2024 14:00,16
+258,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,06-08-2024 16:00,16
+259,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,06-08-2024 18:00,16
+260,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,06-08-2024 22:00,16
+261,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,07-08-2024 06:00,7.4
+262,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,07-08-2024 08:00,7.6
+263,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,07-08-2024 10:00,7.6
+264,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,07-08-2024 14:00,7.6
+265,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,07-08-2024 16:00,7.6
+266,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,07-08-2024 18:00,7.6
+267,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,07-08-2024 22:00,7.6
+268,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,08-08-2024 06:00,2
+269,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,08-08-2024 08:00,2.4
+270,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,08-08-2024 10:00,2.4
+271,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,08-08-2024 14:00,2.4
+272,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,08-08-2024 18:00,2.4
+273,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,08-08-2024 22:00,2.4
+274,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,09-08-2024 06:00,6
+275,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,09-08-2024 10:00,6
+276,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,09-08-2024 14:00,6
+277,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,09-08-2024 16:00,6
+278,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,09-08-2024 22:00,6
+279,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,10-08-2024 06:00,7.2
+280,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,10-08-2024 08:00,7.2
+281,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,10-08-2024 10:00,7.2
+282,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,10-08-2024 14:00,7.2
+283,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,10-08-2024 16:00,7.2
+284,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,10-08-2024 22:00,7.2
+285,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,11-08-2024 08:00,10
+286,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,11-08-2024 10:00,10
+287,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,11-08-2024 14:00,10
+288,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,11-08-2024 16:00,10
+289,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,11-08-2024 18:00,10
+290,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,11-08-2024 22:00,12
+291,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,12-08-2024 06:00,12
+292,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,12-08-2024 08:00,12
+293,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,12-08-2024 10:00,12
+294,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,12-08-2024 14:00,12
+295,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,12-08-2024 16:00,12
+296,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,12-08-2024 18:00,12
+297,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,12-08-2024 22:00,12
+298,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,13-08-2024 06:00,0.4
+299,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,13-08-2024 08:00,0.4
+300,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,13-08-2024 10:00,0.4
+301,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,13-08-2024 14:00,0.4
+302,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,13-08-2024 16:00,0.4
+303,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,13-08-2024 18:00,0.4
+304,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,13-08-2024 20:00,0.4
+305,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,13-08-2024 22:00,0.4
+306,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,14-08-2024 06:00,7.2
+307,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,14-08-2024 08:00,7.2
+308,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,14-08-2024 10:00,7.2
+309,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,14-08-2024 14:00,7.2
+310,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,15-08-2024 06:00,5.2
+311,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,15-08-2024 08:00,5.2
+312,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,15-08-2024 10:00,5.2
+313,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,15-08-2024 14:00,5.2
+314,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,15-08-2024 16:00,5.2
+315,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,15-08-2024 18:00,5.2
+316,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,15-08-2024 20:00,5.2
+317,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,15-08-2024 22:00,5.2
+318,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,20-08-2024 06:00,1
+319,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,20-08-2024 08:00,1
+320,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,20-08-2024 10:00,1
+321,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,20-08-2024 14:00,1
+322,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,20-08-2024 16:00,1
+323,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,20-08-2024 18:00,1
+324,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,20-08-2024 20:00,1
+325,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,20-08-2024 22:00,1
+326,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,21-08-2024 06:00,2.1
+327,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,21-08-2024 08:00,2.1
+328,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,21-08-2024 10:00,2.1
+329,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,21-08-2024 12:00,2.1
+330,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,21-08-2024 14:00,2.1
+331,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,21-08-2024 16:00,2.1
+332,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,21-08-2024 18:00,2.1
+333,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,21-08-2024 20:00,2.1
+334,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,21-08-2024 22:00,2.1
+335,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,23-08-2024 06:00,4
+336,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,23-08-2024 08:00,5
+337,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,23-08-2024 10:00,5
+338,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,26-08-2024 20:00,1
+339,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,26-08-2024 22:00,1
+340,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,27-08-2024 06:00,10
+341,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,27-08-2024 08:00,10
+342,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,27-08-2024 10:00,10
+343,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,27-08-2024 12:00,10
+344,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,27-08-2024 14:00,10
+345,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,27-08-2024 16:00,10
+346,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,27-08-2024 18:00,10
+347,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,27-08-2024 20:00,10
+348,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,27-08-2024 22:00,10
+349,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,28-08-2024 06:00,3.2
+350,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,28-08-2024 08:00,3.2
+351,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,28-08-2024 10:00,3.2
+352,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,28-08-2024 12:00,3.2
+353,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,28-08-2024 14:00,3.2
+354,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,28-08-2024 16:00,3.2
+355,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,28-08-2024 20:00,3.2
+356,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,28-08-2024 22:00,3.2
+357,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,29-08-2024 06:00,5
+358,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,29-08-2024 08:00,5
+359,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,29-08-2024 10:00,5
+360,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,29-08-2024 12:00,5
+361,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,29-08-2024 14:00,5
+362,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,29-08-2024 16:00,5
+363,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,29-08-2024 18:00,5
+364,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,29-08-2024 20:00,5
+365,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,29-08-2024 22:00,5
+366,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,30-08-2024 06:00,1
+367,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,30-08-2024 08:00,1
+368,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,30-08-2024 10:00,1
+369,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,30-08-2024 12:00,1
+370,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,30-08-2024 14:00,1
+371,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,02-09-2024 06:00,2
+372,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,02-09-2024 08:00,8
+373,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,02-09-2024 10:00,8
+374,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,02-09-2024 14:00,8
+375,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,02-09-2024 16:00,8
+376,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,03-09-2024 06:00,6
+377,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,03-09-2024 08:00,6
+378,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,03-09-2024 10:00,6
+379,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,03-09-2024 12:00,6
+380,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,03-09-2024 14:00,6
+381,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,03-09-2024 18:00,6
+382,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,03-09-2024 20:00,6
+383,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,03-09-2024 22:00,6
+384,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,04-09-2024 06:00,2
+385,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,04-09-2024 08:00,2
+386,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,04-09-2024 12:00,2
+387,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,04-09-2024 14:00,2
+388,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,04-09-2024 16:00,2
+389,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,04-09-2024 18:00,2
+390,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,04-09-2024 20:00,2
+391,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,04-09-2024 22:00,2
+392,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,05-09-2024 06:00,1
+393,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,05-09-2024 08:00,1
+394,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,05-09-2024 10:00,1
+395,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,05-09-2024 12:00,1
+396,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,05-09-2024 14:00,1
+397,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,05-09-2024 16:00,1
+398,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,05-09-2024 18:00,1
+399,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,05-09-2024 20:00,1
+400,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,05-09-2024 22:00,1
+401,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,06-09-2024 06:00,1
+402,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,06-09-2024 08:00,1
+403,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,06-09-2024 10:00,1
+404,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,06-09-2024 12:00,1
+405,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,06-09-2024 14:00,1
+406,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,06-09-2024 16:00,1
+407,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,06-09-2024 18:00,1
+408,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,06-09-2024 20:00,1
+409,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,06-09-2024 22:00,1
+410,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,11-09-2024 08:00,1
+411,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,11-09-2024 10:00,1
+412,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,11-09-2024 12:00,1
+413,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,11-09-2024 14:00,1
+414,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,11-09-2024 16:00,1
+415,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,11-09-2024 18:00,1
+416,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,11-09-2024 20:00,1
+417,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,11-09-2024 22:00,1
+418,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,12-09-2024 06:00,5
+419,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,12-09-2024 08:00,8
+420,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,12-09-2024 10:00,8
+421,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,12-09-2024 12:00,8
+422,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,12-09-2024 14:00,8
+423,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,12-09-2024 16:00,8
+424,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,12-09-2024 18:00,8
+425,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,12-09-2024 20:00,8
+426,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,12-09-2024 22:00,8
+427,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,13-09-2024 06:00,28
+428,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,13-09-2024 08:00,31
+429,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,13-09-2024 10:00,31
+430,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,13-09-2024 12:00,31
+431,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,13-09-2024 14:00,31
+432,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,13-09-2024 16:00,31
+433,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,13-09-2024 18:00,31
+434,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,13-09-2024 20:00,31
+435,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,13-09-2024 22:00,31
+436,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,14-09-2024 06:00,25
+437,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,14-09-2024 08:00,25
+438,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,14-09-2024 10:00,25
+439,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,14-09-2024 12:00,25
+440,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,14-09-2024 14:00,25
+441,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,14-09-2024 16:00,25
+442,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,14-09-2024 18:00,25
+443,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,14-09-2024 20:00,25
+444,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,14-09-2024 22:00,25
+445,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,18-09-2024 06:00,2.2
+446,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,18-09-2024 08:00,3
+447,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,18-09-2024 10:00,3
+448,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,18-09-2024 12:00,3
+449,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,18-09-2024 14:00,3
+450,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,18-09-2024 16:00,3
+451,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,18-09-2024 18:00,3
+452,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,18-09-2024 20:00,3
+453,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,18-09-2024 22:00,3
+454,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,19-09-2024 06:00,1.4
+455,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,19-09-2024 08:00,1.4
+456,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,19-09-2024 10:00,1.4
+457,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,19-09-2024 12:00,1.4
+458,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,19-09-2024 14:00,1.4
+459,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,19-09-2024 16:00,1.4
+460,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,19-09-2024 18:00,1.4
+461,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,19-09-2024 20:00,1.4
+462,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,19-09-2024 22:00,1.4
+463,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,26-09-2024 06:00,4
+464,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,26-09-2024 08:00,12
+465,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,26-09-2024 10:00,12
+466,I.D. Srinagar Garhwal,Uttarakhand,5,Uttarakhand,52,PAURI GARHWAL,SRINAGAR,-,-,Alaknanda,Ganga,Dhauliganga,-,-,-,30.21393056,78.75806667,26-09-2024 12:00,12
+467,ID Uttarkashi,Uttarakhand,5,Uttarakhand,57,Uttarkashi,-,-,-,Ganga,Ganga,Bhagirathi-I,Bhagirathi,-,Bhagirathi,30.73111111,78.42750000,29-06-2024 08:00,9
+468,ID Uttarkashi,Uttarakhand,5,Uttarakhand,57,Uttarkashi,-,-,-,Ganga,Ganga,Bhagirathi-I,Bhagirathi,-,Bhagirathi,30.73111111,78.42750000,30-06-2024 08:00,38
+469,ID Uttarkashi,Uttarakhand,5,Uttarakhand,57,Uttarkashi,-,-,-,Ganga,Ganga,Bhagirathi-I,Bhagirathi,-,Bhagirathi,30.73111111,78.42750000,03-07-2024 08:00,20

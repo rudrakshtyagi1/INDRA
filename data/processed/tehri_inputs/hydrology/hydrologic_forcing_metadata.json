@@ -1,0 +1,103 @@
+{
+  "dataset_name": "tehri_upstream_hydrologic_forcing_2024_canonical",
+  "catchment_name": "TEHRI_UPSTREAM_CATCHMENT_DEM_CONDITIONED",
+  "catchment_area_km2": 7300.3016,
+  "meteorological_forcing": {
+    "source_product": "ECMWF ERA5-Land Hourly Surface Reanalysis",
+    "provider": "European Centre for Medium-Range Weather Forecasts (ECMWF) / Copernicus C3S",
+    "product_id": "ERA5-Land Hourly (Total Precipitation)",
+    "version": "ERA5-Land v1.0",
+    "raw_file_paths": "data/raw/meteorology/era5_land/era5_land_hourly_140cells_2024-06-01_2024-09-30.json",
+    "native_spatial_resolution": "0.1\u00b0 \u00d7 0.1\u00b0 (~9 km grid, N320 reduced Gaussian grid)",
+    "native_temporal_resolution": "1 hour (60 minutes)",
+    "native_variable": "total_precipitation",
+    "native_units": "mm (Hourly precipitation accumulation during preceding 1-hour interval)",
+    "time_window": "2024-06-01 to 2024-09-30",
+    "total_hours": 2928,
+    "grid_cells_count": 140,
+    "cumulative_rainfall_mm": 814.66,
+    "peak_intensity_mm_hr": 4.46,
+    "mean_intensity_mm_hr": 0.278,
+    "missing_fraction": 0.0,
+    "zero_rainfall_percentage": 13.01
+  },
+  "stream_observations": {
+    "upstream_station": {
+      "name": "Tekhla",
+      "river": "Bhagirathi",
+      "coordinates": [
+        30.7481,
+        78.4533
+      ],
+      "role": "UPSTREAM_OBSERVATION / PARTIAL_INFLOW_CALIBRATION_CANDIDATE (Upper Bhagirathi at Uttarkashi)",
+      "sampling_interval": "15-minute telemetry (62,624 intervals, 98.66% dominant)",
+      "peak_discharge_monsoon_2024_m3s": 912.2
+    },
+    "downstream_station": {
+      "name": "Koteshwar",
+      "river": "Bhagirathi (below Tehri Dam)",
+      "coordinates": [
+        30.2653,
+        78.5033
+      ],
+      "role": "DOWNSTREAM_HYDROLOGIC_OBSERVATION / RELEASE_AFFECTED_VALIDATION_CANDIDATE (Governed by reservoir regulation and powerhouse releases)",
+      "sampling_interval": "15-minute telemetry (88,587 intervals, 99.40% dominant)",
+      "peak_discharge_monsoon_2024_m3s": 749.4
+    }
+  },
+  "candidate_forcing_events": [
+    {
+      "event_id": "EVENT_2024_07_EARLY",
+      "event_name": "Early July 2024 Active Monsoon Surge",
+      "start_time": "2024-07-06 00:00:00",
+      "end_time": "2024-07-10 23:00:00",
+      "duration_hours": 120,
+      "total_basin_rainfall_mm": 21.84,
+      "peak_hourly_intensity_mm_hr": 0.89,
+      "tekhla_peak_discharge_m3s": 725.6,
+      "koteshwar_peak_discharge_m3s": 598.8,
+      "status": "CANDIDATE"
+    },
+    {
+      "event_id": "EVENT_2024_07_LATE_AUGUST",
+      "event_name": "Late July - Early August 2024 Severe Monsoon Storm (SELECTED PROTOTYPE)",
+      "start_time": "2024-07-30 00:00:00",
+      "end_time": "2024-08-04 23:00:00",
+      "duration_hours": 144,
+      "total_basin_rainfall_mm": 89.76,
+      "peak_hourly_intensity_mm_hr": 4.46,
+      "tekhla_peak_discharge_m3s": 912.2,
+      "koteshwar_peak_discharge_m3s": 727.5,
+      "status": "SELECTED_PROTOTYPE"
+    },
+    {
+      "event_id": "EVENT_2024_09_MID",
+      "event_name": "Mid-September 2024 Monsoon Withdrawal Depression",
+      "start_time": "2024-09-11 00:00:00",
+      "end_time": "2024-09-15 23:00:00",
+      "duration_hours": 120,
+      "total_basin_rainfall_mm": 98.06,
+      "peak_hourly_intensity_mm_hr": 3.87,
+      "tekhla_peak_discharge_m3s": 626.0,
+      "koteshwar_peak_discharge_m3s": 739.2,
+      "status": "CANDIDATE"
+    }
+  ],
+  "selected_prototype_event": {
+    "event_id": "EVENT_2024_07_LATE_AUGUST",
+    "event_name": "Late July - Early August 2024 Severe Monsoon Storm (SELECTED PROTOTYPE)",
+    "start_time": "2024-07-30 00:00:00",
+    "end_time": "2024-08-04 23:00:00",
+    "duration_hours": 144,
+    "total_basin_rainfall_mm": 89.76,
+    "peak_hourly_intensity_mm_hr": 4.46,
+    "tekhla_peak_discharge_m3s": 912.2,
+    "koteshwar_peak_discharge_m3s": 727.5,
+    "status": "SELECTED_PROTOTYPE"
+  },
+  "data_gap_status": {
+    "BHILANGNA_DIRECT_DISCHARGE_OBSERVATION": "NOT AVAILABLE",
+    "CURRENT_TEHRI_RESERVOIR_LEVEL": "DATA UNAVAILABLE",
+    "RESERVOIR_STORAGE_STATUS": "Design specifications (FRL 830m, Gross 3.54 km3, Live 2.615 km3) are capacity limits, not measured initial conditions."
+  }
+}
