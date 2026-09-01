@@ -113,3 +113,10 @@ HydroBreach/
     │   ├── services/api.js
     │   └── App.jsx
 ```
+
+🚧 Active Development
+
+Current pipeline:
+Real geospatial inputs → catchment delineation → rainfall/discharge forcing
+→ hydrologic inflow scenarios → theoretical breach benchmark
+→ DualSPHysics integration in progress

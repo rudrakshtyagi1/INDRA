@@ -49,3 +49,7 @@ backend/.env.local
 backend/.env.*.local
 .DS_Store
 Thumbs.db
+*.tif
+*.pack
+dualsphysics_bin/
+data/processed/tehri_simulations/dualsphysics/setup/DualSPHysics/
