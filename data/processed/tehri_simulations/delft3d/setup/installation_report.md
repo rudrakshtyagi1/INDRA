@@ -25,3 +25,6 @@ The alternative external open-source workflow (`run_conan.py initialize external
 - Eigen
 
 Building this stack from source inside a Rosetta 2 emulated `linux/amd64` container on a 16GB macOS host is estimated to take multiple hours and excessive storage footprint. Per the compute safety limits, the build was aborted.
+
+## External Dependency Note
+Delft3D is treated as an optional external dependency and is not bundled into Git tracking. When available on an external Linux host, runs can be executed using the adapter in `backend/floodlab/engines/delft3d/`.

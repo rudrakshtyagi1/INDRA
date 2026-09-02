@@ -9,7 +9,6 @@ Discovers binary version at runtime; never hardcodes version numbers.
 from __future__ import annotations
 
 import logging
-import shutil
 import subprocess
 from pathlib import Path
 from typing import Optional
@@ -118,7 +117,7 @@ class DualSPHysicsRunner:
             f"-filexml {probes_file}",
             f"-savevtk {output_csv}",
         ]
-        result = subprocess.run(" ".join(cmd), shell=True, capture_output=True, text=True, timeout=600)
+        subprocess.run(" ".join(cmd), shell=True, capture_output=True, text=True, timeout=600)
         return output_csv
 
     def run_partvtk(self, case_dir: Path, output_dir: Path) -> list[Path]:

@@ -113,7 +113,12 @@ def validate_array_finite(
     return True, None
 
 
-def sanitize_float(val: Any, default: float = 0.0, min_val: Optional[float] = None, max_val: Optional[float] = None) -> float:
+def sanitize_float(
+    val: Any,
+    default: float = 0.0,
+    min_val: Optional[float] = None,
+    max_val: Optional[float] = None,
+) -> float:
     """Safely convert value to finite float with optional bounds clamping."""
     if not is_finite_number(val):
         return default
@@ -161,7 +166,10 @@ def validate_hydrograph_integrity(
     t_sec = t_arr * 3600.0
     q_arr = np.array(flows_m3s)
     trapz_fn = getattr(np, "trapezoid", getattr(np, "trapz", None))
-    integrated_vol_m3 = float(trapz_fn(q_arr, t_sec)) if trapz_fn else float(np.sum(0.5 * (q_arr[:-1] + q_arr[1:]) * np.diff(t_sec)))
+    if trapz_fn:
+        integrated_vol_m3 = float(trapz_fn(q_arr, t_sec))
+    else:
+        integrated_vol_m3 = float(np.sum(0.5 * (q_arr[:-1] + q_arr[1:]) * np.diff(t_sec)))
 
     if not is_finite_number(integrated_vol_m3) or integrated_vol_m3 < 0:
         return False, 0.0, "Integrated hydrograph volume is non-finite or negative."

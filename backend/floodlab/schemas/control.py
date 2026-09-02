@@ -1,12 +1,14 @@
 from datetime import datetime, timezone
-from typing import Optional, Dict, Any
 from enum import Enum
+from typing import Any, Dict, Optional
 from pydantic import BaseModel, Field
+
 
 class SourceType(str, Enum):
     ENGINEERED_DAM_BREAK = "ENGINEERED_DAM_BREAK"
     NATURAL_RIVER_BLOCKAGE = "NATURAL_RIVER_BLOCKAGE"
     CONTROLLED_RELEASE = "CONTROLLED_RELEASE"
+
 
 class RunStatus(str, Enum):
     DRAFT = "DRAFT"
@@ -17,6 +19,7 @@ class RunStatus(str, Enum):
     COMPLETED = "COMPLETED"
     FAILED = "FAILED"
 
+
 class Scenario(BaseModel):
     scenario_id: str
     name: str
@@ -25,6 +28,7 @@ class Scenario(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     input_configuration: Dict[str, Any] = Field(default_factory=dict)
     provenance: str
+
 
 class Run(BaseModel):
     run_id: str

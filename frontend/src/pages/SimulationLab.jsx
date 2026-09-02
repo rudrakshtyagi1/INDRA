@@ -248,8 +248,14 @@ export default function SimulationLab({ initialTimeMin = 0, onTimeChange, onNavi
 
   }, [runData, layers, currentSec]);
 
-  const roadEdges = runData.v3Roads?.features?.filter(r => (r.properties.arrival_time_hr * 3600) <= currentSec).length || 0;
+  const roadEdges = runData.v3Roads?.features?.filter(r => (r.properties?.arrival_time_hr * 3600) <= currentSec).length || 0;
+  const roadKm = selectedRun === 'V3' ? '38.788' : '41.678';
   const pct = Math.round((currentTimeMin / maxTimeMin) * 100);
+
+  const handleTimeChange = (val) => {
+    setCurrentTimeMin(val);
+    onTimeChange?.(val);
+  };
 
   const handleCheckpoint = (time, lat, lng) => {
     setCurrentTimeMin(time / 60);

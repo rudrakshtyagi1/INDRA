@@ -7,7 +7,7 @@ on HOW it was determined.
 """
 import hashlib
 import json
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any
 
 from floodlab.config.constants import ProvenanceLevel

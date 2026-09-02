@@ -5,8 +5,6 @@ Reference: USDA-NRCS Technical Release 55 (TR-55, 1986).
 """
 from __future__ import annotations
 
-import math
-
 
 class UnitHydrograph:
     """

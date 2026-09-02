@@ -30,6 +30,5 @@ class ParameterSampler:
 
     def gaussian_perturbation(self, base_value: float, std_pct: float, n: int = 1) -> List[float]:
         """Gaussian perturbation around base value."""
-        import math
         std = base_value * std_pct / 100.0
         return [max(base_value * 0.1, base_value + random.gauss(0, std)) for _ in range(n)]

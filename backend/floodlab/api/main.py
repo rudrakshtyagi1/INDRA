@@ -7,9 +7,20 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from floodlab.config.settings import get_settings
-from floodlab.api.routers import ( v3, runs, exports,
-    simulations, hydrology, scenarios, uncertainty,
-    satellite, exposure, routing, validation, export, jobs
+from floodlab.api.routers import (
+    export,
+    exports,
+    exposure,
+    hydrology,
+    jobs,
+    routing,
+    runs,
+    satellite,
+    scenarios,
+    simulations,
+    uncertainty,
+    v3,
+    validation,
 )
 
 settings = get_settings()

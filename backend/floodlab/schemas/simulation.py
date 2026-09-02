@@ -2,7 +2,7 @@
 Simulation schemas.
 """
 from typing import Any, Dict, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from floodlab.config.constants import BreachModel, ExecutionStatus, SolverType
 
 

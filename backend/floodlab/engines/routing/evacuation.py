@@ -11,12 +11,12 @@ from __future__ import annotations
 
 import math
 import logging
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
 try:
-    import networkx as nx
+    import networkx as nx  # noqa: F401
     HAS_NETWORKX = True
 except ImportError:
     HAS_NETWORKX = False
@@ -203,6 +203,7 @@ class EvacuationPlanner:
     def _nearest_safe_zone(village: Dict, safe_zones: List[Dict]) -> Optional[Dict]:
         if not safe_zones:
             return None
+
         def dist(sz):
             return EvacuationPlanner._haversine_km(
                 village.get("lat", 0), village.get("lon", 0),
@@ -215,7 +216,10 @@ class EvacuationPlanner:
         R = 6371.0
         dlat = math.radians(lat2 - lat1)
         dlon = math.radians(lon2 - lon1)
-        a = math.sin(dlat / 2) ** 2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon / 2) ** 2
+        a = (
+            math.sin(dlat / 2) ** 2
+            + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon / 2) ** 2
+        )
         return R * 2 * math.asin(math.sqrt(a))
 
 

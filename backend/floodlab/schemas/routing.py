@@ -2,7 +2,7 @@
 Routing schemas.
 """
 from typing import Any, Dict, List, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 class EvacuationRequest(BaseModel):
