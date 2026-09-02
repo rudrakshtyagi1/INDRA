@@ -4,6 +4,7 @@ import WorkspaceShell from './layout/WorkspaceShell';
 import Overview from './pages/Overview';
 import SimulationLab from './pages/SimulationLab';
 import HADRDashboard from './pages/HADRDashboard';
+import ScenariosWorkspace from './pages/ScenariosWorkspace';
 import ScenarioComparison from './pages/ScenarioComparison';
 import Exposure from './pages/Exposure';
 import DataProvenance from './pages/DataProvenance';
@@ -16,7 +17,8 @@ export default function App() {
     switch (activeTab) {
       case 'overview': return <Overview onNavigate={setActiveTab} />;
       case 'simulation': return <SimulationLab initialTimeMin={simTimeMin} onTimeChange={setSimTimeMin} onNavigateToHadr={() => setActiveTab('hadr')} />;
-      case 'scenarios': return <ScenarioComparison />;
+      case 'scenarios': return <ScenariosWorkspace onNavigate={setActiveTab} />;
+      case 'comparison': return <ScenarioComparison />;
       case 'hadr': return <HADRDashboard />;
       case 'exposure': return <Exposure />;
       case 'data': return <DataProvenance />;
