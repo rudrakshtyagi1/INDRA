@@ -2,18 +2,18 @@
  * SINGLE AUTHORITATIVE GEOSPATIAL DOMAIN CONFIGURATION
  * FloodLab Tehri Dam to Bijnor Barrage Corridor (0–145 km)
  *
- * PROVENANCE: PRECOMPUTED PROTOTYPE
+ * PROVENANCE: WHAT-IF HYDRODYNAMIC BENCHMARK
  */
 
 export const DOMAIN_CONFIG = {
   upstreamBoundary: 'Tehri Dam Axis (30.378°N, 78.481°E)',
   downstreamBoundary: 'Bijnor Barrage / Madhya Ganga (29.375°N, 78.130°E)',
-  boundaryType: 'PROTOTYPE_STUDY_CUTOFF',
-  downstreamBoundaryLabel: 'PROTOTYPE STUDY DOMAIN BOUNDARY',
+  boundaryType: 'WHAT-IF_STUDY_CUTOFF',
+  downstreamBoundaryLabel: 'STUDY CORRIDOR BOUNDARY',
   prototypeReachLengthKm: 145.0,
   maxSimulationTimeMin: 240, // 4.0 Hours
-  provenance: 'PRECOMPUTED PROTOTYPE',
-  corridorSummary: 'Tehri Dam → Bhagirathi Gorge → Devprayag → Rishikesh → Haridwar → Upper Ganga Plains → Bijnor Barrage',
+  provenance: 'WHAT-IF HYDRODYNAMIC BENCHMARK',
+  corridorSummary: 'STUDY CORRIDOR: 0–100 km Bhagirathi corridor | V3 MODEL DOMAIN: 15 km | SIMULATION WINDOW: 800 s | MODELLED WAVE REACH WITHIN CURRENT RUN: approximately 8–9 km',
 };
 
 // Sinuous centerline following real Bhagirathi and Ganga river geomorphology

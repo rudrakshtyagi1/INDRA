@@ -1,13 +1,15 @@
 import React from 'react';
-import { CheckCircle2, Circle, ArrowRight } from 'lucide-react';
-import { PROTOTYPE_METADATA } from '../../data/prototype/tehriPrototypeRun';
+import { ArrowRight } from 'lucide-react';
 
-/**
- * Compact Scientific Pipeline Indicator
- * Visualizes: Real Inputs -> Hydrology -> Froehlich Breach -> DualSPHysics -> Q(t) Coupling -> Delft3D FM -> HADR Routing
- */
-export default function PipelineIndicator({ currentStep = 'delft3d', className = '' }) {
-  const stages = PROTOTYPE_METADATA.pipelineStages;
+export default function PipelineIndicator({ className = '' }) {
+  const stages = [
+    { id: 'inputs', label: 'Inputs' },
+    { id: 'breach', label: 'Froehlich Breach' },
+    { id: 'sph', label: 'DualSPHysics' },
+    { id: 'coupling', label: 'Q(t) Coupling' },
+    { id: 'lisflood', label: 'LISFLOOD-FP' },
+    { id: 'hadr', label: 'HADR Routing' }
+  ];
 
   return (
     <div className={`p-3 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col gap-2 ${className}`}>
@@ -16,17 +18,16 @@ export default function PipelineIndicator({ currentStep = 'delft3d', className =
           COUPLED HYDRODYNAMIC PIPELINE
         </span>
         <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/60">
-          PRECOMPUTED PROTOTYPE
+          V3 MODEL OUTPUT
         </span>
       </div>
 
-      {/* Stage Chips */}
       <div className="flex items-center gap-1.5 overflow-x-auto py-1 text-[11px] font-mono">
         {stages.map((st, idx) => (
           <React.Fragment key={st.id}>
             <div
               className="px-2.5 py-1 rounded-xl bg-slate-950 border border-slate-800 flex items-center gap-1.5 shrink-0"
-              title={`${st.label}: ${st.detail}`}
+              title={st.label}
             >
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
               <span className="text-slate-200 font-medium">{st.label}</span>

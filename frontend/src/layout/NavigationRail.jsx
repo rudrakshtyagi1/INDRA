@@ -1,85 +1,60 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import {
-  LayoutDashboard,
-  Waves,
-  FlaskConical,
-  ShieldAlert,
-  Satellite,
-  GitCompare,
-} from 'lucide-react';
 
-const NAV_ITEMS = [
-  { id: 'overview',    label: 'Overview',        icon: LayoutDashboard },
-  { id: 'operations',  label: 'Dam & Reservoir', icon: Waves },
-  { id: 'simulation',  label: 'Simulation',      icon: FlaskConical },
-  { id: 'hadr',        label: 'HADR Mission',    icon: ShieldAlert },
-  { id: 'satellite',   label: 'Satellite SAR',   icon: Satellite },
-  { id: 'comparison',  label: 'Verification',    icon: GitCompare },
-];
+import React, { useState } from 'react';
+import { Activity, Map, LayoutTemplate, ShieldAlert, Database, Building2 } from 'lucide-react';
 
 export default function NavigationRail({ activeTab, onSelectTab }) {
-  return (
-    <nav
-      style={{ width: 'var(--nav-width)', flexShrink: 0 }}
-      className="h-full flex flex-col bg-[var(--surface-2)] border-r border-[var(--surface-border)] z-20 select-none"
-    >
-      {/* Brand mark */}
-      <div className="h-12 flex items-center justify-center border-b border-[var(--surface-border)] shrink-0">
-        <div className="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/30 flex items-center justify-center shadow-inner">
-          <Waves className="w-4 h-4 text-blue-400" />
-        </div>
-      </div>
+  const [isHovered, setIsHovered] = useState(false);
 
-      {/* Nav items */}
-      <div className="flex-1 flex flex-col items-center py-4 gap-2 overflow-y-auto">
-        {NAV_ITEMS.map(({ id, label, icon: Icon }) => {
+  const NAV_ITEMS = [
+    { id: 'overview', icon: LayoutTemplate, label: 'Overview' },
+    { id: 'simulation', icon: Map, label: 'Simulation Lab' },
+    { id: 'scenarios', icon: Activity, label: 'Scenarios' },
+    { id: 'hadr', icon: ShieldAlert, label: 'HADR Operations' },
+    { id: 'infrastructure', icon: Building2, label: 'Infrastructure' },
+    { id: 'data', icon: Database, label: 'Data & Provenance' },
+  ];
+
+  return (
+    <div 
+      className="bg-white border-r border-slate-200 h-full flex flex-col items-start transition-all duration-300 overflow-hidden shrink-0 shadow-sm z-50 relative"
+      style={{ width: isHovered ? '240px' : '64px' }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className="h-14 flex items-center px-4 w-full shrink-0 border-b border-slate-100">
+        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shrink-0 shadow-sm">
+          <span className="text-white font-bold text-sm">FL</span>
+        </div>
+        <span className="ml-3 font-bold text-slate-800 tracking-tight whitespace-nowrap opacity-100 transition-opacity">
+          FloodLab V2
+        </span>
+      </div>
+      
+      <div className="flex-1 w-full py-4 flex flex-col gap-1 px-3">
+        {NAV_ITEMS.map(({ id, icon: Icon, label }) => {
           const isActive = activeTab === id;
           return (
             <button
               key={id}
               onClick={() => onSelectTab(id)}
-              title={label}
-              className={`
-                group relative w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-150
-                ${isActive
-                  ? 'bg-blue-600/20 text-blue-400 border border-blue-500/40 shadow-sm'
-                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/5 border border-transparent'
-                }
-              `}
+              className={`flex items-center w-full h-10 px-2.5 rounded-lg transition-colors overflow-hidden ${
+                isActive ? 'bg-blue-50 text-blue-700' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
+              }`}
             >
-              {/* Active left indicator */}
-              {isActive && (
-                <motion.div
-                  layoutId="nav-active-accent"
-                  className="absolute -left-[1px] top-2.5 bottom-2.5 w-1 bg-blue-400 rounded-r-full"
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                />
-              )}
-              <Icon className="w-5 h-5" />
-
-              {/* High-readability Tooltip */}
-              <span className="
-                absolute left-full ml-3 px-2.5 py-1.5 rounded-lg text-xs font-semibold
-                bg-[var(--surface-3)] border border-[var(--surface-border-strong)] text-[var(--text-primary)]
-                whitespace-nowrap shadow-2xl
-                opacity-0 pointer-events-none group-hover:opacity-100
-                transition-opacity duration-150 z-50
-              ">
+              <Icon className="w-5 h-5 shrink-0" strokeWidth={isActive ? 2.5 : 2} />
+              <span className={`ml-3 text-sm font-semibold whitespace-nowrap ${isActive ? 'text-blue-700' : 'text-slate-600'}`}>
                 {label}
               </span>
             </button>
           );
         })}
       </div>
-
-      {/* System Status Indicator */}
-      <div className="h-12 flex items-center justify-center border-t border-[var(--surface-border)] shrink-0">
-        <div
-          title="FastAPI Backend Online"
-          className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"
-        />
+      <div className="p-4 w-full border-t border-slate-100">
+         <div className="flex items-center gap-3 overflow-hidden whitespace-nowrap">
+            <div className="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></div>
+            <span className="text-xs font-semibold text-slate-500">System Active</span>
+         </div>
       </div>
-    </nav>
+    </div>
   );
 }

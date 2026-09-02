@@ -1,98 +1,103 @@
 import React from 'react';
-import { ShieldAlert, Navigation, Clock, AlertTriangle, AlertOctagon, Info, MapPin } from 'lucide-react';
+import { Navigation, AlertTriangle, Info } from 'lucide-react';
 
-export default function MissionInspector({ v3 }) {
-  const summary = v3?.v3Routes?.routes?.[0] || {};
-  
+function Row({ label, value, valueClass = '' }) {
   return (
-    <div className="h-full flex flex-col bg-[var(--surface-2)] overflow-y-auto">
-      <div className="p-4 border-b border-[var(--surface-border)] shrink-0 bg-[var(--surface-1)]">
-        <div className="flex items-center justify-between mb-2">
-          <p className="text-xs font-semibold text-[var(--text-secondary)]">
-            HADR Routing Benchmark
-          </p>
-          <span className="text-[10px] font-mono text-amber-400 bg-amber-900/30 px-2 py-0.5 rounded border border-amber-700/50">
-            WHAT-IF HYDRODYNAMIC BENCHMARK
-          </span>
+    <div className="flex items-start justify-between py-2 border-b border-slate-100 last:border-0 gap-3">
+      <span className="text-xs text-slate-500 shrink-0">{label}</span>
+      <span className={`text-xs font-semibold text-slate-800 text-right tabular-nums ${valueClass}`}>{value}</span>
+    </div>
+  );
+}
+
+function Section({ title, icon: Icon, iconClass = 'text-slate-400', children }) {
+  return (
+    <div className="mb-4">
+      <div className="flex items-center gap-1.5 mb-2">
+        {Icon && <Icon className={`w-3.5 h-3.5 ${iconClass}`} />}
+        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{title}</p>
+      </div>
+      <div className="bg-white rounded-lg border border-slate-200 px-3 py-1">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+export default function MissionInspector({
+  v3,
+  activeId,
+  onSelectId,
+  onCalculateRoute,
+  routeDrawn,
+  selectedRouteMode,
+  onSelectRouteMode,
+}) {
+  return (
+    <div className="h-full flex flex-col bg-slate-50 border-l border-slate-200 overflow-y-auto" style={{ width: 'var(--inspector-width)', flexShrink: 0 }}>
+      {/* Header */}
+      <div className="px-4 py-3 border-b border-slate-200 bg-white shrink-0">
+        <div className="flex items-center justify-between mb-1">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">HADR Routing Benchmark</p>
+          <span className="status-pill status-pill--warning">WHAT-IF</span>
         </div>
-        <h3 className="text-lg font-bold text-slate-100">Prototype Mission Analysis</h3>
+        <h3 className="text-sm font-bold text-slate-900">Mission Inspector</h3>
       </div>
 
-      <div className="p-4 space-y-4">
-        {/* Destination Card */}
-        <div className="p-3 bg-slate-900/50 rounded-lg border border-slate-700">
-          <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-blue-400" /> Destination Candidates
-          </h4>
-          <div className="space-y-3 text-sm">
+      <div className="p-4 flex-1">
+        {/* Destination card — key differentiator */}
+        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-2">Destination Analysis</p>
+          <div className="space-y-2">
             <div>
-              <span className="text-slate-500 text-xs block mb-1">Nearest by Distance:</span>
-              <span className="text-slate-200 break-words">Laxman Jhula Government Hospital</span>
+              <p className="text-[10px] text-slate-500 mb-0.5">Nearest by Distance</p>
+              <p className="text-xs font-semibold text-slate-800">Laxman Jhula Government Hospital</p>
             </div>
-            <div>
-              <span className="text-slate-500 text-xs block mb-1">Nearest Reachable While Avoiding Current Modelled Hazard:</span>
-              <span className="text-slate-200 break-words">Dr. Arora's Clinic</span>
+            <div className="border-t border-blue-100 pt-2">
+              <p className="text-[10px] text-slate-500 mb-0.5">Nearest Reachable (Avoiding Modelled Hazard)</p>
+              <p className="text-xs font-semibold text-slate-800">Dr. Arora&apos;s Clinic</p>
             </div>
-            <div className="mt-2 p-2 bg-blue-900/20 border border-blue-800 rounded flex gap-2 items-start">
-              <Info className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
-              <span className="text-[10px] text-blue-300 leading-tight">
-                REACHABILITY IS ASSESSED AGAINST THE CURRENT 800-S MODEL WINDOW.
-              </span>
-            </div>
+          </div>
+          <div className="flex gap-1.5 mt-2 p-2 bg-blue-100/60 rounded">
+            <Info className="w-3.5 h-3.5 text-blue-500 shrink-0 mt-0.5" />
+            <p className="text-[10px] text-blue-700">Nearest ≠ Reachable. Assessed against 800-s model window only.</p>
           </div>
         </div>
 
-        {/* Route Status */}
-        <div className="p-3 bg-slate-900/50 rounded-lg border border-slate-700">
-          <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
-            <Navigation className="w-4 h-4 text-indigo-400" /> Route Status
-          </h4>
-          
-          <div className="space-y-4 text-sm">
-            <div className="p-2 border border-red-900/50 bg-red-950/20 rounded">
-              <span className="text-red-400 font-bold text-xs block mb-1">NORMAL ROUTE:</span>
-              <span className="text-slate-300">NOT FEASIBLE AGAINST KNOWN MODELLED HAZARD</span>
-              <div className="mt-2 text-xs text-slate-400 grid grid-cols-2 gap-2">
-                <div>Distance: <span className="text-slate-200 break-words">133.61 km</span></div>
-                <div>ETA: <span className="text-slate-200 break-words">~4.45 h</span></div>
-              </div>
-            </div>
+        <Section title="Normal Route" icon={Navigation} iconClass="text-red-500">
+          <Row label="Distance" value="133.61 km" />
+          <Row label="ETA" value="~4.45 h" />
+          <Row label="Status" value="NOT FEASIBLE" valueClass="text-red-600" />
+          <div className="py-2">
+            <p className="text-[10px] text-red-500 font-medium">NOT FEASIBLE AGAINST KNOWN MODELLED HAZARD</p>
+          </div>
+        </Section>
 
-            <div className="p-2 border border-emerald-900/50 bg-emerald-950/20 rounded">
-              <span className="text-emerald-400 font-bold text-xs block mb-1">HAZARD-AWARE ROUTE:</span>
-              <span className="text-slate-300">AVOIDS CURRENTLY MODELLED HAZARD SEGMENTS</span>
-              <div className="mt-2 text-xs text-slate-400 grid grid-cols-2 gap-2">
-                <div>Distance: <span className="text-slate-200 break-words">143.93 km (+10.32 km penalty)</span></div>
-                <div>ETA: <span className="text-slate-200 break-words">~4.80 h</span></div>
-                <div className="col-span-2">Hazard edges avoided: <span className="text-slate-200 break-words">2</span></div>
-              </div>
-            </div>
-            
-            <div className="p-2 bg-amber-900/20 border border-amber-800 rounded flex gap-2 items-start">
-              <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-              <div className="text-[10px] text-amber-300 leading-tight">
-                <span className="font-bold block mb-1">FULL-ROUTE FUTURE HAZARD STATUS:</span>
-                UNKNOWN BEYOND MODEL WINDOW
-              </div>
-            </div>
+        <Section title="Hazard-Aware Route" icon={Navigation} iconClass="text-emerald-600">
+          <Row label="Distance" value="143.93 km" />
+          <Row label="ETA" value="~4.80 h" />
+          <Row label="Penalty" value="+10.32 km" valueClass="text-orange-600" />
+          <Row label="Hazard Edges Avoided" value="2" />
+          <Row label="Status" value="FEASIBLE" valueClass="text-emerald-600" />
+          <div className="py-2">
+            <p className="text-[10px] text-emerald-600 font-medium">AVOIDS CURRENTLY MODELLED HAZARD SEGMENTS</p>
+          </div>
+        </Section>
+
+        {/* Full-route warning */}
+        <div className="flex gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg mb-4">
+          <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+          <div>
+            <p className="text-[10px] font-bold text-amber-700 mb-0.5">FULL-ROUTE FUTURE HAZARD STATUS</p>
+            <p className="text-[10px] text-amber-600">UNKNOWN BEYOND MODEL WINDOW</p>
           </div>
         </div>
 
-        {/* Operational Margin */}
-        <div className="p-3 bg-slate-900/50 rounded-lg border border-slate-700">
-          <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
-            <Clock className="w-4 h-4 text-orange-400" /> Operational Margin
-          </h4>
-          <div className="text-sm">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-slate-400">Normal Route Minimum Modelled Margin:</span>
-              <span className="text-red-400 font-mono font-bold">-1297 s</span>
-            </div>
-            <p className="text-[11px] text-slate-400 italic">
-              "The normal route reaches a modelled hazard segment after the prototype clearance window has expired."
-            </p>
-          </div>
-        </div>
+        <Section title="Benchmark Origin">
+          <Row label="Location" value="Prototype HADR Origin" />
+          <Row label="Type" value="Benchmark Response Origin" />
+          <Row label="Provenance" value="Not an operational NDRF facility" valueClass="text-slate-500" />
+        </Section>
       </div>
     </div>
   );

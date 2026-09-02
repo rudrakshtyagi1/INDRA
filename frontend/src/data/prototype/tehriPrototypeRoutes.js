@@ -14,20 +14,20 @@
  *   available_margin = checkpoint_flood_min - (mission_start_min + transit_to_checkpoint_min)
  *   operational_margin = available_margin - required_safety_buffer_min (where buffer = +10 min)
  *
- * PROVENANCE: PROTOTYPE FIXTURE
+ * PROVENANCE: BENCHMARK RESPONSE ORIGIN
  */
 
 export const PROTOTYPE_NDRF_BASE = {
   id: 'chamba_ndrf_base',
-  name: 'NDRF / SDRF Forward Tactical Staging Base',
-  shortName: 'NDRF Staging Base (Chamba Ridge)',
+  name: 'PROTOTYPE HADR MISSION ORIGIN',
+  shortName: 'PROTOTYPE HADR MISSION ORIGIN',
   lat: 30.345,
   lon: 78.395,
   elevationMsl: 1450,
   readinessStatus: 'STANDBY_FOR_MOBILIZATION',
   resourceRosterStatus: 'DATA UNAVAILABLE (Sourced from District EOC upon activation)',
-  description: 'Forward tactical emergency operations post on elevated Chamba ridge (1,450m MSL). Provenance: PROTOTYPE FIXTURE.',
-  provenance: 'PROTOTYPE FIXTURE',
+  description: 'Forward tactical emergency operations post on elevated Chamba ridge (1,450m MSL). Provenance: BENCHMARK RESPONSE ORIGIN.',
+  provenance: 'BENCHMARK RESPONSE ORIGIN',
 };
 
 /**

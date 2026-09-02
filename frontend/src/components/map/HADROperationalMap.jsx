@@ -91,7 +91,7 @@ export default function HADROperationalMap({
           font-family: monospace;
           white-space: nowrap;
         ">
-          <span>● NDRF STAGING BASE</span>
+          <span>● PROTOTYPE HADR MISSION ORIGIN</span>
         </div>
       `,
       iconSize: [140, 24],

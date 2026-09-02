@@ -4,7 +4,7 @@ import { DOMAIN_CONFIG } from './tehriDomainConfig';
  * PRECOMPUTED PROTOTYPE DATA / NOT VALIDATED SOLVER OUTPUT
  * Deterministic settlement dataset along the Bhagirathi - Ganga river corridor (0–145 km).
  * Prioritizes immediate disaster response corridor (0–30 km) and downstream checkpoints.
- * PROVENANCE: PROTOTYPE FIXTURE
+ * PROVENANCE: WHAT-IF HYDRODYNAMIC BENCHMARK
  */
 
 export const PROTOTYPE_SETTLEMENTS = [];

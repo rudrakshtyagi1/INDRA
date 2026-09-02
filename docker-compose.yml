@@ -1,71 +1,33 @@
-version: "3.9"
-
 services:
-  db:
-    image: postgis/postgis:16-3.4-alpine
-    environment:
-      POSTGRES_DB: floodlab
-      POSTGRES_USER: floodlab
-      POSTGRES_PASSWORD: floodlab
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U floodlab"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   backend:
     build:
-      context: .
-      dockerfile: infra/docker/backend.Dockerfile
+      context: ./backend
+    container_name: floodlab_backend
     ports:
       - "8000:8000"
-    env_file: .env
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
     volumes:
-      - ./storage:/app/storage
-      - ./data:/app/data
-
-  celery-worker:
-    build:
-      context: .
-      dockerfile: infra/docker/backend.Dockerfile
-    command: celery -A floodlab.jobs.celery_app worker --loglevel=info
-    env_file: .env
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    volumes:
-      - ./storage:/app/storage
-      - ./data:/app/data
+      - ./data/processed/tehri_simulations:/data/processed/tehri_simulations:ro
+    environment:
+      - DATA_DIR=/data/processed/tehri_simulations
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health')\" || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
 
   frontend:
     build:
-      context: .
-      dockerfile: infra/docker/frontend.Dockerfile
+      context: ./frontend
+    container_name: floodlab_frontend
     ports:
-      - "5173:80"
+      - "80:80"
     depends_on:
-      - backend
-
-volumes:
-  pgdata:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped

@@ -46,6 +46,16 @@ export default function FloatingMapControls({
 
   return (
     <div className="absolute bottom-5 left-4 z-10 flex flex-col gap-2.5 items-start select-none">
+      
+      {/* Playback Mode Label */}
+      <div 
+        className="floating-control flex flex-col px-3 py-2 text-xs font-semibold text-slate-800 bg-white/95"
+        title="Flood extent is progressively revealed using the modelled first-arrival time raster. Instantaneous water depth time-series are not currently loaded."
+      >
+        <span className="text-[9px] text-slate-400 uppercase tracking-widest font-bold mb-0.5">PLAYBACK MODE</span>
+        <span className="text-blue-700">ARRIVAL-TIME-DERIVED PROPAGATION</span>
+      </div>
+
       {/* Layers Menu */}
       <div className="relative">
         <button

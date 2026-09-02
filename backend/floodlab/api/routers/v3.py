@@ -5,7 +5,7 @@ from fastapi.responses import FileResponse
 
 router = APIRouter()
 
-V3_BASE = "/Users/rudrakshtyagi/Desktop/dam/data/processed/tehri_simulations"
+V3_BASE = os.environ.get("DATA_DIR", "/app/data/processed/tehri_simulations")
 
 @router.get("/summary")
 async def get_v3_summary():
@@ -69,3 +69,24 @@ async def get_v3_exposure_roads():
     if os.path.exists(path):
         return FileResponse(path, media_type="application/geo+json")
     raise HTTPException(404, "MODEL OUTPUT UNAVAILABLE")
+
+@router.get("/hazard/arrival_time")
+async def get_v3_arrival_time():
+    """Returns the arrival time TIF for dynamic playback."""
+    path = f"{V3_BASE}/lisflood_fp/outputs/v3_geometry_corrected/rasters/arrival_time_v3.tif"
+    if os.path.exists(path):
+        return FileResponse(path, media_type="image/tiff")
+    raise HTTPException(404, "MODEL OUTPUT UNAVAILABLE")
+
+@router.get("/frames/{time_sec}")
+async def get_v3_frame(time_sec: int):
+    """
+    Returns the precomputed GeoJSON arrival-time propagation mask.
+    time_sec should be snapped to nearest 50s.
+    """
+    snapped = int(round(time_sec / 50.0) * 50)
+    snapped = max(0, min(800, snapped))
+    path = f"{V3_BASE}/lisflood_fp/outputs/v3_geometry_corrected/rasters/frames/frame_{snapped:03d}.geojson"
+    if os.path.exists(path):
+        return FileResponse(path, media_type="application/geo+json")
+    raise HTTPException(404, "FRAME NOT FOUND")

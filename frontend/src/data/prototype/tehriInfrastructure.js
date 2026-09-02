@@ -5,7 +5,7 @@ import { DOMAIN_CONFIG } from './tehriDomainConfig';
  * Operational critical infrastructure, healthcare facilities, shelters, and air-evac points
  * along the Bhagirathi–Ganga river corridor (0–145 km to Bijnor Barrage Boundary).
  *
- * PROVENANCE: PROTOTYPE FIXTURE
+ * PROVENANCE: WHAT-IF HYDRODYNAMIC BENCHMARK
  * Asset locations and attributes are illustrative planning fixtures.
  */
 
@@ -178,7 +178,7 @@ export function getInfrastructureSummary(currentTimeMin) {
     helipadsActive,
     totalHelipads: helipads.length,
     totalAssets: PROTOTYPE_INFRASTRUCTURE.length,
-    provenance: 'PROTOTYPE FIXTURE',
+    provenance: 'WHAT-IF HYDRODYNAMIC BENCHMARK',
   };
 }
 

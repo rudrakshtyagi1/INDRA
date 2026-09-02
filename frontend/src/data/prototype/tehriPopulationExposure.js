@@ -102,7 +102,7 @@ export function getCurrentlyExposed(currentTimeMin) {
     total: exposed.reduce((acc, s) => acc + s.population, 0),
     settlements: exposed,
     timestep: currentTimeMin,
-    provenance: 'PROTOTYPE FIXTURE',
+    provenance: 'WHAT-IF HYDRODYNAMIC BENCHMARK',
     method: 'Settlement arrival approximation (not spatial raster intersection)',
   };
 }
@@ -127,7 +127,7 @@ export function getProjectedExposed() {
     total: exposed.reduce((acc, s) => acc + s.population, 0),
     settlements: exposed,
     timestep: 180,
-    provenance: 'PROTOTYPE FIXTURE',
+    provenance: 'WHAT-IF HYDRODYNAMIC BENCHMARK',
     method: 'Full scenario footprint (T+0 to T+180m)',
   };
 }
@@ -170,7 +170,7 @@ export function getDistrictExposure(currentTimeMin) {
           : threatened.length > 0
           ? 'THREATENED'
           : 'MONITORING',
-      provenance: 'PROTOTYPE FIXTURE',
+      provenance: 'WHAT-IF HYDRODYNAMIC BENCHMARK',
     };
   });
 }

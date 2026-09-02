@@ -2,43 +2,39 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─────────────────────────────────────────────────────────────
-   FloodLab Design Tokens
-   Scientific GIS Workstation & Emergency Operations Console Aesthetic.
-   Dark navy/slate surfaces, crisp high-readability typography,
-   and high-contrast medium-dark topographic mapping.
-───────────────────────────────────────────────────────────── */
+/* FloodLab Light Theme — Professional Scientific GIS */
 :root {
-  --surface-0: #0d131f;     /* Deep slate workstation canvas */
-  --surface-1: #131c2c;     /* Dark navy container background */
-  --surface-2: #1a2538;     /* Toolbars, navigation rail, panel surfaces */
-  --surface-3: #223148;     /* Elevated inspectors, active cards, dropdowns */
-  --surface-border: rgba(255, 255, 255, 0.11);
-  --surface-border-strong: rgba(255, 255, 255, 0.20);
+  /* Surfaces */
+  --surface-0: #F7F9FC;   /* App background */
+  --surface-1: #FFFFFF;   /* Cards, panels */
+  --surface-2: #F0F4F8;   /* Secondary panels, sidebars */
+  --surface-3: #E8EDF3;   /* Hover states, inputs */
+  --surface-border: rgba(0,0,0,0.09);
+  --surface-border-strong: rgba(0,0,0,0.16);
 
-  --accent: #3b82f6;        /* Blue-500, primary GIS action */
-  --accent-dim: rgba(59, 130, 246, 0.18);
-  --accent-hover: #60a5fa;  /* Blue-400 */
+  /* Brand / interaction */
+  --accent: #2563EB;
+  --accent-dim: rgba(37,99,235,0.10);
+  --accent-hover: #1D4ED8;
 
-  --cyan: #06b6d4;          /* Hydrological feature accent */
-  --cyan-dim: rgba(6, 182, 212, 0.15);
+  /* Hazard semantics */
+  --danger: #DC2626;
+  --danger-dim: rgba(220,38,38,0.08);
+  --warning: #D97706;
+  --warning-dim: rgba(217,119,6,0.10);
+  --safe: #16A34A;
+  --safe-dim: rgba(22,163,74,0.10);
 
-  --danger: #ef4444;        /* Critical hazard */
-  --danger-dim: rgba(239, 68, 68, 0.16);
+  /* Text */
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #94A3B8;
 
-  --warning: #f59e0b;       /* Cautionary threshold */
-  --warning-dim: rgba(245, 158, 11, 0.16);
-
-  --safe: #22c55e;          /* Safe ground / Verified buffer */
-  --safe-dim: rgba(34, 197, 94, 0.16);
-
-  --text-primary: #f8fafc;   /* Slate-50, crisp high-contrast body */
-  --text-secondary: #94a3b8; /* Slate-400, readable secondary text */
-  --text-muted: #64748b;     /* Slate-500, metadata & units */
-
-  --nav-width: 68px;
-  --context-bar-height: 48px;
-  --inspector-width: 340px;
+  /* Layout */
+  --nav-width: 232px;
+  --topbar-height: 56px;
+  --context-bar-height: 56px;
+  --inspector-width: 320px;
 }
 
 @layer base {
@@ -52,59 +48,43 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-size: 14px;
+    line-height: 1.5;
   }
-  * {
-    box-sizing: border-box;
-  }
+  * { box-sizing: border-box; }
 }
 
-/* ─── Workstation Scrollbars ─────────────────────────────── */
+/* Scrollbars */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #26354a; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #3b4d66; }
+::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
 
-/* ─── Leaflet Medium-Dark Topographic Basemap ─────────────── */
+/* Leaflet light theme */
 .leaflet-container {
-  background: #151e2d !important; /* Visible medium-dark slate rather than pitch black */
+  background: #E8EDF3 !important;
   font-family: inherit;
 }
-
-/* Elevate basemap brightness & contrast so contours, valley roads, place names, and river channels are crisp */
 .leaflet-tile {
-  filter: brightness(1.36) contrast(1.18) saturate(0.92);
+  filter: brightness(1.0) contrast(1.0) saturate(0.95);
 }
-
-.leaflet-control-zoom {
-  display: none; /* Controlled via floating workstation controls */
-}
-.leaflet-bar a {
-  background-color: var(--surface-2) !important;
-  color: var(--text-secondary) !important;
-  border-color: var(--surface-border-strong) !important;
-}
-.leaflet-bar a:hover {
-  background-color: var(--surface-3) !important;
-  color: var(--text-primary) !important;
-}
+.leaflet-control-zoom { display: none; }
 .leaflet-popup-content-wrapper {
-  background: var(--surface-2) !important;
-  color: var(--text-primary) !important;
-  border: 1px solid var(--surface-border-strong);
+  background: #FFFFFF !important;
+  color: #0F172A !important;
+  border: 1px solid rgba(0,0,0,0.12);
   border-radius: 8px !important;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12) !important;
 }
-.leaflet-popup-tip { background: var(--surface-2) !important; }
+.leaflet-popup-tip { background: #FFFFFF !important; }
 .leaflet-control-attribution {
-  background: rgba(19, 28, 44, 0.88) !important;
-  color: var(--text-muted) !important;
+  background: rgba(255,255,255,0.85) !important;
+  color: #94A3B8 !important;
   font-size: 10px !important;
-  border-top-left-radius: 4px !important;
 }
-.leaflet-control-attribution a { color: var(--text-secondary) !important; }
+.leaflet-control-attribution a { color: #64748B !important; }
 
-/* ─── Operational Map Utilities ──────────────────────────── */
-
+/* Map canvas */
 .map-canvas {
   position: absolute;
   inset: 0;
@@ -112,22 +92,21 @@
   height: 100%;
 }
 
-/* Floating GIS control toolbar chip */
+/* Floating GIS control */
 .floating-control {
-  background: rgba(19, 28, 44, 0.94);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--surface-border-strong);
+  background: rgba(255,255,255,0.96);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0,0,0,0.10);
   border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
 }
 
-/* Status Badges */
+/* Status Pills */
 .status-pill {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 3px 9px;
+  gap: 5px;
+  padding: 3px 8px;
   border-radius: 6px;
   font-size: 0.7rem;
   font-weight: 600;
@@ -136,31 +115,35 @@
 .status-pill--active {
   background: var(--safe-dim);
   color: var(--safe);
-  border: 1px solid rgba(34,197,94,0.3);
+  border: 1px solid rgba(22,163,74,0.2);
 }
 .status-pill--running {
   background: var(--warning-dim);
   color: var(--warning);
-  border: 1px solid rgba(245,158,11,0.3);
+  border: 1px solid rgba(217,119,6,0.2);
 }
 .status-pill--prototype {
   background: var(--accent-dim);
-  color: var(--accent-hover);
-  border: 1px solid rgba(59,130,246,0.3);
+  color: var(--accent);
+  border: 1px solid rgba(37,99,235,0.2);
 }
 .status-pill--danger {
   background: var(--danger-dim);
   color: var(--danger);
-  border: 1px solid rgba(239,68,68,0.3);
+  border: 1px solid rgba(220,38,38,0.2);
+}
+.status-pill--warning {
+  background: var(--warning-dim);
+  color: var(--warning);
+  border: 1px solid rgba(217,119,6,0.2);
+}
+.status-pill--neutral {
+  background: #F1F5F9;
+  color: #475569;
+  border: 1px solid #E2E8F0;
 }
 
-/* Surface Divider */
-.surface-divider {
-  height: 1px;
-  background: var(--surface-border);
-}
-
-/* Inspector Table Rows */
+/* Inspector rows */
 .inspector-row {
   display: flex;
   align-items: center;
@@ -184,36 +167,41 @@
   text-align: right;
 }
 
-/* Scrubber Range Input */
+/* Scrubber range input */
 input[type="range"].scrubber {
   -webkit-appearance: none;
   appearance: none;
   height: 4px;
   border-radius: 2px;
-  background: var(--surface-3);
+  background: #E2E8F0;
   outline: none;
   cursor: pointer;
 }
 input[type="range"].scrubber::-webkit-slider-thumb {
   -webkit-appearance: none;
-  appearance: none;
   width: 16px;
   height: 16px;
   border-radius: 50%;
   background: var(--accent);
   border: 2px solid #ffffff;
-  box-shadow: 0 0 0 2px rgba(59,130,246,0.3);
+  box-shadow: 0 0 0 2px rgba(37,99,235,0.25);
   cursor: pointer;
   transition: transform 0.1s;
 }
 input[type="range"].scrubber::-webkit-slider-thumb:hover {
   transform: scale(1.15);
 }
-input[type="range"].scrubber::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--accent);
-  border: 2px solid #ffffff;
-  cursor: pointer;
+
+/* Surface divider */
+.surface-divider {
+  height: 1px;
+  background: var(--surface-border);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

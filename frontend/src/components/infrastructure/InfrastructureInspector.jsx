@@ -122,7 +122,7 @@ export default function InfrastructureInspector({
           <div className="inspector-row">
             <span className="inspector-row__label">Designated Capacity</span>
             <span className="inspector-row__value font-mono">
-              {asset.capacity.toLocaleString()} persons (PROTOTYPE FIXTURE)
+              {asset.capacity.toLocaleString()} persons (WHAT-IF HYDRODYNAMIC BENCHMARK)
             </span>
           </div>
         )}

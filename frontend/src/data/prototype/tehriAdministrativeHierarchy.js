@@ -3,7 +3,7 @@
  * Hierarchical grouping of settlements, tehsils/blocks, and districts
  * along the 145 km Bhagirathi - Ganga river corridor to Bijnor Barrage.
  *
- * PROVENANCE: PROTOTYPE FIXTURE
+ * PROVENANCE: WHAT-IF HYDRODYNAMIC BENCHMARK
  */
 
 import { DOMAIN_CONFIG } from './tehriDomainConfig';

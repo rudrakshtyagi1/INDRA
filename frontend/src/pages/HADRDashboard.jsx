@@ -1,517 +1,160 @@
+
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Layers,
-  Crosshair,
-  Navigation,
-  Eye,
-  EyeOff,
-  ChevronDown,
-  Building2,
-  Plane,
-  Car,
-  Footprints,
-  ShieldAlert,
-} from 'lucide-react';
+import { ShieldAlert, Info, MapPin, Truck, AlertTriangle, Route } from 'lucide-react';
 import L from 'leaflet';
 import { useV3Data } from '../hooks/useV3Data';
 import { createBasemapLayer } from '../utils/mapTiles';
-import MissionInspector from '../components/hadr/MissionInspector';
-import HierarchyFilterBar from '../components/map/HierarchyFilterBar';
-import {
-  PROTOTYPE_TACTICAL_ROUTES,
-  PROTOTYPE_NDRF_BASE,
-} from '../data/prototype/tehriPrototypeRoutes';
-import { PROTOTYPE_SETTLEMENTS } from '../data/prototype/tehriPrototypeSettlements';
-import { getFloodTimestepData, RIVER_CENTERLINE } from '../data/prototype/tehriPrototypeFlood';
-import {
-  PROTOTYPE_INFRASTRUCTURE,
-  INFRA_TYPES,
-  getInfrastructureRisk,
-} from '../data/prototype/tehriInfrastructure';
-import {
-  MAJOR_REGIONAL_TOWNS,
-  CORRIDOR_CLUSTERS,
-  getFilteredSettlements,
-} from '../data/prototype/tehriAdministrativeHierarchy';
 
-const FLOOD_SNAPSHOT_MIN = 45; // Fixed snapshot for HADR view
-
-export default function HADRDashboard({ selectedPreset, simulationResult, onOpenExport }) {
-
-  const [activeId, setActiveId] = useState('sirain');
+export default function HADRDashboard() {
   const v3 = useV3Data();
-
-  const [routeDrawn, setRouteDrawn] = useState(true); // Drawn by default for clear immediate tactical picture
-  const [selectedRouteMode, setSelectedRouteMode] = useState('ROAD'); // 'ROAD' | 'FALLBACK_GROUND' | 'AIR_EVAC'
-  const [layersOpen, setLayersOpen] = useState(false);
-  const [zoomLevel, setZoomLevel] = useState(12);
-  const [filters, setFilters] = useState({
-    district: 'all',
-    tehsil: 'all',
-    riskState: 'all',
-    searchQuery: '',
-  });
-
-  // Layer Toggles
-  const [layerVisibility, setLayerVisibility] = useState({
-    flood: true,
-    ndrf_base: true,
-    hospitals: true,
-    shelters: true,
-    helipads: true,
-    bridges: true,
-    active_route: true,
-    rejected_route: true,
-  });
-
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
-  const routeLayersRef = useRef({
-    rejected: null,
-    activeRoute: null,
-    hazard: null,
-    settlements: [],
-    infrastructure: [],
-    flood: [],
-    river: null,
-    base: null,
+  const layersRef = useRef({
+    basemap: null,
+    normalRoute: null,
+    hazardRoute: null,
+    origin: null,
+    destination: null
   });
 
-  const toggleLayer = (key) => {
-    setLayerVisibility((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
+  const [activeRoute, setActiveRoute] = useState('both'); // 'normal' | 'hazard' | 'both'
 
-  // 1. Initialize Map
   useEffect(() => {
-    if (!mapContainerRef.current || mapInstanceRef.current) return;
+    if (mapInstanceRef.current || !v3.v3NormalRoute || !v3.v3HazardAwareRoute) return;
 
     const map = L.map(mapContainerRef.current, {
-      center: [30.340, 78.460],
-      zoom: 12,
-      zoomControl: false,
-      attributionControl: true,
+      center: [30.15, 78.49],
+      zoom: 11,
+      zoomControl: false
     });
-    createBasemapLayer(map).addTo(map);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap &copy; CARTO'
+    }).addTo(map);
+
+    L.control.zoom({ position: 'topleft' }).addTo(map);
     mapInstanceRef.current = map;
 
-    // Track zoom level
-    map.on('zoomend', () => {
-      setZoomLevel(map.getZoom());
+    // Origin Marker (Dehradun / Jolly Grant roughly)
+    const originIcon = L.divIcon({
+      className: '',
+      html: `<div class="w-4 h-4 bg-emerald-500 rounded-full border-2 border-white shadow-md"></div>`,
+      iconSize: [16, 16],
+      iconAnchor: [8, 8]
     });
+    layersRef.current.origin = L.marker([30.189, 78.033], { icon: originIcon }).addTo(map)
+      .bindTooltip('<div class="font-bold text-xs">PROTOTYPE HADR MISSION ORIGIN</div>', { direction: 'top', permanent: false });
 
-    // River centerline
-    const river = L.polyline(
-      RIVER_CENTERLINE.map((p) => [p.lat, p.lon]),
-      {
-        color: '#1e40af',
-        weight: 3,
-        opacity: 0.5,
-      }
-    ).addTo(map);
-    routeLayersRef.current.river = river;
+    // Destination Marker (Tehri Dam roughly)
+    const destIcon = L.divIcon({
+      className: '',
+      html: `<div class="w-4 h-4 bg-blue-600 rounded-full border-2 border-white shadow-md"></div>`,
+      iconSize: [16, 16],
+      iconAnchor: [8, 8]
+    });
+    layersRef.current.destination = L.marker([30.378, 78.481], { icon: destIcon }).addTo(map)
+      .bindTooltip('<div class="font-bold text-xs">MISSION DESTINATION (TEHRI DAM)</div>', { direction: 'top', permanent: false });
 
-    // Flood snapshot
-    const data = getFloodTimestepData(FLOOD_SNAPSHOT_MIN);
-    const floodLayers = [];
-    if (data.shallowPolygon?.length > 2) {
-      floodLayers.push(
-        L.polygon(data.shallowPolygon, {
-          color: '#38bdf8',
-          fillColor: '#0284c7',
-          fillOpacity: 0.3,
-          weight: 1,
-        }).addTo(map)
-      );
-    }
-    if (data.moderatePolygon?.length > 2) {
-      floodLayers.push(
-        L.polygon(data.moderatePolygon, {
-          color: '#60a5fa',
-          fillColor: '#1d4ed8',
-          fillOpacity: 0.5,
-          weight: 1.5,
-        }).addTo(map)
-      );
-    }
-    if (data.deepPolygon?.length > 2) {
-      floodLayers.push(
-        L.polygon(data.deepPolygon, {
-          color: '#93c5fd',
-          fillColor: '#1e3a8a',
-          fillOpacity: 0.75,
-          weight: 2,
-        }).addTo(map)
-      );
-    }
-    routeLayersRef.current.flood = floodLayers;
+    return () => { map.remove(); mapInstanceRef.current = null; };
+  }, [v3.v3NormalRoute, v3.v3HazardAwareRoute]);
 
-    return () => {
-      map.remove();
-      mapInstanceRef.current = null;
-    };
-  }, []);
-
-  // 2. Render Filtered Settlements
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
 
-    routeLayersRef.current.settlements.forEach((m) => {
-      try {
-        map.removeLayer(m);
-      } catch (_) {}
-    });
-    routeLayersRef.current.settlements = [];
+    if (layersRef.current.normalRoute) map.removeLayer(layersRef.current.normalRoute);
+    if (layersRef.current.hazardRoute) map.removeLayer(layersRef.current.hazardRoute);
 
-    // Filter settlements using administrative hierarchy & search filters
-    const prioritySettlements = getFilteredSettlements(PROTOTYPE_SETTLEMENTS, filters);
-
-    prioritySettlements.forEach((st) => {
-      const isTarget = st.id === activeId;
-      const urgencyColor =
-        st.urgency === 'CRITICAL' ? '#ef4444' : st.urgency === 'HIGH' ? '#f59e0b' : '#3b82f6';
-
-      const iconHtml = `
-        <div style="
-          background: rgba(19,28,44,0.95);
-          border: ${isTarget ? '2px solid #38bdf8' : `1.5px solid ${urgencyColor}85`};
-          border-radius: 7px; padding: 3px 8px;
-          display: flex; align-items: center; gap: 6px;
-          box-shadow: ${isTarget ? '0 0 16px #38bdf8' : '0 3px 10px rgba(0,0,0,0.5)'};
-          white-space: nowrap; cursor: pointer;
-        ">
-          <span style="width:7px; height:7px; border-radius:50%; background:${urgencyColor}; flex-shrink:0;"></span>
-          <div style="display:flex; flex-direction:column;">
-            <span style="color:#f8fafc; font-size:10px; font-weight:700;">${st.name}</span>
-            <span style="color:#94a3b8; font-size:9px; font-mono;">T+${st.arrivalMin}m · ${st.population.toLocaleString()} pop</span>
-          </div>
-        </div>`;
-
-      const icon = L.divIcon({
-        className: '',
-        html: iconHtml,
-        iconSize: [140, 28],
-        iconAnchor: [70, 14],
-      });
-
-      const marker = L.marker([st.lat, st.lon], { icon, zIndexOffset: isTarget ? 1000 : 700 }).addTo(map);
-      marker.on('click', () => {
-        setActiveId(st.id);
-      });
-
-      routeLayersRef.current.settlements.push(marker);
-    });
-  }, [activeId, filters]);
-
-  // 3. Render Healthcare, Shelters, Helipads & NDRF Base Layers
-  useEffect(() => {
-    const map = mapInstanceRef.current;
-    if (!map) return;
-
-    routeLayersRef.current.infrastructure.forEach((m) => {
-      try {
-        map.removeLayer(m);
-      } catch (_) {}
-    });
-    routeLayersRef.current.infrastructure = [];
-
-    // NDRF Staging Base
-    if (layerVisibility.ndrf_base) {
-      const baseIcon = L.divIcon({
-        className: '',
-        html: `<div style="
-          background: rgba(12,18,32,0.95); border: 2px solid #22c55e;
-          border-radius: 8px; padding: 4px 9px; display: flex; align-items: center; gap: 6px;
-          box-shadow: 0 0 16px rgba(34,197,94,0.4); white-space: nowrap;
-        ">
-          <span style="width:8px; height:8px; border-radius:50%; background:#22c55e; flex-shrink:0; animation:pulse 2s infinite;"></span>
-          <div style="display:flex; flex-direction:column;">
-            <span style="color:#22c55e; font-size:9.5px; font-weight:800; font-family:monospace;">NDRF STAGING POST (CHAMBA RIDGE)</span>
-            <span style="color:#94a3b8; font-size:8px; font-family:monospace;">Tactical Response Post · PROTOTYPE FIXTURE</span>
-          </div>
-        </div>`,
-        iconSize: [195, 28],
-        iconAnchor: [97, 14],
-      });
-      const bm = L.marker([PROTOTYPE_NDRF_BASE.lat, PROTOTYPE_NDRF_BASE.lon], { icon: baseIcon, zIndexOffset: 950 }).addTo(map);
-      routeLayersRef.current.infrastructure.push(bm);
+    if ((activeRoute === 'both' || activeRoute === 'normal') && v3.v3NormalRoute) {
+       layersRef.current.normalRoute = L.geoJSON(v3.v3NormalRoute, {
+         style: { color: '#ef4444', weight: 4, opacity: 0.8, dashArray: '8, 8' }
+       }).addTo(map);
     }
-
-    // Operational Infrastructure Filter
-    const activeAssets = PROTOTYPE_INFRASTRUCTURE.filter((asset) => {
-      if (asset.type === 'hospital' || asset.type === 'clinic_phc') return layerVisibility.hospitals;
-      if (asset.type === 'shelter') return layerVisibility.shelters;
-      if (asset.type === 'helipad') return layerVisibility.helipads;
-      if (asset.type === 'bridge') return layerVisibility.bridges;
-      return false;
-    });
-
-    activeAssets.forEach((asset) => {
-      const risk = getInfrastructureRisk(asset, FLOOD_SNAPSHOT_MIN);
-      const typeDef = INFRA_TYPES[asset.type] || { icon: '🏢' };
-
-      const markerHtml = `
-        <div style="
-          width: 22px; height: 22px; border-radius: 6px;
-          background: rgba(12,18,32,0.92);
-          border: 1.5px solid ${risk.color}90;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-          display: flex; align-items: center; justify-content: center;
-          font-size: 11px; cursor: pointer;
-        ">
-          ${typeDef.icon}
-        </div>`;
-
-      const icon = L.divIcon({
-        className: '',
-        html: markerHtml,
-        iconSize: [22, 22],
-        iconAnchor: [11, 11],
-      });
-
-      const marker = L.marker([asset.lat, asset.lon], { icon, zIndexOffset: 650 })
-        .addTo(map)
-        .bindTooltip(
-          `<div style="font-family:monospace; font-size:10px; line-height:1.4">
-            <strong style="color:#f1f5f9">${asset.name}</strong><br/>
-            Type: <strong>${typeDef.label}</strong><br/>
-            Status: <span style="color:${risk.color}; font-weight:700">${risk.label}</span><br/>
-            Access: <strong>${asset.accessRoadStatus.replace(/_/g, ' ')}</strong><br/>
-            ${asset.capacity ? `Capacity: <strong>${asset.capacity.toLocaleString()} persons</strong><br/>` : ''}
-            <span style="color:#94a3b8; font-size:8px">PROTOTYPE FIXTURE</span>
-          </div>`,
-          { direction: 'top' }
-        );
-
-      routeLayersRef.current.infrastructure.push(marker);
-    });
-  }, [layerVisibility]);
-
-  // 4. Draw / Update Multi-Modal Tactical Routes
-  useEffect(() => {
-    const map = mapInstanceRef.current;
-    if (!map) return;
-
-    // Clear existing route polylines & hazard markers
-    ['rejected', 'activeRoute', 'hazard'].forEach((key) => {
-      if (routeLayersRef.current[key]) {
-        try {
-          map.removeLayer(routeLayersRef.current[key]);
-        } catch (_) {}
-        routeLayersRef.current[key] = null;
-      }
-    });
-
-    if (!routeDrawn) return;
-
-    const routes = PROTOTYPE_TACTICAL_ROUTES[activeId];
-    if (!routes) return;
-
-    // A. Rejected Route (Submerged Bridge / Low Gorge Track)
-    if (layerVisibility.rejected_route && routes.rejectedRoute) {
-      const rejected = L.polyline(routes.rejectedRoute.routeCoords, {
-        color: '#dc2626',
-        weight: 2.5,
-        opacity: 0.65,
-        dashArray: '8,5',
-      }).addTo(map);
-      routeLayersRef.current.rejected = rejected;
-
-      // Blocked hazard chokepoint marker
-      const [hlat, hlon] = routes.rejectedRoute.hazardPointCoords;
-      const hazardIcon = L.divIcon({
-        className: '',
-        html: `<div style="
-          width: 22px; height: 22px; border-radius: 50%;
-          background: rgba(220,38,38,0.92); border: 2px solid #fca5a5;
-          display: flex; align-items: center; justify-content: center;
-          box-shadow: 0 0 14px rgba(220,38,38,0.6);
-          font-size: 11px; font-weight: 900; color: white;
-        ">✕</div>`,
-        iconSize: [22, 22],
-        iconAnchor: [11, 11],
-      });
-
-      const hazard = L.marker([hlat, hlon], { icon: hazardIcon, zIndexOffset: 920 })
-        .addTo(map)
-        .bindTooltip(
-          `<div style="font-family:monospace; font-size:10px; max-width:210px;">
-            <strong style="color:#f87171">⚠ ROAD IMPASSABLE — SUBMERGED CHOKEPOINT</strong><br/>
-            ${routes.rejectedRoute.hazardReason}<br/>
-            <em style="color:#94a3b8; font-size:8px;">PROTOTYPE FIXTURE</em>
-          </div>`,
-          { direction: 'top' }
-        );
-      routeLayersRef.current.hazard = hazard;
+    
+    if ((activeRoute === 'both' || activeRoute === 'hazard') && v3.v3HazardAwareRoute) {
+       layersRef.current.hazardRoute = L.geoJSON(v3.v3HazardAwareRoute, {
+         style: { color: '#10b981', weight: 5, opacity: 0.9 }
+       }).addTo(map);
     }
-
-    // B. Active Multi-Modal Route (ROAD / FALLBACK_GROUND / AIR_EVAC / BOAT)
-    if (layerVisibility.active_route) {
-      let routeData = routes.roadRoute;
-      if (selectedRouteMode === 'FALLBACK_GROUND') routeData = routes.fallbackGroundRoute;
-      else if (selectedRouteMode === 'AIR_EVAC') routeData = routes.airEvacRoute;
-      else if (selectedRouteMode === 'BOAT' && routes.boatRoute) routeData = routes.boatRoute;
-
-      if (routeData) {
-        const polyline = L.polyline(routeData.routeCoords, {
-          color: routeData.color || '#10b981',
-          weight: selectedRouteMode === 'AIR_EVAC' ? 2.5 : 4,
-          opacity: 0.95,
-          dashArray: routeData.dashArray,
-        }).addTo(map);
-        routeLayersRef.current.activeRoute = polyline;
-
-        // Auto-fit bounds
-        try {
-          const allCoords = [...routeData.routeCoords, ...(routes.rejectedRoute?.routeCoords || [])];
-          map.fitBounds(L.latLngBounds(allCoords).pad(0.2), { animate: true, duration: 0.6 });
-        } catch (_) {}
-      }
+    
+    // Fit bounds if both exist
+    if (v3.v3NormalRoute && layersRef.current.normalRoute) {
+       map.fitBounds(layersRef.current.normalRoute.getBounds(), { padding: [50, 50] });
     }
-  }, [activeId, routeDrawn, selectedRouteMode, layerVisibility]);
+  }, [v3.v3NormalRoute, v3.v3HazardAwareRoute, activeRoute]);
 
-  const handleCalculateRoute = (id) => {
-    setActiveId(id);
-    setRouteDrawn(true);
-  };
 
-  const handleFitCenter = () => {
-    const map = mapInstanceRef.current;
-    if (!map) return;
-    map.flyTo([30.340, 78.460], 12, { duration: 0.8 });
-  };
+  if (!v3.v3Routes) return <div className="p-8">Loading V3 Data...</div>;
 
   return (
-    <div className="w-full h-full flex bg-[var(--surface-0)] overflow-hidden">
-      {/* Map Viewport */}
-      <div className="flex-1 relative overflow-hidden min-w-0">
-        <div ref={mapContainerRef} className="map-canvas" />
-
-        {/* Top Administrative & Settlement Hierarchy Filter Toolbar */}
-        <div className="absolute top-4 left-4 z-20 max-w-[calc(100%-20px)]">
-          <HierarchyFilterBar
-            zoomLevel={zoomLevel}
-            filters={filters}
-            onFilterChange={setFilters}
-            settlements={PROTOTYPE_SETTLEMENTS}
-            activeSettlementId={activeId}
-            onSelectSettlementId={(id) => {
-              if (id) {
-                setActiveId(id);
-                setRouteDrawn(true);
-                const st = PROTOTYPE_SETTLEMENTS.find((s) => s.id === id);
-                if (st && mapInstanceRef.current) {
-                  mapInstanceRef.current.flyTo([st.lat, st.lon], 14, { duration: 0.6 });
-                }
-              }
-            }}
-          />
+    <div className="flex w-full h-full relative bg-slate-50">
+      
+      {/* Left Panel */}
+      <div className="w-[400px] h-full bg-white border-r border-slate-200 shadow-sm flex flex-col z-10">
+        <div className="p-6 border-b border-slate-100">
+           <h1 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+             <ShieldAlert className="w-6 h-6 text-blue-600" />
+             HADR Operations
+           </h1>
+           <p className="text-sm text-slate-500 mt-2">Time-aware hazard avoidance routing benchmark based on physical solver outputs.</p>
         </div>
 
-        {/* Floating Map Layers & Legend Control */}
-        <div className="absolute bottom-4 left-3 z-10 flex flex-col gap-2 items-start">
-          {/* Layer Toggle Dropdown */}
-          <div className="relative">
-            <button
-              onClick={() => setLayersOpen(!layersOpen)}
-              className="floating-control flex items-center gap-2 px-3 py-2 text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition"
-            >
-              <Layers className="w-3.5 h-3.5 text-blue-400" />
-              <span>Operational Layers</span>
-              <ChevronDown className={`w-3 h-3 transition-transform ${layersOpen ? 'rotate-180' : ''}`} />
-            </button>
+        <div className="p-6 flex-1 overflow-y-auto flex flex-col gap-6">
+           {/* Normal Route Card */}
+           <div 
+             onClick={() => setActiveRoute('normal')}
+             className={`p-4 border rounded-xl cursor-pointer transition ${activeRoute === 'normal' || activeRoute === 'both' ? 'border-red-300 bg-red-50/30' : 'border-slate-200 hover:border-red-200'}`}
+           >
+             <div className="flex items-center gap-2 mb-3">
+               <Route className="w-4 h-4 text-red-500" />
+               <h3 className="font-bold text-slate-800">Normal Route (Fastest)</h3>
+             </div>
+             <div className="flex items-end justify-between mb-3">
+               <span className="text-3xl font-light tracking-tight text-slate-900">133.61 <span className="text-sm text-slate-500 font-semibold">km</span></span>
+               <span className="text-lg font-mono text-slate-700">~4.45h</span>
+             </div>
+             <div className="bg-red-100 text-red-800 text-[10px] font-bold px-2 py-1.5 rounded uppercase flex items-center gap-2">
+               <AlertTriangle className="w-3 h-3" />
+               NOT FEASIBLE AGAINST KNOWN MODELLED HAZARD
+             </div>
+           </div>
 
-            {layersOpen && (
-              <div className="absolute bottom-full mb-1 left-0 floating-control p-2 flex flex-col gap-1 min-w-[200px] shadow-2xl">
-                <p className="text-[8px] font-mono uppercase text-[var(--text-muted)] px-2 py-1 border-b border-[var(--surface-border)]">
-                  Tactical Map Layers
-                </p>
-                {[
-                  { key: 'hospitals', label: '🏥 Hospitals & Clinics' },
-                  { key: 'shelters', label: '⛺ Relief Shelters' },
-                  { key: 'helipads', label: '🚁 Helipads & Air Evac' },
-                  { key: 'bridges', label: '🌉 Bridges & Chokepoints' },
-                  { key: 'ndrf_base', label: '🛡️ NDRF Staging Base' },
-                  { key: 'active_route', label: '🟩 Active Safe Corridor' },
-                  { key: 'rejected_route', label: '🟥 Submerged Road Failure' },
-                ].map(({ key, label }) => {
-                  const visible = layerVisibility[key] !== false;
-                  return (
-                    <button
-                      key={key}
-                      onClick={() => toggleLayer(key)}
-                      className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-white/5 transition text-left w-full"
-                    >
-                      {visible ? (
-                        <Eye className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-                      ) : (
-                        <EyeOff className="w-3.5 h-3.5 text-[var(--text-muted)] shrink-0" />
-                      )}
-                      <span
-                        className={`text-xs ${
-                          visible ? 'text-[var(--text-secondary)] font-medium' : 'text-[var(--text-muted)]'
-                        }`}
-                      >
-                        {label}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+           {/* Hazard-Aware Route Card */}
+           <div 
+             onClick={() => setActiveRoute('hazard')}
+             className={`p-4 border rounded-xl cursor-pointer transition ${activeRoute === 'hazard' || activeRoute === 'both' ? 'border-emerald-300 bg-emerald-50/30' : 'border-slate-200 hover:border-emerald-200'}`}
+           >
+             <div className="flex items-center gap-2 mb-3">
+               <Route className="w-4 h-4 text-emerald-500" />
+               <h3 className="font-bold text-slate-800">Hazard-Aware Route</h3>
+             </div>
+             <div className="flex items-end justify-between mb-3">
+               <span className="text-3xl font-light tracking-tight text-slate-900">143.93 <span className="text-sm text-slate-500 font-semibold">km</span></span>
+               <span className="text-lg font-mono text-slate-700">~4.80h</span>
+             </div>
+             <div className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-1.5 rounded uppercase flex items-center gap-2">
+               <ShieldAlert className="w-3 h-3" />
+               AVOIDS CURRENTLY MODELLED HAZARD SEGMENTS
+             </div>
+             <div className="mt-3 text-xs text-slate-500 font-medium">Penalty: +10.32 km</div>
+           </div>
 
-          {/* Recenter Button */}
-          <button
-            onClick={handleFitCenter}
-            className="floating-control flex items-center gap-2 px-3 py-2 text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition"
-          >
-            <Crosshair className="w-3.5 h-3.5 text-[var(--text-muted)]" />
-            <span>Center Corridor</span>
-          </button>
+           <div className="flex items-center gap-3 bg-amber-50 border border-amber-200 p-3 rounded-lg text-amber-800">
+             <Info className="w-5 h-5 shrink-0" />
+             <p className="text-[11px] font-semibold leading-tight">UNKNOWN BEYOND 800s MODEL WINDOW. This feasibility assessment strictly applies to the computed V3 domain.</p>
+           </div>
         </div>
-
-        {/* Floating Route Legend */}
-        {routeDrawn && (
-          <div className="floating-control absolute top-3 right-3 z-10 p-3 space-y-1.5">
-            <p className="text-[8.5px] font-semibold tracking-widest text-[var(--text-muted)] uppercase mb-1">
-              Route Representation
-            </p>
-            <div className="flex items-center gap-2">
-              <div className="w-6 border-t-2 border-green-500" />
-              <span className="text-[9.5px] text-green-400 font-mono">Road Route (Solid)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 border-t-2 border-dashed border-amber-400" />
-              <span className="text-[9.5px] text-amber-400 font-mono">Foot Trail / Ridge (Dashed)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 border-t-2 border-dotted border-purple-400" />
-              <span className="text-[9.5px] text-purple-400 font-mono">Air Evac / Helipad (Dotted)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 border-t-2 border-dashed border-red-500" />
-              <span className="text-[9.5px] text-red-400 font-mono">Rejected Submerged Road</span>
-            </div>
-          </div>
-        )}
+        
+        <div className="p-4 border-t border-slate-100 bg-slate-50">
+           <button onClick={() => setActiveRoute('both')} className="w-full py-2.5 bg-white border border-slate-200 hover:bg-slate-100 rounded-lg text-sm font-bold text-slate-700 transition">View Both Routes</button>
+        </div>
       </div>
 
-      {/* Right Mission Inspector (320px) */}
-      <div
-        style={{ width: 'var(--inspector-width)', flexShrink: 0 }}
-        className="border-l border-[var(--surface-border)] overflow-hidden"
-      >
-        <MissionInspector v3={v3} 
-          activeId={activeId}
-          onSelectId={(id) => setActiveId(id)}
-          onCalculateRoute={handleCalculateRoute}
-          routeDrawn={routeDrawn}
-          selectedRouteMode={selectedRouteMode}
-          onSelectRouteMode={setSelectedRouteMode}
-        />
+      {/* Map Area */}
+      <div className="flex-1 relative">
+        <div ref={mapContainerRef} className="absolute inset-0 z-0" />
       </div>
+
     </div>
   );
 }

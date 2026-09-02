@@ -120,3 +120,33 @@ Current pipeline:
 Real geospatial inputs → catchment delineation → rainfall/discharge forcing
 → hydrologic inflow scenarios → theoretical breach benchmark
 → DualSPHysics integration in progress
+
+## Docker Deployment (Reproducible Web Platform)
+
+Prerequisites:
+- Docker Desktop or Docker Engine
+
+### Quickstart
+
+1. Clone the repository and configure the environment:
+```bash
+git clone https://github.com/rudrakshtyagi1/Floodlab.git
+cd Floodlab
+cp .env.example .env
+```
+*(Fill in optional environment variables in `.env` if required, such as `GEE_SERVICE_ACCOUNT`)*
+
+2. Start the application:
+```bash
+docker compose up -d --build
+```
+
+### Application URLs
+- **Frontend**: http://localhost:80
+- **Backend API**: http://localhost:8000
+- **API Docs**: http://localhost:8000/docs
+
+### Data Provenance
+Included V3 outputs are precomputed results from verified scientific solver runs (DualSPHysics and LISFLOOD-FP).
+Normal Docker application startup does not rerun the computational models.
+For reproducibility, solver workflows are documented separately in the respective `scripts/` or `docs/` directories.

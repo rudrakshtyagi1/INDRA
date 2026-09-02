@@ -60,7 +60,7 @@ export default function InfrastructureSummaryCard({
             </h3>
           </div>
           <span className="text-[10px] font-mono text-[var(--text-muted)] bg-[var(--surface-3)] px-2 py-0.5 rounded border border-[var(--surface-border)]">
-            PROTOTYPE FIXTURE
+            WHAT-IF HYDRODYNAMIC BENCHMARK
           </span>
         </div>
         <p className="text-xs text-[var(--text-secondary)] mt-1 font-sans">

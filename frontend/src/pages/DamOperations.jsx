@@ -203,7 +203,7 @@ export default function DamOperations({
             <div className="rounded-xl border border-[var(--surface-border)] bg-[var(--surface-1)] overflow-hidden">
               <div className="px-4 pt-3 pb-2 border-b border-[var(--surface-border)]">
                 <p className="text-[9px] font-semibold tracking-widest text-[var(--text-muted)] uppercase">
-                  Synthesized breach outflow Q(t) · PROTOTYPE FIXTURE
+                  Synthesized breach outflow Q(t) · WHAT-IF HYDRODYNAMIC BENCHMARK
                 </p>
                 <p className="text-xs font-semibold text-[var(--text-primary)] mt-0.5">
                   Froehlich (2008) parametric embankment breach — Qp = 84,200 m³/s at T+44.4 min
@@ -265,7 +265,7 @@ export default function DamOperations({
                         ))}
                       </div>
                       <p className="text-[9px] text-[var(--text-muted)] mt-3">
-                        Source: THDC India Ltd. / CWC design documents. Breach parameters are PROTOTYPE FIXTURE (Froehlich 2008 formulation).
+                        Source: THDC India Ltd. / CWC design documents. Breach parameters are WHAT-IF HYDRODYNAMIC BENCHMARK (Froehlich 2008 formulation).
                       </p>
                     </div>
                   </motion.div>
