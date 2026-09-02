@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from floodlab.config.settings import get_settings
-from floodlab.api.routers import (
+from floodlab.api.routers import ( v3,
     simulations, hydrology, scenarios, uncertainty,
     satellite, exposure, routing, validation, export, jobs
 )
@@ -31,6 +31,7 @@ app.add_middleware(
 )
 
 # Register routers
+app.include_router(v3.router, prefix="/api/scenarios/v3", tags=["v3"])
 app.include_router(simulations.router, prefix="/api/simulations", tags=["simulations"])
 app.include_router(hydrology.router, prefix="/api/hydrology", tags=["hydrology"])
 app.include_router(scenarios.router, prefix="/api/scenarios", tags=["scenarios"])

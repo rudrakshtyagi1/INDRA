@@ -13,6 +13,7 @@ import {
   Compass,
 } from 'lucide-react';
 import L from 'leaflet';
+import { useV3Data } from '../hooks/useV3Data';
 import { createBasemapLayer } from '../utils/mapTiles';
 import { RIVER_CENTERLINE, getFloodTimestepData } from '../data/prototype/tehriPrototypeFlood';
 import { PROTOTYPE_SETTLEMENTS, getSettlementStatus } from '../data/prototype/tehriPrototypeSettlements';
@@ -62,7 +63,10 @@ export default function SimulationLab({
     riskState: 'all',
     searchQuery: '',
   });
+
   const [activeSettlementId, setActiveSettlementId] = useState('');
+  const v3 = useV3Data();
+
 
   // Layer Toggles
   const [layerVisibility, setLayerVisibility] = useState({
@@ -787,9 +791,9 @@ export default function SimulationLab({
       <div className="h-9 px-4 flex items-center justify-between border-b border-[var(--surface-border)] bg-[var(--surface-1)] shrink-0">
         <div className="flex items-center gap-3">
           <span className="text-[10px] font-semibold tracking-widest text-[var(--text-muted)] uppercase">
-            Bhagirathi Flood Simulation
+            MODEL: DualSPHysics &rarr; LISFLOOD-FP | PHYSICAL VALIDATION: NOT AVAILABLE
           </span>
-          <span className="status-pill status-pill--prototype">Prototype Fixture</span>
+          <span className="status-pill status-pill--prototype">WHAT-IF HYDRODYNAMIC BENCHMARK</span>
         </div>
 
         <div className="flex items-center gap-3">
@@ -839,12 +843,14 @@ export default function SimulationLab({
               {/* Floating Depth Legend */}
               <div className="floating-control absolute top-3 right-3 z-10 p-3 space-y-1.5">
                 <p className="text-[9px] font-semibold tracking-widest text-[var(--text-muted)] uppercase mb-2">
-                  Depth · Prototype Fixture
+                  MODELLED MAXIMUM DEPTH
                 </p>
                 {[
-                  { color: 'bg-[#172554] border-[#1e3a8a]', label: '> 3 m (deep channel)' },
-                  { color: 'bg-[#1d4ed8]/60 border-[#2563eb]', label: '0.5 – 3 m (moderate)' },
-                  { color: 'bg-[#0ea5e9]/30 border-[#7dd3fc]', label: '< 0.5 m (shallow)' },
+                  { color: 'bg-red-500 border-red-700', label: '> 5 m' },
+                  { color: 'bg-orange-500 border-orange-700', label: '3 – 5 m' },
+                  { color: 'bg-yellow-500 border-yellow-700', label: '1.5 – 3 m' },
+                  { color: 'bg-blue-500 border-blue-700', label: '0.5 – 1.5 m' },
+                  { color: 'bg-cyan-400 border-cyan-600', label: '0.05 – 0.5 m' },
                 ].map(({ color, label }) => (
                   <div key={label} className="flex items-center gap-2">
                     <div className={`w-3 h-2.5 rounded-sm border ${color}`} />
@@ -921,7 +927,7 @@ export default function SimulationLab({
         currentTimeMin={currentTimeMin}
         onTimeChange={handleTimeChange}
         isPlaying={isPlaying}
-        maxTimeMin={240}
+        maxTimeMin={13.33}
         onTogglePlay={() => {
           if (isFinished) {
             setCurrentTimeMin(0);

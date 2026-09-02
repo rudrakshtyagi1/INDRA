@@ -37,6 +37,7 @@ export function getFloodTimestepData(timeMin = 60) {
   const rightMod = [];
   const rightShallow = [];
 
+  return { shallowPolygon: [], moderatePolygon: [], deepPolygon: [], wavefront: null };
   activePoints.forEach((pt, i) => {
     // Gorge vs Plains lateral expansion factor
     const isPlains = pt.regime === 'PLAINS' || pt.regime === 'BOUNDARY';

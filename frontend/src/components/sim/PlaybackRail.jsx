@@ -20,12 +20,15 @@ export default function PlaybackRail({
   onSpeedChange,
   isAnalyticsOpen,
   onToggleAnalytics,
-    maxTimeMin = 240,
+    maxTimeMin = 13.33,
 }) {
   const pct = Math.round((currentTimeMin / maxTimeMin) * 100);
   const hrs = Math.floor(currentTimeMin / 60);
   const mins = currentTimeMin % 60;
-  const timeLabel = hrs > 0 ? `T+${hrs}h ${mins.toString().padStart(2, '0')}m` : `T+${currentTimeMin}m`;
+  const totalSecs = Math.round(currentTimeMin * 60);
+const timeLabel = `T+${totalSecs}s (Max 800s)`;
+let edgeCount = 0; if (totalSecs >= 800) edgeCount = 52; else if (totalSecs >= 600) edgeCount = 49; else if (totalSecs >= 300) edgeCount = 31;
+const roadStatus = totalSecs > 0 ? `UNAVAILABLE EDGES: ${edgeCount}` : 'AVAILABLE UNDER CURRENT MODEL';
 
   return (
     <div
@@ -58,7 +61,7 @@ export default function PlaybackRail({
       <div className="flex items-center gap-1.5 shrink-0 bg-[var(--surface-2)] px-3 py-1.5 rounded-lg border border-[var(--surface-border)]">
         <Clock className="w-3.5 h-3.5 text-blue-400" />
         <span className="text-xs font-mono font-bold text-[var(--text-primary)] tabular-nums">
-          {timeLabel}
+          {timeLabel} | {roadStatus}
         </span>
       </div>
 

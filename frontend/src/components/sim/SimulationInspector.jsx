@@ -1,143 +1,83 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Users,
-  Building2,
-  Compass,
-  X,
-} from 'lucide-react';
-import ExposurePanel from '../exposure/ExposurePanel';
-import InfrastructureSummaryCard from '../infrastructure/InfrastructureSummaryCard';
-import InfrastructureInspector from '../infrastructure/InfrastructureInspector';
-import SelectedAreaInspector from '../exposure/SelectedAreaInspector';
+import React from 'react';
+import { Users, Building2, MapPin, AlertTriangle, ShieldAlert } from 'lucide-react';
+import { useV3Data } from '../../hooks/useV3Data';
 
-export default function SimulationInspector({
-  currentTimeMin,
-  selectedAsset,
-  onSelectAsset,
-  selectedArea,
-  onClearSelectedArea,
-  onSelectRadius,
-  onSelectSettlement,
-  onFocusAsset,
-  onClose,
-}) {
-  const [activeTab, setActiveTab] = useState('exposure'); // 'exposure' | 'infra' | 'area' | 'asset'
-
-  // Automatically switch tab if an asset or area is selected
-  useEffect(() => {
-    if (selectedAsset) {
-      setActiveTab('asset');
-    }
-  }, [selectedAsset]);
-
-  useEffect(() => {
-    if (selectedArea) {
-      setActiveTab('area');
-    }
-  }, [selectedArea]);
-
+export default function SimulationInspector() {
+  const v3 = useV3Data();
+  const exp = v3?.v3Exposure || {};
+  
   return (
-    <div className="h-full flex flex-col bg-[var(--surface-2)] border-l border-[var(--surface-border)] overflow-hidden">
-      {/* Top Tab Bar */}
-      <div className="h-11 px-3 flex items-center justify-between border-b border-[var(--surface-border)] bg-[var(--surface-1)] shrink-0">
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-          <button
-            onClick={() => setActiveTab('exposure')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition whitespace-nowrap ${
-              activeTab === 'exposure'
-                ? 'bg-blue-600/20 text-blue-400 border border-blue-500/40 shadow-sm'
-                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/5 border border-transparent'
-            }`}
-          >
-            <Users className="w-3.5 h-3.5" />
-            <span>Population Exposure</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('infra')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition whitespace-nowrap ${
-              activeTab === 'infra'
-                ? 'bg-blue-600/20 text-blue-400 border border-blue-500/40 shadow-sm'
-                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/5 border border-transparent'
-            }`}
-          >
-            <Building2 className="w-3.5 h-3.5" />
-            <span>Infrastructure</span>
-          </button>
-
-          {selectedArea && (
-            <button
-              onClick={() => setActiveTab('area')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition whitespace-nowrap ${
-                activeTab === 'area'
-                  ? 'bg-cyan-600/20 text-cyan-300 border border-cyan-500/40 shadow-sm'
-                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/5 border border-transparent'
-              }`}
-            >
-              <Compass className="w-3.5 h-3.5 text-cyan-400" />
-              <span>Query Area</span>
-            </button>
-          )}
-
-          {selectedAsset && (
-            <button
-              onClick={() => setActiveTab('asset')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition whitespace-nowrap ${
-                activeTab === 'asset'
-                  ? 'bg-amber-600/20 text-amber-300 border border-amber-500/40 shadow-sm'
-                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/5 border border-transparent'
-              }`}
-            >
-              <Building2 className="w-3.5 h-3.5 text-amber-400" />
-              <span>Asset Detail</span>
-            </button>
-          )}
+    <div className="h-full flex flex-col bg-[var(--surface-2)] border-l border-[var(--surface-border)] overflow-y-auto w-80 shrink-0">
+      <div className="p-4 border-b border-[var(--surface-border)] shrink-0 bg-[var(--surface-1)]">
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-xs font-semibold text-[var(--text-secondary)]">
+            Exposure Analysis
+          </p>
+          <span className="text-[10px] font-mono text-amber-400 bg-amber-900/30 px-2 py-0.5 rounded border border-amber-700/50">
+            WHAT-IF HYDRODYNAMIC BENCHMARK
+          </span>
         </div>
-
-        {onClose && (
-          <button
-            onClick={onClose}
-            className="w-7 h-7 rounded-lg flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-white/5 transition shrink-0"
-            title="Close inspector"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        )}
+        <h3 className="text-lg font-bold text-slate-100">Prototype Exposure</h3>
       </div>
 
-      {/* Tab Content Container */}
-      <div className="flex-1 overflow-y-auto">
-        {activeTab === 'exposure' && (
-          <ExposurePanel
-            currentTimeMin={currentTimeMin}
-            onSelectSettlement={onSelectSettlement}
-          />
-        )}
+      <div className="p-4 space-y-4 text-sm text-slate-300">
+        <div className="p-3 bg-slate-900/50 rounded-lg border border-slate-700">
+          <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Model Parameters</h4>
+          <ul className="space-y-2 text-xs">
+            <li><span className="text-slate-500">Simulation Window:</span> <span className="font-mono text-slate-200">800 seconds</span></li>
+            <li><span className="text-slate-500">Modeled Propagation:</span> <span className="font-mono text-slate-200">~Current V3 reach only</span></li>
+          </ul>
+        </div>
 
-        {activeTab === 'infra' && (
-          <InfrastructureSummaryCard
-            currentTimeMin={currentTimeMin}
-            onSelectAsset={onSelectAsset}
-            onFocusAsset={onFocusAsset}
-          />
-        )}
-
-        {activeTab === 'area' && (
-          <SelectedAreaInspector
-            selectedArea={selectedArea}
-            onClear={onClearSelectedArea}
-            onSelectRadius={onSelectRadius}
-          />
-        )}
-
-        {activeTab === 'asset' && selectedAsset && (
-          <InfrastructureInspector
-            asset={selectedAsset}
-            currentTimeMin={currentTimeMin}
-            onClose={() => setActiveTab('infra')}
-            onFocus={onFocusAsset}
-          />
-        )}
+        <div className="p-3 bg-slate-900/50 rounded-lg border border-slate-700">
+          <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+            <Users className="w-4 h-4 text-indigo-400" /> Exposure Summary
+          </h4>
+          <ul className="space-y-3">
+            <li className="flex justify-between items-center">
+              <span className="text-slate-400">Settlements Intersected</span>
+              <span className="font-mono text-slate-200">0</span>
+            </li>
+            <li className="flex justify-between items-center">
+              <span className="text-slate-400">Healthcare Intersected</span>
+              <span className="font-mono text-slate-200">0</span>
+            </li>
+            <li className="flex justify-between items-center">
+              <span className="text-slate-400">Bridges Intersected</span>
+              <span className="font-mono text-slate-200">0</span>
+            </li>
+            <li className="flex justify-between items-center">
+              <span className="text-slate-400">Power Assets Intersected</span>
+              <span className="font-mono text-slate-200">0</span>
+            </li>
+            <li className="flex justify-between items-center pt-2 border-t border-slate-700/50">
+              <span className="text-slate-400 font-bold">Road Exposure</span>
+              <span className="font-mono text-orange-400 font-bold">38.788 km</span>
+            </li>
+          </ul>
+        </div>
+        
+        <div className="p-3 bg-blue-900/20 border border-blue-800 rounded flex gap-2 items-start">
+          <ShieldAlert className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+          <p className="text-xs text-blue-300 leading-tight">
+            Current short simulation window primarily covers the steep upper gorge. Downstream areas outside the hazard polygon have a status of <strong>OUTSIDE CURRENT MODELLED HAZARD WINDOW</strong>, not "safe".
+          </p>
+        </div>
+        
+        <div className="p-3 bg-slate-900/50 rounded-lg border border-slate-700">
+          <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+            Provenance Panel
+          </h4>
+          <ul className="space-y-1.5 text-[11px]">
+            <li><span className="text-slate-500">Terrain:</span> <span className="text-slate-300">Copernicus DEM-derived</span></li>
+            <li><span className="text-slate-500">Near field:</span> <span className="text-slate-300">DualSPHysics</span></li>
+            <li><span className="text-slate-500">Downstream:</span> <span className="text-slate-300">LISFLOOD-FP 8.1 (30m)</span></li>
+            <li><span className="text-slate-500">Hydraulic roughness:</span> <span className="text-slate-300">Assumed uniform Manning n = 0.06</span></li>
+            <li><span className="text-slate-500">Channel geometry:</span> <span className="text-slate-300">Simplified numerical coupling geometry</span></li>
+            <li><span className="text-slate-500">Boundary:</span> <span className="text-slate-300">Back-scaled DualSPHysics benchmark</span></li>
+            <li className="mt-2 text-amber-500/80 font-bold">Physical validation: Not available</li>
+          </ul>
+        </div>
       </div>
     </div>
   );

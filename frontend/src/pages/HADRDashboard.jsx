@@ -14,6 +14,7 @@ import {
   ShieldAlert,
 } from 'lucide-react';
 import L from 'leaflet';
+import { useV3Data } from '../hooks/useV3Data';
 import { createBasemapLayer } from '../utils/mapTiles';
 import MissionInspector from '../components/hadr/MissionInspector';
 import HierarchyFilterBar from '../components/map/HierarchyFilterBar';
@@ -37,7 +38,10 @@ import {
 const FLOOD_SNAPSHOT_MIN = 45; // Fixed snapshot for HADR view
 
 export default function HADRDashboard({ selectedPreset, simulationResult, onOpenExport }) {
+
   const [activeId, setActiveId] = useState('sirain');
+  const v3 = useV3Data();
+
   const [routeDrawn, setRouteDrawn] = useState(true); // Drawn by default for clear immediate tactical picture
   const [selectedRouteMode, setSelectedRouteMode] = useState('ROAD'); // 'ROAD' | 'FALLBACK_GROUND' | 'AIR_EVAC'
   const [layersOpen, setLayersOpen] = useState(false);
@@ -499,7 +503,7 @@ export default function HADRDashboard({ selectedPreset, simulationResult, onOpen
         style={{ width: 'var(--inspector-width)', flexShrink: 0 }}
         className="border-l border-[var(--surface-border)] overflow-hidden"
       >
-        <MissionInspector
+        <MissionInspector v3={v3} 
           activeId={activeId}
           onSelectId={(id) => setActiveId(id)}
           onCalculateRoute={handleCalculateRoute}
