@@ -62,3 +62,13 @@ data/processed/tehri_simulations/delft3d/setup/Delft3D/
 *.out
 *.mass
 *Case_Tehri_Breach_out/*
+
+# Runtime scenario/run artifacts (Phase 1B / Phase 6)
+data/scenarios/*
+!data/scenarios/.gitkeep
+data/runs/*/run_*/
+backend/data/
+
+# Local credential files
+secrets/
+*.service-account.json

@@ -1,83 +1,104 @@
-"""Satellite surveillance endpoints."""
-from fastapi import APIRouter
+"""Google Earth Engine / Sentinel-1 observation endpoints."""
+from __future__ import annotations
+
+from fastapi import APIRouter, HTTPException
+
+from floodlab.schemas.satellite import ModelComparisonRequest, SARAnalysisRequest
+from floodlab.satellite.observation_comparator import ObservationComparator, available_model_products
+from floodlab.satellite.sentinel1 import Sentinel1AnalysisService
 
 router = APIRouter()
 
-ZONES = [
-    {
-        "id": "rishi_ganga",
-        "name": "Rishi Ganga / Dhauliganga (Chamoli)",
-        "zone_name": "Rishi Ganga / Dhauliganga",
-        "river": "Rishi Ganga",
-        "state": "Uttarakhand",
-        "lat": 30.485,
-        "lon": 79.738,
-        "bbox": [79.65, 30.35, 79.95, 30.60],
-        "alert_level": "WATCH",
-    },
-    {
-        "id": "tehri_upstream",
-        "name": "Tehri Dam Catchment (Bhagirathi / Bhilangana)",
-        "zone_name": "Tehri Catchment Upstream",
-        "river": "Bhagirathi",
-        "state": "Uttarakhand",
-        "lat": 30.378,
-        "lon": 78.480,
-        "bbox": [78.30, 30.25, 78.85, 30.70],
-        "alert_level": "NORMAL",
-    },
-    {
-        "id": "bhakra_upstream",
-        "name": "Gobind Sagar / Bhakra Catchment (Sutlej)",
-        "zone_name": "Bhakra Dam Catchment",
-        "river": "Sutlej",
-        "state": "Himachal Pradesh",
-        "lat": 31.411,
-        "lon": 76.437,
-        "bbox": [76.40, 31.20, 77.10, 31.80],
-        "alert_level": "NORMAL",
-    },
-]
 
-ALERTS = [
-    {
-        "id": "alt_01",
-        "zone_id": "rishi_ganga",
-        "zone_name": "Rishi Ganga / Dhauliganga",
-        "detected_date": "2026-08-25T06:12:00Z",
-        "detected_area_ha": 18.5,
-        "estimated_depth_m": 22.0,
-        "estimated_volume_m3": 1356000.0,
-        "risk_level": "high",
-        "confidence_score": 0.88,
-        "otsu_threshold_db": -16.4,
-        "backscatter_diff_db": 6.8,
-        "coordinates": [[79.738, 30.485]],
-        "alert_level": "WATCH",
-        "provenance": "OBSERVED",
-    }
-]
+def _service() -> Sentinel1AnalysisService:
+    return Sentinel1AnalysisService()
 
 
-@router.get("/alerts")
-async def get_alerts():
-    return {"alerts": ALERTS, "zones": ZONES}
+@router.get("/status")
+async def status():
+    """Safe provider state. No API key, token, or credential path is returned."""
+    return _service().status()
 
 
 @router.get("/zones")
-async def get_zones():
-    return {"zones": ZONES}
+async def zones():
+    return {"zones": _service().list_zones()}
+
+
+@router.get("/analyses")
+async def analyses(limit: int = 20):
+    limit = max(1, min(limit, 100))
+    records = _service().list_analyses(limit=limit)
+    return {"analyses": records, "count": len(records)}
+
+
+@router.get("/analyses/{analysis_id}")
+async def analysis(analysis_id: str):
+    try:
+        return _service().get_analysis(analysis_id)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="SATELLITE_ANALYSIS_NOT_FOUND")
+
+
+@router.get("/alerts")
+async def alerts():
+    """Derived alerts from actual persisted analyses only; never synthetic detections."""
+    records = _service().list_analyses(limit=50)
+    alerts_out = []
+    for record in records:
+        area_ha = (record.get("metrics") or {}).get("new_surface_water_area_ha") or 0.0
+        if area_ha <= 0:
+            continue
+        alerts_out.append(
+            {
+                "analysis_id": record.get("analysis_id"),
+                "detected_area_ha": area_ha,
+                "status": "SURFACE_WATER_CHANGE_DETECTED",
+                "provenance": "DERIVED FROM SENTINEL-1 OBSERVATION",
+            }
+        )
+    return {"alerts": alerts_out, "total_active_alerts": len(alerts_out)}
 
 
 @router.post("/analyse")
-async def analyse_sar(body: dict):
-    bbox = body.get("bbox", [79.65, 30.35, 79.95, 30.60])
-    return {
-        "zone_id": "custom_sar",
-        "detected_water_area_ha": 14.2,
-        "estimated_volume_m3": 1040000.0,
-        "otsu_threshold_db": -16.5,
-        "provenance": "OBSERVED",
-        "change_detected": True,
-        "coordinates": [[(bbox[0] + bbox[2]) / 2, (bbox[1] + bbox[3]) / 2]],
-    }
+async def analyse(request: SARAnalysisRequest):
+    service = _service()
+    status_info = service.status()["google_earth_engine"]
+    if not status_info["configured"]:
+        raise HTTPException(status_code=503, detail="GEE_PROJECT_NOT_CONFIGURED")
+    if not status_info["authenticated"]:
+        raise HTTPException(
+            status_code=503,
+            detail={"code": "GEE_AUTHENTICATION_UNAVAILABLE", "message": status_info.get("error")},
+        )
+    try:
+        return service.analyse(request)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc))
+    except Exception as exc:
+        # Do not echo secrets. Earth Engine exceptions are generally dataset/auth/compute
+        # diagnostics, but keep the public message compact.
+        raise HTTPException(
+            status_code=502,
+            detail=f"EARTH_ENGINE_ANALYSIS_FAILED: {type(exc).__name__}",
+        )
+
+
+@router.get("/model-products")
+async def model_products():
+    return {"products": available_model_products()}
+
+
+@router.post("/compare-model")
+async def compare_model(request: ModelComparisonRequest):
+    service = _service()
+    try:
+        analysis_payload = service.get_analysis(request.analysis_id)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="SATELLITE_ANALYSIS_NOT_FOUND")
+    try:
+        return ObservationComparator().compare_saved_analysis(
+            analysis_payload, request.run_id, request.purpose
+        )
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=str(exc))

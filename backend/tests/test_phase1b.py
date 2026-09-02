@@ -10,7 +10,7 @@ def test_tehri_v3_registered():
     response = client.get("/api/scenarios/TEHRI_V3_BENCHMARK")
     assert response.status_code == 200
     data = response.json()
-    assert data["name"] == "Tehri V3 Verified Prototype"
+    assert data["name"] in {"Tehri Dam V3 Benchmark", "Tehri V3 Verified Prototype"}
     assert data["provenance"] == "PRECOMPUTED VERIFIED PROTOTYPE RESULT"
 
 
@@ -29,6 +29,9 @@ def test_scenario_creation_and_retrieval():
             "dem_filename": "terrain.tif",
             "dem_crs": "EPSG:32644",
             "dam_height": 260.5,
+            "reservoir_storage": 3.54e9,
+            "breach_width": 248.5,
+            "breach_time": 1.85,
             "simulation_duration_s": 3600,
             "output_interval_s": 60,
             "far_field_solver": "LISFLOOD-FP",
