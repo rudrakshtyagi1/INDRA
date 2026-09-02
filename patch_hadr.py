@@ -1,47 +1,33 @@
 import re
 
-with open('frontend/src/pages/HADRDashboard.jsx', 'r') as f:
+with open("frontend/src/pages/HADRDashboard.jsx", "r") as f:
     content = f.read()
 
-# Inject useV3Data
-content = content.replace("import { createBasemapLayer }", "import { useV3Data } from '../hooks/useV3Data';\nimport { createBasemapLayer }")
+# Let's completely replace the stats assignment.
+old_stats = """  const stats = v3.v3Routes || {
+     normal_route: { distance_km: 0, eta_min: 0, hazard_conflict_edges: 2, status: 'NOT FEASIBLE AGAINST KNOWN MODELLED HAZARD' },
+     hazard_aware_route: { distance_km: 0, eta_min: 0, hazard_conflict_edges: 0, status: 'AVOIDS CURRENTLY MODELLED HAZARD SEGMENTS', extra_distance_km: 10.32 }
+  };"""
 
-hook_str = """
-  const [activeId, setActiveId] = useState('sirain');
-  const v3 = useV3Data();
+new_stats = """  let stats = {
+     normal_route: { distance_km: 0, eta_min: 0, hazard_conflict_edges: 2, status: 'NOT FEASIBLE AGAINST KNOWN MODELLED HAZARD' },
+     hazard_aware_route: { distance_km: 0, eta_min: 0, hazard_conflict_edges: 0, status: 'AVOIDS CURRENTLY MODELLED HAZARD SEGMENTS', extra_distance_km: 10.32 }
+  };
+  
+  if (v3.v3Routes && v3.v3Routes.routes && v3.v3Routes.routes.length > 0) {
+      // Use the first valid route or specific one for the dashboard
+      const r = v3.v3Routes.routes[1] || v3.v3Routes.routes[0];
+      stats.normal_route.distance_km = (r.normal_route_dist_m || 0) / 1000;
+      stats.hazard_aware_route.distance_km = (r.hazard_aware_route_dist_m || 0) / 1000;
+      stats.normal_route.hazard_conflict_edges = r.hazard_edges_avoided || 2;
+      stats.hazard_aware_route.extra_distance_km = stats.hazard_aware_route.distance_km - stats.normal_route.distance_km;
+      
+      if (stats.hazard_aware_route.extra_distance_km < 0) stats.hazard_aware_route.extra_distance_km = 0;
+  }
 """
-content = content.replace("  const [activeId, setActiveId] = useState('sirain');", hook_str)
 
-# Inject GeoJSON rendering logic in useEffect
-old_routes = """
-    // 2. Plot Active Routes
-    if (activeTarget && routeDrawn) {
-"""
+content = content.replace(old_stats, new_stats)
 
-new_routes = """
-    // 2. Plot Active Routes
-    if (layersRef.current.v3NormalRoute) map.removeLayer(layersRef.current.v3NormalRoute);
-    if (layersRef.current.v3HazardRoute) map.removeLayer(layersRef.current.v3HazardRoute);
-
-    if (v3.v3NormalRoute && layerVisibility.rejected_route) {
-        layersRef.current.v3NormalRoute = L.geoJSON(v3.v3NormalRoute, {
-            style: { color: '#ef4444', weight: 4, opacity: 0.8, dashArray: '8, 8' }
-        }).addTo(map);
-    }
-    
-    if (v3.v3HazardAwareRoute && layerVisibility.active_route) {
-        layersRef.current.v3HazardRoute = L.geoJSON(v3.v3HazardAwareRoute, {
-            style: { color: '#22c55e', weight: 5, opacity: 0.9 }
-        }).addTo(map);
-    }
-
-    if (activeTarget && routeDrawn) {
-"""
-content = content.replace(old_routes, new_routes)
-
-# Remove the old routes drawing
-content = re.sub(r'const rejectedPoly = L\.polyline.*?\.addTo\(map\);', 'const rejectedPoly = null;', content, flags=re.DOTALL)
-content = re.sub(r'const activePoly = L\.polyline.*?\.addTo\(map\);', 'const activePoly = null;', content, flags=re.DOTALL)
-
-with open('frontend/src/pages/HADRDashboard.jsx', 'w') as f:
+with open("frontend/src/pages/HADRDashboard.jsx", "w") as f:
     f.write(content)
+

@@ -90,3 +90,10 @@ async def get_v3_frame(time_sec: int):
     if os.path.exists(path):
         return FileResponse(path, media_type="application/geo+json")
     raise HTTPException(404, "FRAME NOT FOUND")
+
+@router.get("/context/{asset_type}")
+async def get_v3_context(asset_type: str):
+    path = f"{V3_BASE}/exposure/v3/context/{asset_type}.geojson"
+    if os.path.exists(path):
+        return FileResponse(path, media_type="application/geo+json")
+    raise HTTPException(404, "MODEL OUTPUT UNAVAILABLE")

@@ -5,7 +5,7 @@ import Overview from './pages/Overview';
 import SimulationLab from './pages/SimulationLab';
 import HADRDashboard from './pages/HADRDashboard';
 import ScenarioComparison from './pages/ScenarioComparison';
-import Infrastructure from './pages/Infrastructure';
+import Exposure from './pages/Exposure';
 import DataProvenance from './pages/DataProvenance';
 
 export default function App() {
@@ -18,7 +18,7 @@ export default function App() {
       case 'simulation': return <SimulationLab initialTimeMin={simTimeMin} onTimeChange={setSimTimeMin} onNavigateToHadr={() => setActiveTab('hadr')} />;
       case 'scenarios': return <ScenarioComparison />;
       case 'hadr': return <HADRDashboard />;
-      case 'infrastructure': return <Infrastructure />;
+      case 'exposure': return <Exposure />;
       case 'data': return <DataProvenance />;
       default: return <Overview onNavigate={setActiveTab} />;
     }

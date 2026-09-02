@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Activity, Map, LayoutTemplate, ShieldAlert, Database, Building2 } from 'lucide-react';
+import { Activity, Map, LayoutTemplate, Building2, Database, ShieldAlert } from 'lucide-react';
 
 export default function NavigationRail({ activeTab, onSelectTab }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -10,7 +10,7 @@ export default function NavigationRail({ activeTab, onSelectTab }) {
     { id: 'simulation', icon: Map, label: 'Simulation Lab' },
     { id: 'scenarios', icon: Activity, label: 'Scenarios' },
     { id: 'hadr', icon: ShieldAlert, label: 'HADR Operations' },
-    { id: 'infrastructure', icon: Building2, label: 'Infrastructure' },
+    { id: 'exposure', icon: ShieldAlert, label: 'Exposure' },
     { id: 'data', icon: Database, label: 'Data & Provenance' },
   ];
 

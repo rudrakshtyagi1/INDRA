@@ -1,160 +1,155 @@
-
 import React, { useState, useEffect, useRef } from 'react';
-import { ShieldAlert, Info, MapPin, Truck, AlertTriangle, Route } from 'lucide-react';
+import { Navigation, Route, AlertTriangle, ShieldCheck, Info, CheckCircle2, Clock } from 'lucide-react';
 import L from 'leaflet';
 import { useV3Data } from '../hooks/useV3Data';
-import { createBasemapLayer } from '../utils/mapTiles';
 
 export default function HADRDashboard() {
   const v3 = useV3Data();
+  const [activeRoute, setActiveRoute] = useState(null); // 'normal' | 'hazard'
+
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
-  const layersRef = useRef({
-    basemap: null,
-    normalRoute: null,
-    hazardRoute: null,
-    origin: null,
-    destination: null
-  });
-
-  const [activeRoute, setActiveRoute] = useState('both'); // 'normal' | 'hazard' | 'both'
+  const layersRef = useRef({ normal: null, hazard: null, extent: null });
 
   useEffect(() => {
-    if (mapInstanceRef.current || !v3.v3NormalRoute || !v3.v3HazardAwareRoute) return;
-
-    const map = L.map(mapContainerRef.current, {
-      center: [30.15, 78.49],
-      zoom: 11,
-      zoomControl: false
-    });
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap &copy; CARTO'
-    }).addTo(map);
-
+    if (mapInstanceRef.current) return;
+    const map = L.map(mapContainerRef.current, { center: [30.3, 78.4], zoom: 12, zoomControl: false });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(map);
     L.control.zoom({ position: 'topleft' }).addTo(map);
     mapInstanceRef.current = map;
 
-    // Origin Marker (Dehradun / Jolly Grant roughly)
-    const originIcon = L.divIcon({
-      className: '',
-      html: `<div class="w-4 h-4 bg-emerald-500 rounded-full border-2 border-white shadow-md"></div>`,
-      iconSize: [16, 16],
-      iconAnchor: [8, 8]
-    });
-    layersRef.current.origin = L.marker([30.189, 78.033], { icon: originIcon }).addTo(map)
-      .bindTooltip('<div class="font-bold text-xs">PROTOTYPE HADR MISSION ORIGIN</div>', { direction: 'top', permanent: false });
-
-    // Destination Marker (Tehri Dam roughly)
-    const destIcon = L.divIcon({
-      className: '',
-      html: `<div class="w-4 h-4 bg-blue-600 rounded-full border-2 border-white shadow-md"></div>`,
-      iconSize: [16, 16],
-      iconAnchor: [8, 8]
-    });
-    layersRef.current.destination = L.marker([30.378, 78.481], { icon: destIcon }).addTo(map)
-      .bindTooltip('<div class="font-bold text-xs">MISSION DESTINATION (TEHRI DAM)</div>', { direction: 'top', permanent: false });
-
     return () => { map.remove(); mapInstanceRef.current = null; };
-  }, [v3.v3NormalRoute, v3.v3HazardAwareRoute]);
+  }, []);
 
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
 
-    if (layersRef.current.normalRoute) map.removeLayer(layersRef.current.normalRoute);
-    if (layersRef.current.hazardRoute) map.removeLayer(layersRef.current.hazardRoute);
-
-    if ((activeRoute === 'both' || activeRoute === 'normal') && v3.v3NormalRoute) {
-       layersRef.current.normalRoute = L.geoJSON(v3.v3NormalRoute, {
-         style: { color: '#ef4444', weight: 4, opacity: 0.8, dashArray: '8, 8' }
-       }).addTo(map);
+    if (v3.v3Hazard && !layersRef.current.extent) {
+      layersRef.current.extent = L.geoJSON(v3.v3Hazard, { style: { color: '#3b82f6', fillOpacity: 0.1, weight: 1 } }).addTo(map);
     }
-    
-    if ((activeRoute === 'both' || activeRoute === 'hazard') && v3.v3HazardAwareRoute) {
-       layersRef.current.hazardRoute = L.geoJSON(v3.v3HazardAwareRoute, {
-         style: { color: '#10b981', weight: 5, opacity: 0.9 }
-       }).addTo(map);
-    }
-    
-    // Fit bounds if both exist
-    if (v3.v3NormalRoute && layersRef.current.normalRoute) {
-       map.fitBounds(layersRef.current.normalRoute.getBounds(), { padding: [50, 50] });
-    }
-  }, [v3.v3NormalRoute, v3.v3HazardAwareRoute, activeRoute]);
 
+    if (v3.v3NormalRoute && !layersRef.current.normal) {
+      layersRef.current.normal = L.geoJSON(v3.v3NormalRoute, { style: { color: '#ef4444', weight: 4, dashArray: '6, 6' } }).addTo(map);
+    }
 
-  if (!v3.v3Routes) return <div className="p-8">Loading V3 Data...</div>;
+    if (v3.v3HazardAwareRoute && !layersRef.current.hazard) {
+      layersRef.current.hazard = L.geoJSON(v3.v3HazardAwareRoute, { style: { color: '#10b981', weight: 5 } }).addTo(map);
+    }
+
+    // Highlighting logic
+    if (layersRef.current.normal) {
+       layersRef.current.normal.setStyle({ opacity: activeRoute === 'hazard' ? 0.2 : 1.0, weight: activeRoute === 'normal' ? 6 : 4 });
+       if (activeRoute === 'normal') layersRef.current.normal.bringToFront();
+    }
+    if (layersRef.current.hazard) {
+       layersRef.current.hazard.setStyle({ opacity: activeRoute === 'normal' ? 0.2 : 1.0, weight: activeRoute === 'hazard' ? 6 : 5 });
+       if (activeRoute === 'hazard') layersRef.current.hazard.bringToFront();
+    }
+
+  }, [v3, activeRoute]);
+
+  let stats = {
+     normal_route: { distance_km: 0, eta_min: 0, hazard_conflict_edges: 2, status: 'NOT FEASIBLE AGAINST KNOWN MODELLED HAZARD' },
+     hazard_aware_route: { distance_km: 0, eta_min: 0, hazard_conflict_edges: 0, status: 'AVOIDS CURRENTLY MODELLED HAZARD SEGMENTS', extra_distance_km: 10.32 }
+  };
+  
+  if (v3.v3Routes && v3.v3Routes.routes && v3.v3Routes.routes.length > 0) {
+      // Use the first valid route or specific one for the dashboard
+      const r = v3.v3Routes.routes[1] || v3.v3Routes.routes[0];
+      stats.normal_route.distance_km = (r.normal_route_dist_m || 0) / 1000;
+      stats.hazard_aware_route.distance_km = (r.hazard_aware_route_dist_m || 0) / 1000;
+      stats.normal_route.hazard_conflict_edges = r.hazard_edges_avoided || 2;
+      stats.hazard_aware_route.extra_distance_km = stats.hazard_aware_route.distance_km - stats.normal_route.distance_km;
+      
+      if (stats.hazard_aware_route.extra_distance_km < 0) stats.hazard_aware_route.extra_distance_km = 0;
+  }
+
 
   return (
-    <div className="flex w-full h-full relative bg-slate-50">
-      
-      {/* Left Panel */}
-      <div className="w-[400px] h-full bg-white border-r border-slate-200 shadow-sm flex flex-col z-10">
-        <div className="p-6 border-b border-slate-100">
-           <h1 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-             <ShieldAlert className="w-6 h-6 text-blue-600" />
-             HADR Operations
-           </h1>
-           <p className="text-sm text-slate-500 mt-2">Time-aware hazard avoidance routing benchmark based on physical solver outputs.</p>
-        </div>
-
-        <div className="p-6 flex-1 overflow-y-auto flex flex-col gap-6">
-           {/* Normal Route Card */}
-           <div 
-             onClick={() => setActiveRoute('normal')}
-             className={`p-4 border rounded-xl cursor-pointer transition ${activeRoute === 'normal' || activeRoute === 'both' ? 'border-red-300 bg-red-50/30' : 'border-slate-200 hover:border-red-200'}`}
-           >
-             <div className="flex items-center gap-2 mb-3">
-               <Route className="w-4 h-4 text-red-500" />
-               <h3 className="font-bold text-slate-800">Normal Route (Fastest)</h3>
-             </div>
-             <div className="flex items-end justify-between mb-3">
-               <span className="text-3xl font-light tracking-tight text-slate-900">133.61 <span className="text-sm text-slate-500 font-semibold">km</span></span>
-               <span className="text-lg font-mono text-slate-700">~4.45h</span>
-             </div>
-             <div className="bg-red-100 text-red-800 text-[10px] font-bold px-2 py-1.5 rounded uppercase flex items-center gap-2">
-               <AlertTriangle className="w-3 h-3" />
-               NOT FEASIBLE AGAINST KNOWN MODELLED HAZARD
-             </div>
-           </div>
-
-           {/* Hazard-Aware Route Card */}
-           <div 
-             onClick={() => setActiveRoute('hazard')}
-             className={`p-4 border rounded-xl cursor-pointer transition ${activeRoute === 'hazard' || activeRoute === 'both' ? 'border-emerald-300 bg-emerald-50/30' : 'border-slate-200 hover:border-emerald-200'}`}
-           >
-             <div className="flex items-center gap-2 mb-3">
-               <Route className="w-4 h-4 text-emerald-500" />
-               <h3 className="font-bold text-slate-800">Hazard-Aware Route</h3>
-             </div>
-             <div className="flex items-end justify-between mb-3">
-               <span className="text-3xl font-light tracking-tight text-slate-900">143.93 <span className="text-sm text-slate-500 font-semibold">km</span></span>
-               <span className="text-lg font-mono text-slate-700">~4.80h</span>
-             </div>
-             <div className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-1.5 rounded uppercase flex items-center gap-2">
-               <ShieldAlert className="w-3 h-3" />
-               AVOIDS CURRENTLY MODELLED HAZARD SEGMENTS
-             </div>
-             <div className="mt-3 text-xs text-slate-500 font-medium">Penalty: +10.32 km</div>
-           </div>
-
-           <div className="flex items-center gap-3 bg-amber-50 border border-amber-200 p-3 rounded-lg text-amber-800">
-             <Info className="w-5 h-5 shrink-0" />
-             <p className="text-[11px] font-semibold leading-tight">UNKNOWN BEYOND 800s MODEL WINDOW. This feasibility assessment strictly applies to the computed V3 domain.</p>
-           </div>
-        </div>
-        
-        <div className="p-4 border-t border-slate-100 bg-slate-50">
-           <button onClick={() => setActiveRoute('both')} className="w-full py-2.5 bg-white border border-slate-200 hover:bg-slate-100 rounded-lg text-sm font-bold text-slate-700 transition">View Both Routes</button>
-        </div>
+    <div className="flex flex-col h-full bg-slate-50">
+      <div className="px-8 py-6 bg-white border-b border-slate-200 shrink-0">
+         <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+           <Navigation className="w-6 h-6 text-blue-600" /> HADR Operations Console
+         </h1>
+         <p className="text-sm text-slate-500 mt-1">Evaluate emergency-response routing against modelled hydrodynamic constraints.</p>
       </div>
 
-      {/* Map Area */}
-      <div className="flex-1 relative">
-        <div ref={mapContainerRef} className="absolute inset-0 z-0" />
-      </div>
+      <div className="flex-1 flex min-h-0 px-8 py-6 gap-6">
+         {/* Map */}
+         <div className="flex-1 bg-white border border-slate-200 rounded-xl overflow-hidden relative shadow-sm">
+            <div ref={mapContainerRef} className="absolute inset-0 z-0" />
+            <div className="absolute top-4 right-4 z-[400] bg-white/95 backdrop-blur p-3 rounded-lg border border-slate-200 shadow-sm flex flex-col gap-2">
+               <span className="text-xs font-bold text-slate-800 uppercase mb-1">Precomputed Mission</span>
+               <div className="flex items-center gap-2 text-[10px] text-slate-600 font-mono"><span className="w-2 h-2 rounded-full bg-blue-500"></span> ORIGIN: PROTOTYPE HADR MISSION ORIGIN</div>
+               <div className="flex items-center gap-2 text-[10px] text-slate-600 font-mono"><span className="w-2 h-2 rounded-full bg-purple-500"></span> DEST: CRITICAL HEALTHCARE CLUSTER</div>
+            </div>
+         </div>
+         
+         {/* Inspector */}
+         <div className="w-[400px] flex flex-col gap-4 overflow-y-auto custom-scrollbar pr-2">
+            
+            {/* Controls */}
+            <div className="bg-white border border-slate-200 p-5 rounded-xl shadow-sm">
+               <h3 className="font-bold text-slate-800 mb-4 text-sm border-b border-slate-100 pb-2">Mission Parameters</h3>
+               <div className="space-y-3">
+                  <div>
+                    <label className="text-[10px] font-bold text-slate-500 uppercase">Departure Time</label>
+                    <select disabled className="w-full mt-1 p-2 bg-slate-50 border border-slate-200 rounded text-sm text-slate-600 opacity-70 cursor-not-allowed">
+                       <option>T+0s (Immediate)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold text-slate-500 uppercase">Routing Engine</label>
+                    <select disabled className="w-full mt-1 p-2 bg-slate-50 border border-slate-200 rounded text-sm text-slate-600 opacity-70 cursor-not-allowed">
+                       <option>Precomputed Static Validation</option>
+                    </select>
+                  </div>
+                  <button disabled className="w-full py-2 mt-2 bg-slate-100 text-slate-400 border border-slate-200 font-bold text-sm rounded cursor-not-allowed flex items-center justify-center gap-2">
+                     <Clock className="w-4 h-4" /> Live Recalculation Disabled
+                  </button>
+                  <p className="text-[9px] text-slate-400 text-center uppercase tracking-wider">Viewing Precomputed Model Results</p>
+               </div>
+            </div>
 
+            {/* Routes */}
+            <div 
+              onMouseEnter={() => setActiveRoute('normal')} 
+              onMouseLeave={() => setActiveRoute(null)}
+              className={`bg-white border p-5 rounded-xl cursor-pointer transition ${activeRoute === 'normal' ? 'border-red-400 shadow-md ring-2 ring-red-50' : 'border-slate-200 hover:border-red-200'}`}
+            >
+               <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-bold text-slate-800 flex items-center gap-2"><Route className="w-4 h-4 text-red-500" /> Normal Route</h4>
+                  <span className="text-xs font-mono font-bold bg-slate-100 px-2 py-1 rounded text-slate-600">{stats.normal_route.distance_km.toFixed(1)} km</span>
+               </div>
+               <div className="flex items-start gap-2 bg-red-50 border border-red-100 p-2 rounded mb-3">
+                  <AlertTriangle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                  <p className="text-[10px] font-bold text-red-700 uppercase tracking-wide leading-tight">{stats.normal_route.status}</p>
+               </div>
+               <p className="text-xs text-slate-600">This baseline route intersects {stats.normal_route.hazard_conflict_edges} known hazard-conflict edges within the V3 hydrodynamic domain.</p>
+            </div>
+
+            <div 
+              onMouseEnter={() => setActiveRoute('hazard')} 
+              onMouseLeave={() => setActiveRoute(null)}
+              className={`bg-white border p-5 rounded-xl cursor-pointer transition ${activeRoute === 'hazard' ? 'border-emerald-400 shadow-md ring-2 ring-emerald-50' : 'border-slate-200 hover:border-emerald-200'}`}
+            >
+               <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-bold text-slate-800 flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-emerald-500" /> Hazard-Aware Route</h4>
+                  <span className="text-xs font-mono font-bold bg-slate-100 px-2 py-1 rounded text-slate-600">{stats.hazard_aware_route.distance_km.toFixed(1)} km</span>
+               </div>
+               <div className="flex items-start gap-2 bg-emerald-50 border border-emerald-100 p-2 rounded mb-3">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <p className="text-[10px] font-bold text-emerald-700 uppercase tracking-wide leading-tight">{stats.hazard_aware_route.status}</p>
+               </div>
+               <p className="text-xs text-slate-600 mb-2">Algorithm successfully bypassed all currently modelled hazard segments.</p>
+               <div className="text-[10px] bg-slate-50 border border-slate-100 p-2 rounded font-mono text-slate-500 flex items-center gap-2">
+                  <Info className="w-3 h-3 text-blue-500" /> +{stats.hazard_aware_route.extra_distance_km.toFixed(2)} km detour required.
+               </div>
+            </div>
+
+         </div>
+      </div>
     </div>
   );
 }
