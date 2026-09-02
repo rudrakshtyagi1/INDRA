@@ -9,7 +9,6 @@ Q(t) = integral over A of v . n dA
 from __future__ import annotations
 
 import logging
-import math
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
@@ -134,8 +133,10 @@ class TemporalResampler:
             orig_vol = float(trapz_fn(orig_Q, orig_times))
             res_vol = float(trapz_fn(res_Q, res_times))
         else:
-            orig_vol = sum((t2 - t1) * (q1 + q2) / 2.0 for (t1, q1), (t2, q2) in zip(zip(orig_times, orig_Q), zip(orig_times[1:], orig_Q[1:])))
-            res_vol = sum((t2 - t1) * (q1 + q2) / 2.0 for (t1, q1), (t2, q2) in zip(zip(res_times, res_Q), zip(res_times[1:], res_Q[1:])))
+            orig_pairs = zip(zip(orig_times, orig_Q), zip(orig_times[1:], orig_Q[1:]))
+            orig_vol = sum((t2 - t1) * (q1 + q2) / 2.0 for (t1, q1), (t2, q2) in orig_pairs)
+            res_pairs = zip(zip(res_times, res_Q), zip(res_times[1:], res_Q[1:]))
+            res_vol = sum((t2 - t1) * (q1 + q2) / 2.0 for (t1, q1), (t2, q2) in res_pairs)
         if orig_vol == 0:
             return 0.0
         return abs(orig_vol - res_vol) / orig_vol

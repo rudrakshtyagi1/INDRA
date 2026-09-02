@@ -24,11 +24,15 @@ HydroBreach is an end-to-end simulation, satellite surveillance, and disaster an
 3. **Tehri Dam (Bhagirathi River, Uttarakhand)**: Rockfill embankment dam piping & overtopping breach scenario cascading towards Devprayag, Rishikesh, and Haridwar.
 4. **Hirakud Dam (Mahanadi River, Odisha)**: Earthen dam extreme surge & spillway release scenario impacting Sambalpur.
 
-### 4. GEE Sentinel-1 SAR Satellite Surveillance
-- Automated Sentinel-1 C-band SAR backscatter differencing.
-- Adaptive Otsu water thresholding to detect newly formed landslide-dammed lakes.
-- DEM-assisted impounded water volume estimation: $V = \frac{1}{3} A \cdot h_{depth}$.
-- Early Warning System (EWS) alert center with one-click outburst flood simulation trigger.
+### 4. GEE Sentinel-1 SAR Satellite Observation
+- Real, credential-gated access to the Google Earth Engine `COPERNICUS/S1_GRD` collection.
+- Bitemporal pre/post SAR backscatter-drop analysis with adaptive Otsu thresholding.
+- Matching relative-orbit preference, permanent-water exclusion, connected-pixel cleanup, area statistics, GeoJSON vectors, and map visualization.
+- Persisted observation analyses plus model-vs-satellite spatial overlap metrics.
+- **No synthetic SAR fallback:** if GEE is unavailable, the UI reports `STANDBY / DATA UNAVAILABLE`.
+- Tehri catastrophic-breach satellite overlap is explicitly treated as **environmental spatial context, not historical physical validation**.
+
+See [`docs/satellite_methodology.md`](docs/satellite_methodology.md).
 
 ### 5. HADR Loss & Damage Assessment
 - Hazard Rating: $HR = d \cdot (v + 0.5) + DF$ (CWC & Defra standards).

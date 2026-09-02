@@ -335,34 +335,29 @@ export const api = {
     }
   },
 
-  getGEEAlerts: () =>
-    fetchJson('/api/satellite/alerts')
-      .catch(() => fetchJson('/api/gee/alerts'))
-      .catch(() => ({ alerts: [], total_active_alerts: 0 })),
+  getGEEAlerts: () => fetchJson('/api/satellite/alerts'),
 
-  getGEEZones: () =>
-    fetchJson('/api/satellite/zones')
-      .catch(() => fetchJson('/api/gee/zones'))
-      .catch(() => ({ zones: [] })),
+  getGEEZones: () => fetchJson('/api/satellite/zones'),
 
-  runSARAnalysis: (bbox, pre, post, pol) =>
+  getSatelliteStatus: () => fetchJson('/api/satellite/status'),
+
+  listSatelliteAnalyses: (limit = 20) => fetchJson(`/api/satellite/analyses?limit=${limit}`),
+
+  getSatelliteAnalysis: (id) => fetchJson(`/api/satellite/analyses/${id}`),
+
+  runSARAnalysis: (body) =>
     fetchJson('/api/satellite/analyse', {
       method: 'POST',
-      body: JSON.stringify({ bbox, pre_date: pre, post_date: post, polarization: pol }),
-    })
-      .catch(() =>
-        fetchJson('/api/gee/analyze', {
-          method: 'POST',
-          body: JSON.stringify({ bbox, pre_event_date: pre, post_event_date: post, polarization: pol }),
-        })
-      )
-      .catch(() => ({
-        detected_water_area_ha: 18.5,
-        otsu_threshold_db: -7.4,
-        change_detected: true,
-        estimated_volume_m3: 1850000.0,
-        provenance: 'OBSERVED / DERIVED (Sentinel-1 SAR)',
-      })),
+      body: JSON.stringify(body),
+    }),
+
+  listSatelliteModelProducts: () => fetchJson('/api/satellite/model-products'),
+
+  compareSatelliteWithModel: (analysisId, runId, purpose = 'context') =>
+    fetchJson('/api/satellite/compare-model', {
+      method: 'POST',
+      body: JSON.stringify({ analysis_id: analysisId, run_id: runId, purpose }),
+    }),
 
   getDemProfile: () =>
     Promise.resolve({ chainage_km: [0, 22, 42, 62, 78, 100], elevation_m: [839.5, 515.0, 460.0, 370.0, 340.0, 290.0] }),

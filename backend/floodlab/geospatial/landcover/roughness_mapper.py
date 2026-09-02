@@ -30,7 +30,6 @@ class RoughnessMapper:
         Map land-cover classification raster to Manning's n.
         Provenance of resulting raster: DERIVED (from OBSERVED/REPORTED land cover + REPORTED lookup table).
         """
-        table = lookup or LAND_COVER_TO_MANNING
         roughness = np.full_like(landcover_grid, 0.035, dtype=np.float32)
         # default mapping
         prov = label_derived(

@@ -6,8 +6,6 @@ Reference: USDA-SCS National Engineering Handbook, Section 4 (1972).
 """
 from __future__ import annotations
 
-import math
-
 
 class SCSCN:
     """

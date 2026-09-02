@@ -1,8 +1,10 @@
 """Evacuation and rescue routing endpoints."""
+from typing import Dict, List, Optional
 from fastapi import APIRouter
 from pydantic import BaseModel
-from typing import List, Optional, Dict
+
 router = APIRouter()
+
 
 class EvacuationRequest(BaseModel):
     village_coords: List[Dict]
@@ -10,15 +12,18 @@ class EvacuationRequest(BaseModel):
     flood_arrival_times: Optional[Dict[str, float]] = None
     agency_thresholds: Optional[Dict] = None
 
+
 class RescueRequest(BaseModel):
     ndrf_base: Dict
     target_settlements: List[Dict]
     flood_arrival_times: Optional[Dict[str, float]] = None
     agency_thresholds: Optional[Dict] = None
 
+
 @router.post("/evacuate")
 async def plan_evacuation(req: EvacuationRequest):
     from floodlab.engines.routing.evacuation import EvacuationPlanner
+
     planner = EvacuationPlanner()
     return planner.plan(
         req.village_coords,
@@ -27,9 +32,11 @@ async def plan_evacuation(req: EvacuationRequest):
         req.agency_thresholds,
     )
 
+
 @router.post("/rescue")
 async def plan_rescue(req: RescueRequest):
     from floodlab.engines.routing.evacuation import RescueRouteEngine
+
     engine = RescueRouteEngine()
     return engine.plan_rescue(
         req.ndrf_base,

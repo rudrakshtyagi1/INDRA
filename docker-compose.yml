@@ -7,8 +7,22 @@ services:
       - "8000:8000"
     volumes:
       - ./data/processed/tehri_simulations:/data/processed/tehri_simulations:ro
+      # Phase 1B/6 scenario + run control artifacts must survive container recreation.
+      - ./data/runs:/app/data/runs
+      - ./data/scenarios:/app/data/scenarios
+      - ./storage:/app/storage
+      # Optional host Earth Engine / Google credentials for local Docker development.
+      - ${HOME}/.config/earthengine:/root/.config/earthengine:ro
+      - ${HOME}/.config/gcloud:/root/.config/gcloud:ro
+      - ./secrets:/run/secrets:ro
     environment:
       - DATA_DIR=/data/processed/tehri_simulations
+      - GEE_PROJECT_ID=${GEE_PROJECT_ID:-}
+      - GEE_SERVICE_ACCOUNT=${GEE_SERVICE_ACCOUNT:-}
+      - GEE_KEY_FILE=${GEE_KEY_FILE:-}
+      - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS:-}
+      - COPERNICUS_CLIENT_ID=${COPERNICUS_CLIENT_ID:-}
+      - COPERNICUS_CLIENT_SECRET=${COPERNICUS_CLIENT_SECRET:-}
     healthcheck:
       test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health')\" || exit 1"]
       interval: 10s

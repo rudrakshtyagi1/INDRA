@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from floodlab.config.constants import ExecutionStatus, SolverType, BreachModel
+from floodlab.config.constants import ExecutionStatus
 from floodlab.domain.provenance import ProvenanceRecord
 
 

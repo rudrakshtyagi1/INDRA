@@ -2,7 +2,7 @@
 GeoJSON and KML Exporters.
 """
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict
 import json
 
 
@@ -23,7 +23,7 @@ class GeoJSONExporter:
 class KMLExporter:
     def export_hazard_zones(self, geojson_data: Dict[str, Any], output_path: Path) -> Path:
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        kml = f"""<?xml version="1.0" encoding="UTF-8"?>
+        kml = """<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
   <Document>
     <name>FloodLab Simulation Export</name>

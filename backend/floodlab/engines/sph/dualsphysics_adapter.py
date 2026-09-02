@@ -13,12 +13,11 @@ from __future__ import annotations
 
 import logging
 import math
-import sys
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from floodlab.config.constants import G, RHO0
-from floodlab.engines.sph.runner import DualSPHysicsRunner, EngineNotAvailableError
+from floodlab.config.constants import G
+from floodlab.engines.sph.runner import DualSPHysicsRunner
 from floodlab.provenance.labels import label_modelled
 
 logger = logging.getLogger(__name__)

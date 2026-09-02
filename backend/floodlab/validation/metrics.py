@@ -8,7 +8,6 @@ Three-tier validation framework:
 """
 from __future__ import annotations
 
-import math
 from typing import Any, Dict, List, Optional
 
 import numpy as np
@@ -147,7 +146,6 @@ class ModelComparison:
         # Placeholder: comparison at first station
         hydro_metrics = {}
         if sph_Q and delft_Q:
-            sph_times = sph_result.get("discharge_times_hrs", list(range(len(sph_Q))))
             hydro_metrics = {
                 "note": "Station-level comparison available when both solvers produce gauge output",
                 "SPH_peak_Q_m3s": max(sph_Q),

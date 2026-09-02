@@ -305,7 +305,9 @@ export default function SimulationViewer({
     if (mapInstanceRef.current) {
       try {
         mapInstanceRef.current.remove();
-      } catch (e) {}
+      } catch (_e) {
+        // ignore map cleanup error
+      }
       mapInstanceRef.current = null;
     }
     if (container._leaflet_id) {
@@ -362,7 +364,9 @@ export default function SimulationViewer({
       if (mapInstanceRef.current) {
         try {
           mapInstanceRef.current.remove();
-        } catch (e) {}
+        } catch (_e) {
+          // ignore map cleanup error
+        }
         mapInstanceRef.current = null;
       }
       if (container && container._leaflet_id) {

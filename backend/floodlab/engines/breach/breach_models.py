@@ -213,7 +213,6 @@ class BreachMechanicsEngine:
         Peak discharge: Qp = 8/27 * sqrt(g) * hb^(5/2) * B
         """
         hb = inp.hydraulic_head_m
-        Vw = inp.reservoir_volume_m3
         Bavg = inp.dam_height_m * 2.0  # approximate full crest width
         z = 0.0
         tf = 0.0

@@ -4,7 +4,6 @@ Scenario service.
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 import yaml
-from floodlab.domain.scenario import ScenarioDomain, DownstreamStationDomain
 
 
 class ScenarioService:

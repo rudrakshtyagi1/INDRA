@@ -13,8 +13,7 @@ Reference: CWC Flood Damage Mitigation Manual; Defra/EA (2008) FD2320/TR2.
 """
 from __future__ import annotations
 
-import math
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 import numpy as np
 

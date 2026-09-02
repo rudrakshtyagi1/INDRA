@@ -8,6 +8,7 @@ import ScenariosWorkspace from './pages/ScenariosWorkspace';
 import ScenarioComparison from './pages/ScenarioComparison';
 import Exposure from './pages/Exposure';
 import DataProvenance from './pages/DataProvenance';
+import SatelliteMonitor from './pages/SatelliteMonitor';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -18,6 +19,7 @@ export default function App() {
       case 'overview': return <Overview onNavigate={setActiveTab} />;
       case 'simulation': return <SimulationLab initialTimeMin={simTimeMin} onTimeChange={setSimTimeMin} onNavigateToHadr={() => setActiveTab('hadr')} />;
       case 'scenarios': return <ScenariosWorkspace onNavigate={setActiveTab} />;
+      case 'satellite': return <SatelliteMonitor />;
       case 'comparison': return <ScenarioComparison />;
       case 'hadr': return <HADRDashboard />;
       case 'exposure': return <Exposure />;
