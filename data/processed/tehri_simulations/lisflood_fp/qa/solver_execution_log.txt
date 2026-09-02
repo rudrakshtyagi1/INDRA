@@ -1,0 +1,7 @@
+***************************
+ LISFLOOD-FP version 8.1.0 (float)
+Rectangular channels only.
+_CALCULATE_Q_MODE 1.
+***************************
+
+loop time 132.000000

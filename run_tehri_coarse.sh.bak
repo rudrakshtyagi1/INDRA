@@ -1,0 +1,29 @@
+#!/bin/bash
+set -e
+
+# Setup paths
+export PROJECT_DIR="/workspace/FloodLab/data/processed/tehri_simulations/dualsphysics"
+export BIN_DIR="/workspace/FloodLab/data/processed/tehri_simulations/dualsphysics/setup/DualSPHysics/bin/linux"
+export LD_LIBRARY_PATH=$BIN_DIR:$LD_LIBRARY_PATH
+export OMP_NUM_THREADS=8
+
+cd $PROJECT_DIR/runs/near_field_coarse
+
+# Copy config and forcing
+cp ../../config/Case_Tehri_Breach_Def.xml .
+cp ../../config/inlet_velocity.csv .
+
+echo "Running GenCase..."
+$BIN_DIR/GenCase_linux64 Case_Tehri_Breach_Def Case_Tehri_Breach > gencase.log
+
+echo "Running DualSPHysics CPU..."
+$BIN_DIR/DualSPHysics5.4CPU_linux64 Case_Tehri_Breach Case_Tehri_Breach_out > dualsphysics.log
+
+echo "Running PartVTK..."
+$BIN_DIR/PartVTK_linux64 -dirin Case_Tehri_Breach_out/data -filexml Case_Tehri_Breach_out/Case_Tehri_Breach.xml -savevtk ../../outputs/vtk/PartFluid -onlytype:-all,fluid > partvtk.log
+
+# Extract checkpoint near the inlet
+# MeasureTool to extract Q at a downstream section (e.g. x=20)
+# We can use FlowTool for section discharge if needed. Or just measuretool for velocities.
+
+echo "Done!"

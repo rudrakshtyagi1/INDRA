@@ -53,3 +53,10 @@ Thumbs.db
 *.pack
 dualsphysics_bin/
 data/processed/tehri_simulations/dualsphysics/setup/DualSPHysics/
+*.vtk
+*.tif
+*.asc
+*.geojson
+*.bi4
+*.out
+*Case_Tehri_Breach_out/*

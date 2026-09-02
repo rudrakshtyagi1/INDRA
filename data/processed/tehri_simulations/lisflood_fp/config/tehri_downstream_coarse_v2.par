@@ -1,0 +1,11 @@
+DEMfile          ../terrain/downstream_dem_ascii.asc
+resroot          tehri_coarse_v2
+dirroot          ../outputs/v2_boundary_corrected/raw
+sim_time         4000.0
+initial_tstep    1.0
+massint          100.0
+saveint          4000.0
+fpfric           0.06
+bcifile          ../boundary/lisflood_boundary_v2.bci
+bdyfile          ../boundary/lisflood_boundary_v2.bdy
+stagefile        tehri.stage

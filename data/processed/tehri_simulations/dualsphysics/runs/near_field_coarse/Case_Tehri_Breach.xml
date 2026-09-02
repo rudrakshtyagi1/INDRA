@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<case app="GenCase v5.4.354.01 (07-04-2025)" date="02-09-2026 07:22:45">
+    <casedef>
+        <constantsdef>
+            <gravity x="0" y="0" z="-9.81" comment="Gravitational acceleration" units_comment="m/s^2" />
+            <rhop0 value="1000" comment="Reference density of the fluid" units_comment="kg/m^3" />
+            <rhopgradient value="2" comment="Initial density gradient 1:Rhop0, 2:Water column, 3:Max. water height (default=2)" />
+            <hswl value="2.0" auto="false" comment="Maximum still water level to calculate speedofsound using coefsound" units_comment="metres (m)" />
+            <gamma value="7" comment="Polytropic constant for water used in the state equation" />
+            <speedsystem value="0" auto="true" comment="Maximum system speed (by default the dam-break propagation is used)" />
+            <coefsound value="20" comment="Coefficient to multiply speedsystem" />
+            <speedsound value="0" auto="true" comment="Speed of sound to use in the simulation (by default speedofsound=coefsound*speedsystem)" />
+            <coefh value="1.0" comment="Coefficient to calculate the smoothing length (h=coefh*sqrt(3*dp^2) in 3D)" />
+            <_hdp value="2" comment="Alternative option to calculate the smoothing length (h=hdp*dp)" />
+            <cflnumber value="0.2" comment="Coefficient to multiply dt" />
+        </constantsdef>
+        <mkconfig boundcount="240" fluidcount="9" />
+        <geometry>
+            <definition dp="0.5">
+                <pointmin x="-10" y="-1" z="-1" />
+                <pointmax x="50" y="10" z="10" />
+            </definition>
+            <commands>
+                <mainlist>
+                    <setshapemode>dp | bound</setshapemode>
+                    <setdrawmode mode="full" />
+                    <setmkbound mk="0" />
+                    <!-- Bottom -->
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="-5" y="0" z="-0.5" />
+                        <size x="50" y="4" z="0.5" />
+                    </drawbox>
+                    <!-- Left Wall -->
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="-5" y="-0.5" z="0" />
+                        <size x="50" y="0.5" z="5" />
+                    </drawbox>
+                    <!-- Right Wall -->
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="-5" y="4.0" z="0" />
+                        <size x="50" y="0.5" z="5" />
+                    </drawbox>
+                </mainlist>
+            </commands>
+        </geometry>
+    </casedef>
+    <execution>
+        <special>
+            <inout>
+                <inoutzone>
+                    <refilling value="0" />
+                    <inputtreatment value="2" />
+                    <layers value="4" />
+                    <zone3d>
+                        <box>
+                            <point x="0" y="1.5" z="0.5" />
+                            <size x="0" y="1.0" z="1.0" />
+                            <direction x="1" y="0" z="0" />
+                        </box>
+                    </zone3d>
+                    <imposevelocity mode="1">
+                        <velocityfile file="inlet_velocity.csv" />
+                    </imposevelocity>
+                </inoutzone>
+            </inout>
+        </special>
+        <parameters>
+            <parameter key="SavePosDouble" value="0" />
+            <parameter key="StepAlgorithm" value="1" />
+            <parameter key="VerletSteps" value="40" />
+            <parameter key="Kernel" value="2" comment="2:Wendland" />
+            <parameter key="ViscoTreatment" value="1" />
+            <parameter key="Visco" value="0.1" />
+            <parameter key="ViscoBoundFactor" value="1" />
+            <parameter key="DensityDT" value="2" />
+            <parameter key="DensityDTvalue" value="0.1" />
+            <parameter key="Shifting" value="0" />
+            <parameter key="RigidAlgorithm" value="1" />
+            <parameter key="CoefDtMin" value="0.05" />
+            <parameter key="DtIni" value="0" />
+            <parameter key="DtMin" value="0" />
+            <parameter key="TimeMax" value="80.0" />
+            <parameter key="TimeOut" value="2.0" />
+            <parameter key="PartsOutMax" value="1" comment="**DEPRECATED** " />
+            <parameter key="RhopOutMin" value="700" />
+            <parameter key="RhopOutMax" value="1300" />
+            <simulationdomain comment="Defines domain of simulation (default=Uses minimum and maximum position of the generated particles)">
+                <posmin x="-10" y="-1" z="-1" comment="e.g.: x=0.5, y=default-1, z=default-10%" />
+                <posmax x="50" y="10" z="10" />
+            </simulationdomain>
+        </parameters>
+        <particles np="6060" nb="6060" nbf="6060" mkboundfirst="10" mkfluidfirst="1">
+            <_summary>
+                <positions units_comment="metres (m)">
+                    <posmin x="-5" y="-0.5" z="-0.5" />
+                    <posmax x="45" y="4.5" z="5" />
+                </positions>
+                <fixed count="6060" id="0-6059" mkcount="1" mkvalues="10" />
+            </_summary>
+            <fixed mkbound="0" mk="10" begin="0" count="6060" />
+        </particles>
+        <constants>
+            <data2d value="false" />
+            <gravity x="0" y="0" z="-9.81" units_comment="m/s^2" />
+            <cflnumber value="0.2" />
+            <gamma value="7" />
+            <rhop0 value="1000" units_comment="kg/m^3" />
+            <dp value="0.5" units_comment="metres (m)" />
+            <h value="0.86602540378" units_comment="metres (m)" />
+            <b value="1121142.8571" units_comment="Pascal (Pa)" />
+            <massbound value="125" units_comment="kg" />
+            <massfluid value="125" units_comment="kg" />
+        </constants>
+        <uservars>
+            <varnum name="VResId" value="0" />
+        </uservars>
+        <motion />
+        <vtkout mkboundfirst="10" mkfluidfirst="1" />
+    </execution>
+</case>

@@ -1,0 +1,21 @@
+{
+  "project": "FloodLab",
+  "solver": "LISFLOOD-FP",
+  "version": "8.1.0",
+  "build_platform": {
+    "os": "Ubuntu 22.04",
+    "arch": "linux/arm64",
+    "host": "macOS Apple M4"
+  },
+  "dependencies": [
+    "cmake",
+    "g++",
+    "make",
+    "libnuma-dev",
+    "libnetcdf-dev",
+    "libgomp1"
+  ],
+  "build_command": "cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build -j 4",
+  "test_case": "T001_buscot",
+  "test_command": "/workspace/LISFLOOD-FP-8.1/build/lisflood buscot.par"
+}

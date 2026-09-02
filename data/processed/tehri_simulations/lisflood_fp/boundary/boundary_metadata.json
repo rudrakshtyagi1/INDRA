@@ -1,0 +1,31 @@
+{
+    "provenance": "BACK-SCALED DUALSPHYSICS MODEL RESULT",
+    "extension": "DERIVED BENCHMARK HYDROGRAPH EXTENSION",
+    "extension_rule": "Exponential decay tau=2000s appended after the SPH coupling period to allow flood propagation.",
+    "boundary_type": "QVAR (distributed point sources)",
+    "boundary_section_coordinates_utm44n": [
+        [
+            257425.0,
+            3362755.0
+        ],
+        [
+            257455.0,
+            3362755.0
+        ],
+        [
+            257485.0,
+            3362755.0
+        ],
+        [
+            257515.0,
+            3362755.0
+        ],
+        [
+            257545.0,
+            3362755.0
+        ]
+    ],
+    "section_width_m": 150,
+    "number_of_boundary_cells": 5,
+    "mapping_method": "Equally divided point sources across channel width to prevent numerical instability"
+}

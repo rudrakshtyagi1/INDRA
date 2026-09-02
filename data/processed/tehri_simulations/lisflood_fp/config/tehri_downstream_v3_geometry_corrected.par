@@ -1,0 +1,11 @@
+DEMfile          ../terrain/v3_dem_30m_conditioned.asc
+resroot          tehri_v3
+dirroot          ../outputs/v3_geometry_corrected/raw
+sim_time         800.0
+initial_tstep    1.0
+massint          100.0
+saveint          4000.0
+fpfric           0.06
+bcifile          ../boundary/lisflood_boundary_v3.bci
+bdyfile          ../boundary/lisflood_boundary_v3.bdy
+stagefile        tehri_v3.stage

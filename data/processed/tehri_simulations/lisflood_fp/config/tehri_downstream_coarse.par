@@ -1,0 +1,15 @@
+# Tehri Downstream Coarse LISFLOOD-FP Model
+# 2D Hydrodynamic propagation of DualSPHysics breach
+DEMfile          ../terrain/downstream_dem_ascii.asc
+resroot          tehri_coarse
+dirroot          ../outputs/raw
+sim_time         4000.0
+initial_tstep    1.0
+massint          100.0
+saveint          300.0
+fpfric           0.06
+bcifile          ../boundary/lisflood_boundary.bci
+bdyfile          ../boundary/lisflood_boundary.bdy
+elevoff
+#depthoff
+stagefile ../config/tehri.stage

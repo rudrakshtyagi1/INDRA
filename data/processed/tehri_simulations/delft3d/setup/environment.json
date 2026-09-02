@@ -1,0 +1,8 @@
+{
+  "host_arch": "arm64",
+  "container_arch": "amd64",
+  "docker_running": true,
+  "free_disk_gb": 35,
+  "repository": "https://github.com/Deltares/Delft3D.git",
+  "commit": "534e9c7aba0741b138f18fc0f844839dab102848"
+}
