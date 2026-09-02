@@ -1,0 +1,20 @@
+{
+  "scenario_metadata": {
+    "hazard_provenance": "MODELLED LISFLOOD-FP V3 GEOMETRY-CORRECTED BENCHMARK",
+    "simulation_window_s": 800,
+    "warning": "This is a WHAT-IF emergency-planning benchmark. Do not call outputs observed damage, real casualties, validated Tehri impact, or operational forecast."
+  },
+  "exposure_counts": {
+    "settlements_intersected": 0,
+    "healthcare_intersected": 0,
+    "power_assets_intersected": 0,
+    "bridges_intersected": 0,
+    "road_km_intersected": 38.788
+  },
+  "depth_classes": {
+    ">5 m": 52
+  },
+  "arrival_classes": {
+    "< 15 min": 52
+  }
+}

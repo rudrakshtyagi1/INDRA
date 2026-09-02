@@ -1,0 +1,45 @@
+{
+  "scenario_metadata": {
+    "mission_start_time_s": 0,
+    "safety_buffer_s": 600,
+    "hazard_provenance": "LISFLOOD-FP V3"
+  },
+  "routes": [
+    {
+      "origin": 2613453416,
+      "straight_line_nearest": "Laxman Jhula Governement Hospital",
+      "reachable_nearest": null,
+      "normal_route_dist_m": 128917.78005461527,
+      "hazard_aware_route_dist_m": -1,
+      "normal_ETA_s": 15476.324136208312,
+      "hazard_aware_ETA_s": null,
+      "hazard_edges_avoided": 7,
+      "minimum_operational_margin_s": -733.9669398552369,
+      "route_status": "ROUTE_NOT_FEASIBLE_UNDER_CURRENT_SCENARIO"
+    },
+    {
+      "origin": 2357200336,
+      "straight_line_nearest": "Laxman Jhula Governement Hospital",
+      "reachable_nearest": "Dr. Arora's Clinic",
+      "normal_route_dist_m": 133608.2297364971,
+      "hazard_aware_route_dist_m": 143925.2791489095,
+      "normal_ETA_s": 16039.403329711533,
+      "hazard_aware_ETA_s": 17277.944675739433,
+      "hazard_edges_avoided": 2,
+      "minimum_operational_margin_s": -1297.0461333584576,
+      "route_status": "ROUTE_NOT_FEASIBLE_UNDER_CURRENT_SCENARIO"
+    },
+    {
+      "origin": 10720076159,
+      "straight_line_nearest": "Laxman Jhula Governement Hospital",
+      "reachable_nearest": "Dr. Arora's Clinic",
+      "normal_route_dist_m": 135378.41495624615,
+      "hazard_aware_route_dist_m": 145737.5043886655,
+      "normal_ETA_s": 16251.91055897312,
+      "hazard_aware_ETA_s": 17495.49872613031,
+      "hazard_edges_avoided": 2,
+      "minimum_operational_margin_s": -1509.5533626200486,
+      "route_status": "ROUTE_NOT_FEASIBLE_UNDER_CURRENT_SCENARIO"
+    }
+  ]
+}
