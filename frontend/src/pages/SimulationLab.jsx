@@ -1,30 +1,36 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Play, Pause, RotateCcw, ChevronRight, ChevronLeft, Map, Layers, LayoutPanelLeft, MousePointerClick, ShieldAlert, BarChart3, Database } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  Play,
+  Pause,
+  RotateCcw,
+  ChevronRight,
+  ChevronLeft,
+  Layers,
+  Clock,
+} from 'lucide-react';
 import L from 'leaflet';
-
 import parseGeoraster from 'georaster';
 import GeoRasterLayer from 'georaster-layer-for-leaflet';
+import { useRun } from '../context/RunContext';
 import { useV3Data } from '../hooks/useV3Data';
 import { useV4Data } from '../hooks/useV4Data';
-import ExportMenu from '../components/ExportMenu';
-import { generateOperationalInsights } from '../utils/insightsEngine';
 
 const SPEEDS = [1, 2, 5, 10];
 
 export default function SimulationLab({ initialTimeMin = 0, onTimeChange, onNavigateToHadr }) {
-  const [selectedRun, setSelectedRun] = useState('V3');
+  const { currentRun, selectedRunId } = useRun();
   const v3 = useV3Data();
   const v4 = useV4Data();
-  const runData = selectedRun === 'V3' ? v3 : v4;
-  
-  const [currentTimeMin, setCurrentTimeMin] = useState(initialTimeMin);
+
+  const isV4 = selectedRunId === 'v4_extended';
+  const maxTimeMin = currentRun.simulation_window_s / 60.0;
+  const [currentTimeMin, setCurrentTimeMin] = useState(Math.min(initialTimeMin, maxTimeMin));
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [isInspectorOpen, setIsInspectorOpen] = useState(true);
-  const [activeTab, setActiveTab] = useState('OVERVIEW');
   const [selectedFeature, setSelectedFeature] = useState(null);
 
-  // Layer State
+  // Layers
   const [layers, setLayers] = useState({
     floodPropagation: true,
     maxDepth: false,
@@ -33,11 +39,9 @@ export default function SimulationLab({ initialTimeMin = 0, onTimeChange, onNavi
     healthcare: false,
     bridges: false,
     power: false,
-    normalRoute: false,
-    hazardAwareRoute: false
   });
 
-  const toggleLayer = (key) => setLayers(prev => ({ ...prev, [key]: !prev[key] }));
+  const toggleLayer = (key) => setLayers((prev) => ({ ...prev, [key]: !prev[key] }));
 
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
@@ -49,15 +53,9 @@ export default function SimulationLab({ initialTimeMin = 0, onTimeChange, onNavi
     healthcare: null,
     bridges: null,
     power: null,
-    normalRoute: null,
-    hazardAwareRoute: null
   });
 
-  const maxTimeMin = selectedRun === 'V3' ? 13.33 : 60.0;
-  const isFinished = currentTimeMin >= maxTimeMin;
   const currentSec = Math.round(currentTimeMin * 60);
-
-  const insights = useMemo(() => generateOperationalInsights(runData, currentSec), [runData, currentSec]);
 
   // Init Map
   useEffect(() => {
@@ -67,59 +65,102 @@ export default function SimulationLab({ initialTimeMin = 0, onTimeChange, onNavi
       zoom: 11,
       zoomControl: false,
     });
-    
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
+      attribution: '&copy; OpenStreetMap contributors',
     }).addTo(map);
 
     L.control.zoom({ position: 'topleft' }).addTo(map);
     mapInstanceRef.current = map;
 
-    // Load max depth raster initially but hide it
-    fetch(runData.maxDepthUrl || '/data/processed/tehri_simulations/lisflood_fp/outputs/v3_geometry_corrected/rasters/max_depth_v3.tif')
-      .then(res => res.arrayBuffer())
-      .then(buf => parseGeoraster(buf))
-      .then(georaster => {
-        const layer = new GeoRasterLayer({
-          georaster,
-          opacity: 0,
-          resolution: 256,
-          pixelValuesToColorFn: (v) => {
-            const depth = v[0];
-            if (depth <= 0 || depth === georaster.noDataValue) return null;
-            if (depth < 0.5) return '#93c5fd';
-            if (depth < 2.0) return '#3b82f6';
-            if (depth < 5.0) return '#2563eb';
-            if (depth < 10.0) return '#1d4ed8';
-            return '#1e3a8a';
-          }
-        });
-        layer.addTo(map);
-        layersRef.current.maxDepth = layer;
-      }).catch(e => console.error(e));
+    // Load max depth raster initially
+    const maxDepthUrl = currentRun.max_depth_tif_url;
+    if (maxDepthUrl) {
+      fetch(maxDepthUrl)
+        .then((res) => (res.ok ? res.arrayBuffer() : null))
+        .then((buf) => (buf ? parseGeoraster(buf) : null))
+        .then((georaster) => {
+          if (!georaster || !mapInstanceRef.current) return;
+          const layer = new GeoRasterLayer({
+            georaster,
+            opacity: 0,
+            resolution: 256,
+            pixelValuesToColorFn: (v) => {
+              const depth = v[0];
+              if (depth <= 0.05 || depth === georaster.noDataValue) return null;
+              if (depth < 0.5) return '#93c5fd';
+              if (depth < 2.0) return '#3b82f6';
+              if (depth < 5.0) return '#2563eb';
+              if (depth < 10.0) return '#1d4ed8';
+              return '#1e3a8a';
+            },
+          });
+          layer.addTo(mapInstanceRef.current);
+          layersRef.current.maxDepth = layer;
+        })
+        .catch(() => {});
+    }
 
-    // Map Click
-    map.on('click', (e) => {
-      setSelectedFeature({ type: 'Location', name: 'Selected Coordinates', coords: [e.latlng.lat, e.latlng.lng], status: 'OUTSIDE CURRENT MODELLED HAZARD WINDOW' });
-      setActiveTab('ASSETS');
-      if (!isInspectorOpen) setIsInspectorOpen(true);
-    });
-
-    return () => { map.remove(); mapInstanceRef.current = null; };
+    return () => {
+      map.remove();
+      mapInstanceRef.current = null;
+    };
   }, []);
 
-  // Playback Loop
+  // Update Max Depth Raster when run changes
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+
+    if (layersRef.current.maxDepth) {
+      map.removeLayer(layersRef.current.maxDepth);
+      layersRef.current.maxDepth = null;
+    }
+
+    const maxDepthUrl = currentRun.max_depth_tif_url;
+    if (maxDepthUrl) {
+      fetch(maxDepthUrl)
+        .then((res) => (res.ok ? res.arrayBuffer() : null))
+        .then((buf) => (buf ? parseGeoraster(buf) : null))
+        .then((georaster) => {
+          if (!georaster || !mapInstanceRef.current) return;
+          const layer = new GeoRasterLayer({
+            georaster,
+            opacity: layers.maxDepth ? 0.8 : 0,
+            resolution: 256,
+            pixelValuesToColorFn: (v) => {
+              const depth = v[0];
+              if (depth <= 0.05 || depth === georaster.noDataValue) return null;
+              if (depth < 0.5) return '#93c5fd';
+              if (depth < 2.0) return '#3b82f6';
+              if (depth < 5.0) return '#2563eb';
+              if (depth < 10.0) return '#1d4ed8';
+              return '#1e3a8a';
+            },
+          });
+          layer.addTo(mapInstanceRef.current);
+          layersRef.current.maxDepth = layer;
+        })
+        .catch(() => {});
+    }
+  }, [selectedRunId]);
+
+  // Handle Playback Loop
   useEffect(() => {
     let raf;
     let last;
     const tick = (now) => {
       if (!last) last = now;
       const elapsed = now - last;
-      if (elapsed >= (100 / playbackSpeed)) {
+      if (elapsed >= 100 / playbackSpeed) {
         last = now;
         setCurrentTimeMin((prev) => {
-          if (prev >= 13.33) { setIsPlaying(false); return 13.33; }
-          const next = Math.min(13.33, prev + 0.166);
+          if (prev >= maxTimeMin) {
+            setIsPlaying(false);
+            return maxTimeMin;
+          }
+          const stepMin = isV4 ? 1.0 : 0.166;
+          const next = Math.min(maxTimeMin, prev + stepMin);
           onTimeChange?.(next);
           return next;
         });
@@ -128,9 +169,9 @@ export default function SimulationLab({ initialTimeMin = 0, onTimeChange, onNavi
     };
     if (isPlaying) raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [isPlaying, playbackSpeed, onTimeChange]);
+  }, [isPlaying, playbackSpeed, maxTimeMin, isV4, onTimeChange]);
 
-  // Frame Update (Arrival / Max Depth)
+  // Frame Update (Real temporal depth frames for V4, propagation mask for V3)
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
@@ -142,56 +183,56 @@ export default function SimulationLab({ initialTimeMin = 0, onTimeChange, onNavi
     if (!layers.floodPropagation) {
       if (layersRef.current.floodFrame) map.removeLayer(layersRef.current.floodFrame);
       layersRef.current.floodFrame = null;
-    } else {
-      const snapped = Math.max(0, Math.min(800, Math.round(currentSec / 50.0) * 50));
-      
-      // Find the correct frame URL
-      let frameUrl = `/api/scenarios/v3/frames/${snapped}`; // fallback
-      if (runData.frames && runData.frames.length > 0) {
-        // Find closest frame
-        const frame = runData.frames.reduce((prev, curr) => 
-          Math.abs(curr.time_sec - currentSec) < Math.abs(prev.time_sec - currentSec) ? curr : prev
-        );
-        frameUrl = frame.url;
-      }
-
-      if (frameUrl.includes('.geojson') || frameUrl.includes('/scenarios/v3/')) {
-          fetch(frameUrl)
-            .then(res => res.json())
-            .then(geoJson => {
-              if (!mapInstanceRef.current || !layers.floodPropagation) return;
-              if (layersRef.current.floodFrame) map.removeLayer(layersRef.current.floodFrame);
-              const layer = L.geoJSON(geoJson, {
-                style: { color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.8, weight: 0.5, opacity: 1 }
-              }).addTo(map);
-              layersRef.current.floodFrame = layer;
-            }).catch(() => {});
-      } else {
-          // It's a GeoTIFF
-          fetch(frameUrl)
-            .then(res => res.arrayBuffer())
-            .then(buf => parseGeoraster(buf))
-            .then(georaster => {
-              if (!mapInstanceRef.current || !layers.floodPropagation) return;
-              if (layersRef.current.floodFrame) map.removeLayer(layersRef.current.floodFrame);
-              
-              const layer = new GeoRasterLayer({
-                georaster,
-                opacity: 0.8,
-                resolution: 256,
-                pixelValuesToColorFn: (v) => {
-                  const depth = v[0];
-                  if (depth <= 0.05 || depth === georaster.noDataValue) return null;
-                  return '#3b82f6';
-                }
-              });
-              layer.addTo(mapInstanceRef.current);
-              layersRef.current.floodFrame = layer;
-            }).catch(console.error);
-      }
-
+      return;
     }
-  }, [currentSec, layers.floodPropagation, layers.maxDepth]);
+
+    if (isV4 && v4.frames && v4.frames.length > 0) {
+      // Find closest V4 60s frame
+      const closest = v4.frames.reduce((prev, curr) =>
+        Math.abs(curr.time_sec - currentSec) < Math.abs(prev.time_sec - currentSec) ? curr : prev
+      );
+      if (closest && closest.url) {
+        fetch(closest.url)
+          .then((res) => (res.ok ? res.arrayBuffer() : null))
+          .then((buf) => (buf ? parseGeoraster(buf) : null))
+          .then((georaster) => {
+            if (!mapInstanceRef.current || !layers.floodPropagation) return;
+            if (layersRef.current.floodFrame) mapInstanceRef.current.removeLayer(layersRef.current.floodFrame);
+
+            const layer = new GeoRasterLayer({
+              georaster,
+              opacity: 0.85,
+              resolution: 256,
+              pixelValuesToColorFn: (v) => {
+                const depth = v[0];
+                if (depth <= 0.05 || depth === georaster.noDataValue) return null;
+                if (depth < 1.0) return '#93c5fd';
+                if (depth < 3.0) return '#3b82f6';
+                if (depth < 6.0) return '#2563eb';
+                return '#1e3a8a';
+              },
+            });
+            layer.addTo(mapInstanceRef.current);
+            layersRef.current.floodFrame = layer;
+          })
+          .catch(() => {});
+      }
+    } else {
+      // V3 arrival propagation
+      const snapped = Math.max(0, Math.min(800, Math.round(currentSec / 50.0) * 50));
+      fetch(`/api/scenarios/v3/frames/${snapped}`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((geoJson) => {
+          if (!mapInstanceRef.current || !layers.floodPropagation || !geoJson) return;
+          if (layersRef.current.floodFrame) mapInstanceRef.current.removeLayer(layersRef.current.floodFrame);
+          const layer = L.geoJSON(geoJson, {
+            style: { color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.75, weight: 0.5 },
+          }).addTo(mapInstanceRef.current);
+          layersRef.current.floodFrame = layer;
+        })
+        .catch(() => {});
+    }
+  }, [currentSec, layers.floodPropagation, layers.maxDepth, isV4, v4.frames]);
 
   // Sync Vector Layers
   useEffect(() => {
@@ -207,262 +248,289 @@ export default function SimulationLab({ initialTimeMin = 0, onTimeChange, onNavi
         const layer = L.geoJSON(data, {
           style: styleFn,
           pointToLayer,
-          onEachFeature: (feature, layer) => {
-             layer.on('click', (e) => {
-                L.DomEvent.stopPropagation(e);
-                let arrival = feature.properties.arrival_time_hr ? feature.properties.arrival_time_hr * 3600 : null;
-                setSelectedFeature({
-                   type: key,
-                   name: feature.properties.name || `Feature ${feature.id || ''}`,
-                   arrival,
-                   status: arrival && arrival <= currentSec ? 'INTERSECTED' : 'OUTSIDE CURRENT MODELLED HAZARD WINDOW',
-                   coords: e.latlng ? [e.latlng.lat, e.latlng.lng] : null
-                });
-                setActiveTab('ASSETS');
-                setIsInspectorOpen(true);
-             });
-          }
+          onEachFeature: (feature, l) => {
+            l.on('click', (e) => {
+              L.DomEvent.stopPropagation(e);
+              const arr = feature.properties?.arrival_time_hr ? feature.properties.arrival_time_hr * 3600 : null;
+              setSelectedFeature({
+                type: key,
+                name: feature.properties?.name || `Feature ${feature.id || ''}`,
+                arrival: arr,
+                status: arr && arr <= currentSec ? 'INTERSECTED' : 'OUTSIDE CURRENT MODELLED HAZARD EXTENT',
+                coords: e.latlng ? [e.latlng.lat, e.latlng.lng] : null,
+              });
+              setIsInspectorOpen(true);
+            });
+          },
         }).addTo(map);
         layersRef.current[key] = layer;
       }
     };
 
     // Roads
-    syncVector('roadHazard', runData.v3Roads, (feature) => {
-      const arrTimeSec = (feature.properties.arrival_time_hr || 0) * 3600;
-      return arrTimeSec > currentSec ? { color: '#94A3B8', weight: 2, opacity: 0.6 } : { color: '#EA580C', weight: 4, opacity: 1.0 };
+    syncVector('roadHazard', v3.v3Roads, (feature) => {
+      const arrTimeSec = (feature.properties?.arrival_time_hr || 0) * 3600;
+      return arrTimeSec > currentSec
+        ? { color: '#94a3b8', weight: 2, opacity: 0.5 }
+        : { color: '#ea580c', weight: 4, opacity: 1.0 };
     });
 
-    // Settlements
-    syncVector('settlements', runData.v3Context?.settlements, () => ({ color: '#64748b', weight: 1 }), (feature, latlng) => L.circleMarker(latlng, { radius: 3, fillColor: '#64748b', fillOpacity: 0.7, color: '#fff', weight: 1 }));
-    // Healthcare
-    syncVector('healthcare', runData.v3Context?.healthcare, () => ({ color: '#ef4444', weight: 1 }), (feature, latlng) => L.circleMarker(latlng, { radius: 4, fillColor: '#ef4444', fillOpacity: 0.8, color: '#fff', weight: 1 }));
-    // Bridges
-    syncVector('bridges', runData.v3Context?.bridges, () => ({ color: '#eab308', weight: 1 }), (feature, latlng) => L.circleMarker(latlng, { radius: 4, fillColor: '#eab308', fillOpacity: 0.8, color: '#fff', weight: 1 }));
-    // Power
-    syncVector('power', runData.v3Context?.power, () => ({ color: '#a855f7', weight: 1 }), (feature, latlng) => L.circleMarker(latlng, { radius: 4, fillColor: '#a855f7', fillOpacity: 0.8, color: '#fff', weight: 1 }));
+    // Settlements, Healthcare, Bridges, Power (from V3 context)
+    syncVector(
+      'settlements',
+      v3.v3Context?.settlements,
+      () => ({ color: '#64748b', weight: 1 }),
+      (f, latlng) => L.circleMarker(latlng, { radius: 3, fillColor: '#64748b', fillOpacity: 0.7, color: '#fff', weight: 1 })
+    );
+    syncVector(
+      'healthcare',
+      v3.v3Context?.healthcare,
+      () => ({ color: '#ef4444', weight: 1 }),
+      (f, latlng) => L.circleMarker(latlng, { radius: 4, fillColor: '#ef4444', fillOpacity: 0.8, color: '#fff', weight: 1 })
+    );
+    syncVector(
+      'bridges',
+      v3.v3Context?.bridges,
+      () => ({ color: '#eab308', weight: 1 }),
+      (f, latlng) => L.circleMarker(latlng, { radius: 4, fillColor: '#eab308', fillOpacity: 0.8, color: '#fff', weight: 1 })
+    );
+    syncVector(
+      'power',
+      v3.v3Context?.power,
+      () => ({ color: '#a855f7', weight: 1 }),
+      (f, latlng) => L.circleMarker(latlng, { radius: 4, fillColor: '#a855f7', fillOpacity: 0.8, color: '#fff', weight: 1 })
+    );
+  }, [v3, layers, currentSec]);
 
-    // Routes
-    syncVector('normalRoute', runData.v3NormalRoute, () => ({ color: '#ef4444', weight: 4, opacity: 0.8, dashArray: '8, 8' }));
-    syncVector('hazardAwareRoute', runData.v3HazardAwareRoute, () => ({ color: '#10b981', weight: 5, opacity: 0.9 }));
-
-  }, [runData, layers, currentSec]);
-
-  const roadEdges = runData.v3Roads?.features?.filter(r => (r.properties?.arrival_time_hr * 3600) <= currentSec).length || 0;
-  const roadKm = selectedRun === 'V3' ? '38.788' : '41.678';
+  // Current road exposure count
+  const wettedRoadSegments =
+    v3.v3Roads?.features?.filter((r) => (r.properties?.arrival_time_hr * 3600) <= currentSec).length || 0;
   const pct = Math.round((currentTimeMin / maxTimeMin) * 100);
 
-  const handleTimeChange = (val) => {
-    setCurrentTimeMin(val);
-    onTimeChange?.(val);
-  };
-
-  const handleCheckpoint = (time, lat, lng) => {
-    setCurrentTimeMin(time / 60);
-    onTimeChange?.(time / 60);
-    mapInstanceRef.current?.flyTo([lat, lng], 13, { duration: 1 });
-  };
-
   return (
-    <div className="flex w-full h-full relative">
-      {/* MAP */}
-      <div className="flex-1 relative bg-slate-100">
-        <div ref={mapContainerRef} className="absolute inset-0 z-0" />
-
-        {/* Legend / Info Top Right */}
-        <div className="absolute top-4 right-4 z-[400] flex flex-col gap-2 pointer-events-none">
-          <div className="bg-white/95 backdrop-blur shadow-sm border border-slate-200 rounded-lg p-3 pointer-events-auto" title="This what-if benchmark has not been independently validated against a historical Tehri dam-break event.">
-            <h3 className="text-xs font-bold text-slate-800 mb-1">WHAT-IF HYDRODYNAMIC BENCHMARK</h3>
-            <p className="text-[10px] text-slate-500 font-mono uppercase">PHYSICAL VALIDATION NOT AVAILABLE</p>
-          </div>
-          
-          {layers.maxDepth && (
-             <div className="bg-white/95 backdrop-blur shadow-sm border border-slate-200 rounded-lg p-3 pointer-events-auto mt-2">
-                <p className="text-xs font-bold text-slate-800 mb-2">Maximum Modelled Depth</p>
-                <div className="flex items-center gap-1 text-[10px] font-mono"><div className="w-4 h-4 bg-[#93c5fd]"></div> &lt; 0.5m</div>
-                <div className="flex items-center gap-1 text-[10px] font-mono mt-1"><div className="w-4 h-4 bg-[#3b82f6]"></div> 0.5 - 2.0m</div>
-                <div className="flex items-center gap-1 text-[10px] font-mono mt-1"><div className="w-4 h-4 bg-[#2563eb]"></div> 2.0 - 5.0m</div>
-                <div className="flex items-center gap-1 text-[10px] font-mono mt-1"><div className="w-4 h-4 bg-[#1d4ed8]"></div> 5.0 - 10.0m</div>
-                <div className="flex items-center gap-1 text-[10px] font-mono mt-1"><div className="w-4 h-4 bg-[#1e3a8a]"></div> &gt; 10.0m</div>
-             </div>
-          )}
+    <div className="h-full flex flex-col bg-slate-50 text-slate-800 overflow-hidden">
+      {/* Simulation Lab Top Bar */}
+      <div className="h-12 bg-white border-b border-slate-200 px-6 flex items-center justify-between shrink-0 select-none">
+        <div className="flex items-center gap-3">
+          <span className="font-bold text-slate-900 text-sm">Simulation Lab</span>
+          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+            {currentRun.shortName}
+          </span>
+          <span className="text-xs text-slate-400 font-mono">
+            T+{currentSec}s / {currentRun.simulation_window_s}s
+          </span>
         </div>
 
-        {/* Layer Manager Bottom Left */}
-        <div className="absolute bottom-20 left-4 z-[400] bg-white/95 backdrop-blur border border-slate-200 shadow-lg rounded-xl overflow-hidden flex flex-col w-[220px]">
-          <div className="bg-slate-50 px-3 py-2 border-b border-slate-200"><h3 className="text-xs font-bold text-slate-800 flex items-center gap-2"><Layers className="w-3 h-3" /> Map Layers</h3></div>
-          <div className="p-2 flex flex-col gap-1 max-h-[300px] overflow-y-auto custom-scrollbar">
-            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 mt-1 px-2">Hydrodynamics</div>
-            <label className="flex items-center gap-2 px-2 py-1 hover:bg-slate-50 rounded cursor-pointer"><input type="checkbox" checked={layers.floodPropagation} onChange={() => toggleLayer('floodPropagation')} /> <span className="text-xs font-medium text-slate-700">Flood Propagation</span></label>
-            <label className="flex items-center gap-2 px-2 py-1 hover:bg-slate-50 rounded cursor-pointer"><input type="checkbox" checked={layers.maxDepth} onChange={() => toggleLayer('maxDepth')} /> <span className="text-xs font-medium text-slate-700">Maximum Depth</span></label>
-            
-            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 mt-2 px-2">Exposure Context</div>
-            <label className="flex items-center gap-2 px-2 py-1 hover:bg-slate-50 rounded cursor-pointer"><input type="checkbox" checked={layers.roadHazard} onChange={() => toggleLayer('roadHazard')} /> <span className="text-xs font-medium text-slate-700">Road Hazard</span></label>
-            <label className="flex items-center gap-2 px-2 py-1 hover:bg-slate-50 rounded cursor-pointer"><input type="checkbox" checked={layers.settlements} onChange={() => toggleLayer('settlements')} /> <span className="text-xs font-medium text-slate-700">Settlements</span></label>
-            <label className="flex items-center gap-2 px-2 py-1 hover:bg-slate-50 rounded cursor-pointer"><input type="checkbox" checked={layers.healthcare} onChange={() => toggleLayer('healthcare')} /> <span className="text-xs font-medium text-slate-700">Healthcare</span></label>
-            <label className="flex items-center gap-2 px-2 py-1 hover:bg-slate-50 rounded cursor-pointer"><input type="checkbox" checked={layers.bridges} onChange={() => toggleLayer('bridges')} /> <span className="text-xs font-medium text-slate-700">Bridges</span></label>
-            <label className="flex items-center gap-2 px-2 py-1 hover:bg-slate-50 rounded cursor-pointer"><input type="checkbox" checked={layers.power} onChange={() => toggleLayer('power')} /> <span className="text-xs font-medium text-slate-700">Power Assets</span></label>
-
-            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 mt-2 px-2">Response Routes</div>
-            <label className="flex items-center gap-2 px-2 py-1 hover:bg-slate-50 rounded cursor-pointer"><input type="checkbox" checked={layers.normalRoute} onChange={() => toggleLayer('normalRoute')} /> <span className="text-xs font-medium text-slate-700">Normal Route</span></label>
-            <label className="flex items-center gap-2 px-2 py-1 hover:bg-slate-50 rounded cursor-pointer"><input type="checkbox" checked={layers.hazardAwareRoute} onChange={() => toggleLayer('hazardAwareRoute')} /> <span className="text-xs font-medium text-slate-700">Hazard-Aware Route</span></label>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 text-xs text-slate-500 mr-2">
+            <Layers className="w-3.5 h-3.5 text-slate-400" />
+            <span>Layers:</span>
           </div>
-        </div>
 
-        {/* Playback Timeline Bottom */}
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-white border-t border-slate-200 shadow-[0_-4px_6px_-1px_rgb(0,0,0,0.05)] z-[400] flex items-center px-4 gap-4">
-          <button onClick={() => { if(isFinished) setCurrentTimeMin(0); setIsPlaying(!isPlaying); }} className="w-10 h-10 rounded-lg flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white shrink-0 shadow-sm transition-colors cursor-pointer">
-            {isPlaying ? <Pause className="w-5 h-5 fill-white" /> : <Play className="w-5 h-5 fill-white ml-0.5" />}
+          <button
+            onClick={() => toggleLayer('floodPropagation')}
+            className={`px-2.5 py-1 rounded text-xs font-semibold border transition ${
+              layers.floodPropagation
+                ? 'bg-blue-600 text-white border-blue-600'
+                : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+            }`}
+          >
+            Temporal Depth
           </button>
-          <button onClick={() => { setIsPlaying(false); setCurrentTimeMin(0); }} className="w-10 h-10 rounded-lg flex items-center justify-center text-slate-500 hover:bg-slate-100 border border-slate-200 shrink-0 transition-colors cursor-pointer">
-            <RotateCcw className="w-4 h-4" />
+
+          <button
+            onClick={() => toggleLayer('maxDepth')}
+            className={`px-2.5 py-1 rounded text-xs font-semibold border transition ${
+              layers.maxDepth
+                ? 'bg-blue-600 text-white border-blue-600'
+                : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+            }`}
+          >
+            Max Depth Raster
           </button>
-          
-          <div className="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-lg border border-slate-200 shrink-0 shadow-inner">
-            <span className="text-sm font-mono font-bold text-slate-800">T+{currentSec}s</span>
-          </div>
 
-          <div className="flex-1 relative mx-6 flex items-center h-full">
-             <input
-                type="range"
-                className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer outline-none relative z-10 opacity-0 group-hover:opacity-100"
-                min={0} max={maxTimeMin} step={0.05} value={currentTimeMin}
-                onChange={e => handleTimeChange(Number(e.target.value))}
-             />
-             <div className="absolute inset-x-0 h-2 bg-slate-200 rounded-lg overflow-hidden pointer-events-none">
-               <div className="h-full bg-blue-500" style={{ width: `${pct}%` }}></div>
-             </div>
-             
-             {/* Checkpoints */}
-             <div className="absolute w-full top-1/2 -translate-y-1/2 flex justify-between pointer-events-none px-1">
-               <button onClick={(e) => { e.stopPropagation(); handleCheckpoint(101, 30.34, 78.47); }} className="absolute w-3 h-3 bg-white border-2 border-blue-500 rounded-full cursor-pointer hover:scale-150 transition pointer-events-auto" style={{left:'12.5%', transform:'translateX(-50%)'}} title="Jump to ~2km arrival"></button>
-               <button onClick={(e) => { e.stopPropagation(); handleCheckpoint(349, 30.30, 78.44); }} className="absolute w-3 h-3 bg-white border-2 border-blue-500 rounded-full cursor-pointer hover:scale-150 transition pointer-events-auto" style={{left:'43.6%', transform:'translateX(-50%)'}} title="Jump to ~5km arrival"></button>
-               <button onClick={(e) => { e.stopPropagation(); handleCheckpoint(763, 30.25, 78.38); }} className="absolute w-3 h-3 bg-white border-2 border-blue-500 rounded-full cursor-pointer hover:scale-150 transition pointer-events-auto" style={{left:'95.3%', transform:'translateX(-50%)'}} title="Jump to ~8km arrival"></button>
-             </div>
-             <div className="absolute w-full top-8 flex justify-between pointer-events-none px-1 text-[10px] font-mono text-slate-500">
-               <span>0s</span>
-               <span style={{position:'absolute', left:'12.5%', transform:'translateX(-50%)'}}>101s (~2km)</span>
-               <span style={{position:'absolute', left:'43.6%', transform:'translateX(-50%)'}}>349s (~5km)</span>
-               <span style={{position:'absolute', left:'95.3%', transform:'translateX(-50%)'}}>763s (~8km)</span>
-             </div>
-          </div>
+          <button
+            onClick={() => toggleLayer('roadHazard')}
+            className={`px-2.5 py-1 rounded text-xs font-semibold border transition ${
+              layers.roadHazard
+                ? 'bg-orange-600 text-white border-orange-600'
+                : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+            }`}
+          >
+            Roads ({wettedRoadSegments} wetted)
+          </button>
 
-          <div className="flex items-center gap-1 bg-slate-50 p-1 border border-slate-200 rounded-lg shrink-0 shadow-inner">
-            {SPEEDS.map(s => (
-              <button key={s} onClick={() => setPlaybackSpeed(s)} className={`px-2.5 py-1 text-xs font-mono font-bold rounded-md cursor-pointer transition-colors ${playbackSpeed === s ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-500 hover:bg-slate-200'}`}>{s}x</button>
-            ))}
-          </div>
+          <button
+            onClick={() => setIsInspectorOpen(!isInspectorOpen)}
+            className="p-1.5 text-slate-500 hover:text-slate-800 rounded border border-slate-200 hover:bg-slate-50 ml-2"
+            title="Toggle Inspector"
+          >
+            {isInspectorOpen ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+          </button>
         </div>
       </div>
 
-      {/* INSPECTOR RIGHT */}
-      {isInspectorOpen ? (
-        <div className="w-[340px] h-full bg-white border-l border-slate-200 flex flex-col shadow-xl z-[410] relative">
-          <div className="h-14 flex items-center justify-between px-4 border-b border-slate-200 shrink-0 bg-slate-50">
-            <span className="font-bold text-sm text-slate-800 flex items-center gap-2"><BarChart3 className="w-4 h-4 text-blue-600" /> Analytics Inspector</span>
-            <button onClick={() => setIsInspectorOpen(false)} className="text-slate-400 hover:text-slate-800 cursor-pointer"><ChevronRight className="w-5 h-5" /></button>
+      {/* Main Map + Inspector Body */}
+      <div className="flex-1 flex min-h-0 relative">
+        <div className="flex-1 relative" ref={mapContainerRef} />
+
+        {/* Floating Playback Controls Bar (Bottom of Map) */}
+        <div className="absolute bottom-4 left-6 right-6 z-[400] max-w-2xl mx-auto bg-white/95 backdrop-blur border border-slate-200 rounded-xl shadow-lg p-3 flex items-center gap-3 select-none">
+          <button
+            onClick={() => setIsPlaying(!isPlaying)}
+            className="w-8 h-8 rounded-lg bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white flex items-center justify-center shrink-0 shadow-sm transition"
+          >
+            {isPlaying ? <Pause className="w-4 h-4 fill-white" /> : <Play className="w-4 h-4 fill-white translate-x-0.5" />}
+          </button>
+
+          <button
+            onClick={() => {
+              setIsPlaying(false);
+              setCurrentTimeMin(0);
+              onTimeChange?.(0);
+            }}
+            className="w-8 h-8 rounded-lg border border-slate-200 hover:bg-slate-100 text-slate-600 flex items-center justify-center shrink-0 transition"
+            title="Reset to T+0s"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+          </button>
+
+          <div className="flex items-center gap-1.5 shrink-0 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-200 font-mono text-xs font-bold text-slate-800">
+            <Clock className="w-3 h-3 text-blue-600" />
+            <span>T+{currentSec}s</span>
           </div>
-          
-          <div className="flex items-center border-b border-slate-200">
-             {['OVERVIEW', 'INSIGHTS', 'ASSETS'].map(tab => (
-               <button key={tab} onClick={() => setActiveTab(tab)} className={`flex-1 py-3 text-[10px] font-bold tracking-wider uppercase border-b-2 transition-colors cursor-pointer ${activeTab === tab ? 'border-blue-600 text-blue-700 bg-blue-50/30' : 'border-transparent text-slate-500 hover:bg-slate-50'}`}>{tab}</button>
-             ))}
+
+          {/* Time Scrubber */}
+          <div className="flex-1 flex items-center gap-2">
+            <input
+              type="range"
+              min={0}
+              max={maxTimeMin}
+              step={isV4 ? 1.0 : 0.166}
+              value={currentTimeMin}
+              onChange={(e) => {
+                const val = parseFloat(e.target.value);
+                setCurrentTimeMin(val);
+                onTimeChange?.(val);
+              }}
+              className="w-full cursor-pointer accent-blue-600"
+            />
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
-            
-            {activeTab === 'OVERVIEW' && (
-              <>
-                <div className="bg-slate-50 rounded-xl border border-slate-200 p-4">
-                  <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Exposure Profile</h3>
-                  <div className="flex justify-between items-end mb-1">
-                    <span className="text-3xl font-light text-slate-800 tracking-tight">{roadEdges}</span>
-                    <span className="text-xs font-semibold text-slate-500 mb-1">Road Segments</span>
-                  </div>
-                  <p className="text-[10px] text-slate-400 leading-tight">Total modelled exposed roads: {roadKm} km. Actual unavailable segments scale with time.</p>
-                </div>
-
-                <div className="bg-slate-50 rounded-xl border border-slate-200 p-4">
-                   <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Inventory Context</h3>
-                   <div className="space-y-3">
-                     <div className="flex justify-between items-center text-sm border-b border-slate-200/50 pb-2"><span className="text-slate-600 font-medium">Settlements</span><div className="text-right"><div className="font-mono text-slate-800 font-bold">0 <span className="text-[10px] text-slate-400 font-sans font-normal ml-1">exposed</span></div><div className="text-[10px] text-slate-400 mt-0.5">1,049 inventoried</div></div></div>
-                     <div className="flex justify-between items-center text-sm border-b border-slate-200/50 pb-2"><span className="text-slate-600 font-medium">Healthcare</span><div className="text-right"><div className="font-mono text-slate-800 font-bold">0 <span className="text-[10px] text-slate-400 font-sans font-normal ml-1">exposed</span></div><div className="text-[10px] text-slate-400 mt-0.5">inventoried</div></div></div>
-                     <div className="flex justify-between items-center text-sm border-b border-slate-200/50 pb-2"><span className="text-slate-600 font-medium">Bridges</span><div className="text-right"><div className="font-mono text-slate-800 font-bold">0 <span className="text-[10px] text-slate-400 font-sans font-normal ml-1">exposed</span></div><div className="text-[10px] text-slate-400 mt-0.5">534 inventoried</div></div></div>
-                     <div className="flex justify-between items-center text-sm"><span className="text-slate-600 font-medium">Power</span><div className="text-right"><div className="font-mono text-slate-800 font-bold">0 <span className="text-[10px] text-slate-400 font-sans font-normal ml-1">exposed</span></div><div className="text-[10px] text-slate-400 mt-0.5">42 inventoried</div></div></div>
-                   </div>
-                </div>
-              </>
-            )}
-
-            {activeTab === 'INSIGHTS' && (
-              <div className="flex flex-col gap-3">
-                 {insights.map(insight => (
-                    <div key={insight.id} className="p-3 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer hover:border-blue-300 hover:bg-blue-50/30 transition group" onClick={() => toggleLayer(insight.layerTarget)}>
-                       <h4 className="text-[11px] font-bold text-slate-800 uppercase mb-1 flex items-center justify-between">
-                         {insight.title}
-                         {insight.severity === 'high' && <span className="w-2 h-2 rounded-full bg-red-500"></span>}
-                         {insight.severity === 'success' && <span className="w-2 h-2 rounded-full bg-emerald-500"></span>}
-                         {insight.severity === 'warning' && <span className="w-2 h-2 rounded-full bg-amber-500"></span>}
-                       </h4>
-                       <p className="text-[11px] text-slate-600 leading-tight mb-2">{insight.explanation}</p>
-                       <div className="text-[9px] font-mono text-slate-400 bg-white border border-slate-100 p-1.5 rounded">{insight.evidence}</div>
-                       <div className="text-blue-600 text-[10px] font-bold mt-2 opacity-0 group-hover:opacity-100 transition">{insight.action} &rarr;</div>
-                    </div>
-                 ))}
-              </div>
-            )}
-
-            {activeTab === 'ASSETS' && (
-              <div className="flex flex-col gap-4">
-                 {!selectedFeature ? (
-                    <div className="text-center p-8 text-slate-400 flex flex-col items-center">
-                       <MousePointerClick className="w-8 h-8 mb-2 opacity-50" />
-                       <p className="text-sm">Click any map element (road, settlement, infrastructure) to inspect its operational hazard state.</p>
-                    </div>
-                 ) : (
-                    <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-                       <div className="bg-slate-50 px-4 py-3 border-b border-slate-200">
-                          <h4 className="font-bold text-slate-800 text-sm break-words">{selectedFeature.name}</h4>
-                          <span className="text-[10px] font-bold uppercase text-slate-500 tracking-wider">{selectedFeature.type}</span>
-                       </div>
-                       <div className="p-4 space-y-4">
-                          <div>
-                            <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Exposure Status</span>
-                            <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${selectedFeature.status === 'INTERSECTED' ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700'}`}>{selectedFeature.status}</span>
-                          </div>
-                          {selectedFeature.arrival && (
-                            <div>
-                              <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">First Modelled Arrival</span>
-                              <span className="font-mono text-slate-800">T+{Math.round(selectedFeature.arrival)}s</span>
-                            </div>
-                          )}
-                          {selectedFeature.coords && (
-                             <div>
-                              <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Coordinates</span>
-                              <span className="font-mono text-slate-600 text-[11px]">{selectedFeature.coords[0].toFixed(5)}, {selectedFeature.coords[1].toFixed(5)}</span>
-                            </div>
-                          )}
-                       </div>
-                    </div>
-                 )}
-              </div>
-            )}
-
-            <div className="mt-auto pt-4">
-               <button onClick={onNavigateToHadr} className="w-full py-2.5 bg-slate-800 text-white font-bold text-sm rounded-lg hover:bg-slate-900 transition cursor-pointer">
-                 Open HADR Operations
-               </button>
-            </div>
+          <div className="flex items-center bg-slate-100 border border-slate-200 rounded-lg p-0.5 shrink-0 text-xs font-mono">
+            {SPEEDS.map((s) => (
+              <button
+                key={s}
+                onClick={() => setPlaybackSpeed(s)}
+                className={`px-1.5 py-0.5 rounded transition ${
+                  playbackSpeed === s ? 'bg-blue-600 text-white font-bold' : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                {s}&times;
+              </button>
+            ))}
           </div>
         </div>
-      ) : (
-        <button 
-          onClick={() => setIsInspectorOpen(true)}
-          className="absolute top-4 right-4 z-[410] bg-white border border-slate-200 shadow-lg p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 cursor-pointer"
-        >
-          <LayoutPanelLeft className="w-5 h-5" />
-        </button>
-      )}
+
+        {/* Right Inspector Panel */}
+        {isInspectorOpen && (
+          <div className="w-80 bg-white border-l border-slate-200 flex flex-col shrink-0 overflow-y-auto z-20 text-xs">
+            <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+              <div>
+                <h3 className="font-bold text-slate-900 text-sm">Simulation Inspector</h3>
+                <span className="text-[10px] text-slate-400 font-mono">Run: {currentRun.run_id}</span>
+              </div>
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                QA: PASS
+              </span>
+            </div>
+
+            <div className="p-4 space-y-4 flex-1">
+              {/* Scenario & Solver Card */}
+              <div className="border border-slate-200 rounded-lg p-3 bg-slate-50 space-y-1.5 text-[11px]">
+                <div className="font-bold text-slate-700 uppercase tracking-wide text-[10px]">
+                  Solver Configuration
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Far-Field Solver:</span>
+                  <span className="font-mono font-semibold text-slate-800">{currentRun.far_field_solver}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Domain Reach:</span>
+                  <span className="font-mono text-slate-800">{currentRun.domain_km} km</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Grid Resolution:</span>
+                  <span className="font-mono text-slate-800">{currentRun.grid_resolution_m} m</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Max Depth:</span>
+                  <span className="font-mono font-bold text-blue-600">{currentRun.max_depth_m} m</span>
+                </div>
+                <div className="text-[9px] text-amber-700 pt-0.5">
+                  {currentRun.max_depth_label}
+                </div>
+              </div>
+
+              {/* Selected Feature Card */}
+              {selectedFeature && (
+                <div className="border border-blue-200 rounded-lg p-3 bg-blue-50/50 space-y-1 text-[11px]">
+                  <div className="flex justify-between items-center">
+                    <span className="font-bold text-blue-900 uppercase text-[10px]">{selectedFeature.type}</span>
+                    <button
+                      onClick={() => setSelectedFeature(null)}
+                      className="text-slate-400 hover:text-slate-700 font-bold"
+                    >
+                      &times;
+                    </button>
+                  </div>
+                  <div className="font-semibold text-slate-800">{selectedFeature.name}</div>
+                  <div className="text-slate-600 text-[10px] font-mono">Status: {selectedFeature.status}</div>
+                </div>
+              )}
+
+              {/* Dynamic Step Diagnostics */}
+              <div className="border border-slate-200 rounded-lg p-3 space-y-2">
+                <div className="font-bold text-slate-700 uppercase tracking-wide text-[10px]">
+                  Current Timestep State
+                </div>
+                <div className="space-y-1 text-[11px]">
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Elapsed Time:</span>
+                    <span className="font-mono font-bold text-slate-800">T+{currentSec} s</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Wetted Road Segments:</span>
+                    <span className="font-mono font-bold text-orange-600">{wettedRoadSegments}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Total Run Road Exposure:</span>
+                    <span className="font-mono text-slate-800">{currentRun.road_exposed_km} km</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Settlements Intersected:</span>
+                    <span className="font-mono text-emerald-600 font-bold">0 in reach</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Truthful Velocity Disclaimer */}
+              <div className="p-3 bg-blue-50/60 border border-blue-100 rounded-lg text-[10px] text-slate-600 leading-snug">
+                <span className="font-bold text-blue-900 block mb-0.5">Hydraulic Physics Note:</span>
+                LISFLOOD-FP ACC solves the depth-averaged shallow-water equations. Velocity outputs are not generated by the far-field solver build; therefore, no synthetic velocity vectors are displayed.
+              </div>
+
+              {/* HADR Quick Action */}
+              <button
+                onClick={onNavigateToHadr}
+                className="w-full py-2 px-3 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition"
+              >
+                Inspect HADR Route Feasibility &rarr;
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

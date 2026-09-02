@@ -1,50 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ShieldAlert, Map, Filter, Search } from 'lucide-react';
+import { AlertTriangle, Filter } from 'lucide-react';
 import L from 'leaflet';
+import { useRun } from '../context/RunContext';
 import { useV3Data } from '../hooks/useV3Data';
+import ExportMenu from '../components/ExportMenu';
 
 export default function Exposure() {
+  const { currentRun, selectedRunId } = useRun();
   const v3 = useV3Data();
   const [activeFilter, setActiveFilter] = useState('ALL');
-  const [selectedRun, setSelectedRun] = useState('v3_benchmark');
-  
-  const [v4Data, setV4Data] = useState({
-    summary: null,
-    roads: null,
-    settlements: null,
-    healthcare: null,
-    bridges: null,
-    power: null
-  });
 
-  useEffect(() => {
-    if (selectedRun === 'v4_extended') {
-      const fetchJson = async (url) => {
-        const res = await fetch(url);
-        if (!res.ok) return null;
-        return await res.json();
-      };
-      
-      Promise.all([
-        fetchJson('/api/exports/exposure_summary?run_id=v4_extended&format=geojson'),
-        fetchJson('/api/exports/exposed_roads?run_id=v4_extended&format=geojson'),
-        fetchJson('/api/exports/exposed_settlements?run_id=v4_extended&format=geojson'),
-        fetchJson('/api/exports/exposed_healthcare?run_id=v4_extended&format=geojson'),
-        fetchJson('/api/exports/exposed_bridges?run_id=v4_extended&format=geojson'),
-        fetchJson('/api/exports/exposed_power?run_id=v4_extended&format=geojson')
-      ]).then(([sum, roads, setts, health, br, pow]) => {
-        setV4Data({
-          summary: sum,
-          roads: roads,
-          settlements: setts,
-          healthcare: health,
-          bridges: br,
-          power: pow
-        });
-      });
-    }
-  }, [selectedRun]);
-  
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const layersRef = useRef({});
@@ -52,137 +17,243 @@ export default function Exposure() {
   // Init Map
   useEffect(() => {
     if (mapInstanceRef.current) return;
-    const map = L.map(mapContainerRef.current, { center: [30.15, 78.35], zoom: 11, zoomControl: false });
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(map);
+    const map = L.map(mapContainerRef.current, {
+      center: [30.15, 78.35],
+      zoom: 11,
+      zoomControl: false,
+    });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors',
+    }).addTo(map);
     L.control.zoom({ position: 'topleft' }).addTo(map);
     mapInstanceRef.current = map;
-    return () => { map.remove(); mapInstanceRef.current = null; };
+    return () => {
+      map.remove();
+      mapInstanceRef.current = null;
+    };
   }, []);
 
-  // Sync Layers
+  // Sync Layers based on active filter and current run
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
-    
-    ['roads', 'settlements', 'healthcare', 'bridges', 'power'].forEach(k => {
-       if(layersRef.current[k]) { map.removeLayer(layersRef.current[k]); layersRef.current[k] = null; }
+
+    ['roads', 'settlements', 'healthcare', 'bridges', 'power'].forEach((k) => {
+      if (layersRef.current[k]) {
+        map.removeLayer(layersRef.current[k]);
+        layersRef.current[k] = null;
+      }
     });
 
     const isVisible = (k) => activeFilter === 'ALL' || activeFilter === k;
 
-    const data = selectedRun === 'v4_extended' ? v4Data : {
-      roads: v3.v3Roads,
-      settlements: v3.v3Context?.settlements,
-      healthcare: v3.v3Context?.healthcare,
-      bridges: v3.v3Context?.bridges,
-      power: v3.v3Context?.power
-    };
-
-    if (isVisible('roads') && data.roads) {
-       layersRef.current.roads = L.geoJSON(data.roads, { 
-         style: (f) => ({ 
-           color: f.properties.exposure_status === 'OUTSIDE CURRENT MODELLED HAZARD' ? '#16A34A' : '#EA580C', 
-           weight: 3 
-         }) 
-       }).addTo(map);
+    // Roads
+    if (isVisible('roads') && v3.v3Roads) {
+      layersRef.current.roads = L.geoJSON(v3.v3Roads, {
+        style: { color: '#ea580c', weight: 3, opacity: 0.85 },
+      }).addTo(map);
     }
-    if (isVisible('settlements') && data.settlements) {
-       layersRef.current.settlements = L.geoJSON(data.settlements, { 
-         pointToLayer: (f, ll) => L.circleMarker(ll, { 
-           radius: 4, 
-           fillColor: f.properties.exposure_status === 'OUTSIDE CURRENT MODELLED HAZARD' ? '#16A34A' : '#DC2626', 
-           color: '#fff', 
-           weight: 1 
-         }) 
-       }).addTo(map);
+
+    // Settlements
+    if (isVisible('settlements') && v3.v3Context?.settlements) {
+      layersRef.current.settlements = L.geoJSON(v3.v3Context.settlements, {
+        pointToLayer: (f, latlng) =>
+          L.circleMarker(latlng, { radius: 4, fillColor: '#64748b', fillOpacity: 0.8, color: '#fff', weight: 1 }),
+      }).addTo(map);
     }
-  }, [v3, v4Data, activeFilter, selectedRun]);
 
-  const currentSummary = selectedRun === 'v4_extended' 
-    ? v4Data.summary?.exposure_counts 
-    : v3.v3Summary?.exposure_counts;
+    // Healthcare
+    if (isVisible('healthcare') && v3.v3Context?.healthcare) {
+      layersRef.current.healthcare = L.geoJSON(v3.v3Context.healthcare, {
+        pointToLayer: (f, latlng) =>
+          L.circleMarker(latlng, { radius: 5, fillColor: '#ef4444', fillOpacity: 0.9, color: '#fff', weight: 1 }),
+      }).addTo(map);
+    }
 
-  const roadEdges = selectedRun === 'v4_extended' ? (currentSummary?.road_segments_intersected || 0) : (v3.v3Roads?.features?.length || 0);
-  const roadKm = selectedRun === 'v4_extended' ? (currentSummary?.road_km_intersected || 0) : 38.788;
-  const setts = currentSummary?.settlements_intersected || 0;
-  const health = currentSummary?.healthcare_intersected || 0;
-  const br = currentSummary?.bridges_intersected || 0;
+    // Bridges
+    if (isVisible('bridges') && v3.v3Context?.bridges) {
+      layersRef.current.bridges = L.geoJSON(v3.v3Context.bridges, {
+        pointToLayer: (f, latlng) =>
+          L.circleMarker(latlng, { radius: 4, fillColor: '#eab308', fillOpacity: 0.9, color: '#fff', weight: 1 }),
+      }).addTo(map);
+    }
+
+    // Power
+    if (isVisible('power') && v3.v3Context?.power) {
+      layersRef.current.power = L.geoJSON(v3.v3Context.power, {
+        pointToLayer: (f, latlng) =>
+          L.circleMarker(latlng, { radius: 4, fillColor: '#a855f7', fillOpacity: 0.9, color: '#fff', weight: 1 }),
+      }).addTo(map);
+    }
+  }, [v3, activeFilter, selectedRunId]);
 
   return (
-    <div className="flex flex-col h-full bg-slate-50">
-       <div className="px-8 py-4 bg-white border-b border-slate-200 shrink-0 flex justify-between items-center">
-         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2"><ShieldAlert className="w-6 h-6 text-red-600" /> Exposure Analysis</h1>
-          <p className="text-sm text-slate-500 mt-1">
-            {selectedRun === 'v4_extended' ? 'TEHRI V4 — CORRECTED 3600S MODEL RUN' : 'TEHRI V3 — VERIFIED BENCHMARK'}
+    <div className="h-full flex flex-col bg-slate-50 text-slate-800 overflow-hidden">
+      {/* Top Banner */}
+      <div className="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between shrink-0 select-none shadow-2xs">
+        <div>
+          <div className="flex items-center gap-2 mb-0.5">
+            <h1 className="text-base font-bold text-slate-900 tracking-tight">
+              Exposure &amp; Vulnerability Assessment
+            </h1>
+            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+              {currentRun.shortName}
+            </span>
+          </div>
+          <p className="text-xs text-slate-500">
+            Intersection of OpenStreetMap critical infrastructure against verified hydrodynamic wetted domain.
           </p>
-         </div>
-         <div>
-            <select className="border border-slate-300 rounded px-3 py-1 text-sm font-semibold" value={selectedRun} onChange={e => setSelectedRun(e.target.value)}>
-               <option value="v3_benchmark">TEHRI V3 (800s)</option>
-               <option value="v4_extended">TEHRI V4 (3600s)</option>
-            </select>
-         </div>
-       </div>
+        </div>
 
-       {/* Summary Cards */}
-       <div className="px-8 py-4 shrink-0 grid grid-cols-2 md:grid-cols-5 gap-4">
-          {[
-            { id: 'ALL', label: 'Overview', exp: '-', inv: '-' },
-            { id: 'settlements', label: 'Settlements', exp: `${setts} exposed`, inv: '1,049 inventoried' },
-            { id: 'healthcare', label: 'Healthcare', exp: `${health} exposed`, inv: 'inventoried' },
-            { id: 'bridges', label: 'Bridges', exp: `${br} exposed`, inv: '534 inventoried' },
-            { id: 'roads', label: 'Roads', exp: `${roadKm} km exposed`, inv: `${roadEdges} edges unavailable` }
-          ].map(c => (
-            <div key={c.id} onClick={() => setActiveFilter(c.id)} className={`p-4 rounded-xl border cursor-pointer transition ${activeFilter === c.id ? 'bg-blue-50 border-blue-300 shadow-sm' : 'bg-white border-slate-200 hover:border-blue-200 hover:bg-slate-50'}`}>
-               <h3 className={`text-xs font-bold uppercase tracking-wider mb-2 ${activeFilter === c.id ? 'text-blue-700' : 'text-slate-500'}`}>{c.label}</h3>
-               <div className="text-sm font-bold text-slate-800">{c.exp}</div>
-               <div className="text-[10px] text-slate-400 mt-1">{c.inv}</div>
+        <div className="flex items-center gap-2.5">
+          <ExportMenu
+            products={[
+              'exposed_roads',
+              'exposed_settlements',
+              'exposed_healthcare',
+              'exposed_bridges',
+              'exposed_power',
+              'exposure_summary',
+            ]}
+          />
+        </div>
+      </div>
+
+      {/* Zero Exposure Semantics Banner */}
+      <div className="bg-amber-50 border-b border-amber-200 px-6 py-2 flex items-start gap-2.5 text-xs text-amber-900 shrink-0">
+        <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+        <div>
+          <span className="font-bold">CRITICAL EXPOSURE PROVENANCE: </span>
+          <span>
+            Zero settlements or healthcare intersected indicates{' '}
+            <strong>NO INTERSECTION WITH CURRENT MODELLED HAZARD EXTENT</strong>. Assets located downstream are{' '}
+            <strong>NOT CLASSIFIED AS SAFE BEYOND CURRENT WINDOW</strong> ({currentRun.simulation_window_s}s, {currentRun.domain_km} km domain reach).
+          </span>
+        </div>
+      </div>
+
+      {/* Main Content: Map + Asset Tables */}
+      <div className="flex-1 flex min-h-0">
+        {/* Left Interactive Map */}
+        <div className="flex-1 flex flex-col min-w-0 bg-slate-100">
+          <div className="bg-white border-b border-slate-200 px-4 py-2 flex items-center justify-between shrink-0 text-xs">
+            <div className="flex items-center gap-2">
+              <Filter className="w-3.5 h-3.5 text-slate-500" />
+              <span className="font-semibold text-slate-700">Filter Asset Layer:</span>
+              <div className="inline-flex rounded border border-slate-200 p-0.5 bg-slate-50">
+                {['ALL', 'roads', 'settlements', 'healthcare', 'bridges', 'power'].map((f) => (
+                  <button
+                    key={f}
+                    onClick={() => setActiveFilter(f)}
+                    className={`px-2 py-0.5 rounded text-[11px] font-medium transition ${
+                      activeFilter === f
+                        ? 'bg-blue-600 text-white font-bold'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    {f.toUpperCase()}
+                  </button>
+                ))}
+              </div>
             </div>
-          ))}
-       </div>
+            <span className="text-[11px] text-slate-400 font-mono">
+              Domain: {currentRun.domain_km} km &middot; {currentRun.simulation_window_s}s
+            </span>
+          </div>
+          <div className="flex-1 relative" ref={mapContainerRef} />
+        </div>
 
-       {/* Main Workspace */}
-       <div className="flex-1 flex min-h-0 px-8 pb-8 gap-6">
-          <div className="flex-1 bg-white border border-slate-200 rounded-xl overflow-hidden relative shadow-sm">
-             <div ref={mapContainerRef} className="absolute inset-0 z-0" />
-          </div>
-          
-          <div className="w-[450px] bg-white border border-slate-200 rounded-xl shadow-sm flex flex-col overflow-hidden">
-             <div className="bg-slate-50 px-4 py-3 border-b border-slate-200 flex justify-between items-center">
-                <span className="font-bold text-sm text-slate-800">Asset Directory</span>
-                <span className="text-[10px] uppercase font-bold text-slate-400 bg-white px-2 py-1 rounded border border-slate-200">{activeFilter} Filter</span>
-             </div>
-             <div className="flex-1 overflow-y-auto p-0">
-                {activeFilter === 'roads' ? (
-                   <table className="w-full text-left text-sm border-collapse">
-                      <thead className="bg-white sticky top-0 border-b border-slate-200">
-                         <tr>
-                            <th className="px-4 py-2 font-semibold text-slate-600 text-xs">Edge ID</th>
-                            <th className="px-4 py-2 font-semibold text-slate-600 text-xs">Arrival (s)</th>
-                            <th className="px-4 py-2 font-semibold text-slate-600 text-xs">Status</th>
-                         </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100">
-                         {(selectedRun === 'v4_extended' ? v4Data.roads?.features : v3.v3Roads?.features)?.filter(f => f.properties.max_depth_m >= 0.05).slice(0, 50).map(f => (
-                           <tr key={f.properties.osmid || Math.random()} className="hover:bg-slate-50 cursor-pointer">
-                              <td className="px-4 py-3 font-mono text-[10px] text-slate-600">{f.properties.osmid || f.properties.u}</td>
-                              <td className="px-4 py-3 font-mono text-slate-800 font-bold">{Math.round(f.properties.arrival_time_hr * 3600)}</td>
-                              <td className="px-4 py-3"><span className="text-[9px] font-bold uppercase tracking-wider bg-red-100 text-red-700 px-2 py-1 rounded">Intersected</span></td>
-                           </tr>
-                         ))}
-                      </tbody>
-                   </table>
-                ) : (
-                   <div className="p-8 text-center text-slate-400 flex flex-col items-center justify-center h-full">
-                      <ShieldAlert className="w-8 h-8 mb-3 opacity-20" />
-                      <p className="text-sm font-medium text-slate-600 mb-1">Select Roads Filter</p>
-                      <p className="text-xs">No {activeFilter === 'ALL' ? 'critical assets' : activeFilter} intersect the modelled hazard window.</p>
-                   </div>
+        {/* Right Asset Statistics Sidebar */}
+        <div className="w-96 bg-white border-l border-slate-200 flex flex-col shrink-0 overflow-y-auto text-xs">
+          <div className="p-4 border-b border-slate-100">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+              Verified Asset Exposure
+            </h2>
+            <div className="space-y-2.5">
+              <div className="p-3 rounded-lg border border-orange-200 bg-orange-50/50 space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-orange-900">Road Infrastructure</span>
+                  <span className="font-mono font-bold text-base text-orange-700">
+                    {currentRun.road_exposed_km} km
+                  </span>
+                </div>
+                <div className="flex justify-between text-[11px] text-orange-800">
+                  <span>Wetted Segments:</span>
+                  <span className="font-mono font-bold">{currentRun.road_segments_intersected}</span>
+                </div>
+                {currentRun.earliest_road_exposure_s !== null && (
+                  <div className="flex justify-between text-[10px] text-orange-700 pt-1 border-t border-orange-200/60">
+                    <span>Earliest Inundation Arrival:</span>
+                    <span className="font-mono font-bold">T+{currentRun.earliest_road_exposure_s} s</span>
+                  </div>
                 )}
-             </div>
+              </div>
+
+              <div className="p-3 rounded-lg border border-slate-200 bg-slate-50 space-y-2 text-[11px]">
+                <div className="font-bold text-slate-700 uppercase tracking-wide text-[10px]">
+                  Other Downstream Critical Assets
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Settlements Intersected:</span>
+                  <span className="font-mono font-bold text-slate-800">
+                    0 <span className="text-[9px] text-slate-400 font-sans font-normal">(in wetted reach)</span>
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Healthcare Facilities:</span>
+                  <span className="font-mono font-bold text-slate-800">
+                    0 <span className="text-[9px] text-slate-400 font-sans font-normal">(in wetted reach)</span>
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Bridges Intersected:</span>
+                  <span className="font-mono font-bold text-slate-800">
+                    0 <span className="text-[9px] text-slate-400 font-sans font-normal">(in wetted reach)</span>
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Power Facilities:</span>
+                  <span className="font-mono font-bold text-slate-800">
+                    0 <span className="text-[9px] text-slate-400 font-sans font-normal">(in wetted reach)</span>
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
-       </div>
+
+          <div className="p-4 flex-1 space-y-3">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              Depth &amp; Arrival Classes
+            </h2>
+            <div className="border border-slate-200 rounded-lg p-3 space-y-2 text-[11px]">
+              <div className="font-bold text-slate-700">Road Depth Distribution:</div>
+              <div className="space-y-1 font-mono text-[10px]">
+                <div className="flex justify-between">
+                  <span className="text-slate-500">&gt; 5.0 m deep:</span>
+                  <span className="font-bold text-red-600">
+                    {selectedRunId === 'v4_extended' ? '73 segments' : '52 segments'}
+                  </span>
+                </div>
+                {selectedRunId === 'v4_extended' && (
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">0.5 – 1.5 m deep:</span>
+                    <span className="font-bold text-amber-600">1 segment</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg text-[10px] text-slate-500 space-y-1">
+              <div className="font-bold text-slate-700 uppercase tracking-wider text-[9px]">
+                Scientific Provenance
+              </div>
+              <p>
+                Spatial intersection calculated via GIS overlay of OpenStreetMap features against LISFLOOD-FP 8.1 inundation footprint.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
