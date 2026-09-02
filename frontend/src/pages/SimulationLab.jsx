@@ -5,12 +5,18 @@ import L from 'leaflet';
 import parseGeoraster from 'georaster';
 import GeoRasterLayer from 'georaster-layer-for-leaflet';
 import { useV3Data } from '../hooks/useV3Data';
+import { useV4Data } from '../hooks/useV4Data';
+import ExportMenu from '../components/ExportMenu';
 import { generateOperationalInsights } from '../utils/insightsEngine';
 
 const SPEEDS = [1, 2, 5, 10];
 
 export default function SimulationLab({ initialTimeMin = 0, onTimeChange, onNavigateToHadr }) {
+  const [selectedRun, setSelectedRun] = useState('V3');
   const v3 = useV3Data();
+  const v4 = useV4Data();
+  const runData = selectedRun === 'V3' ? v3 : v4;
+  
   const [currentTimeMin, setCurrentTimeMin] = useState(initialTimeMin);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
@@ -47,11 +53,11 @@ export default function SimulationLab({ initialTimeMin = 0, onTimeChange, onNavi
     hazardAwareRoute: null
   });
 
-  const maxTimeMin = 13.33;
+  const maxTimeMin = selectedRun === 'V3' ? 13.33 : 60.0;
   const isFinished = currentTimeMin >= maxTimeMin;
   const currentSec = Math.round(currentTimeMin * 60);
 
-  const insights = useMemo(() => generateOperationalInsights(v3, currentSec), [v3, currentSec]);
+  const insights = useMemo(() => generateOperationalInsights(runData, currentSec), [runData, currentSec]);
 
   // Init Map
   useEffect(() => {
@@ -69,8 +75,8 @@ export default function SimulationLab({ initialTimeMin = 0, onTimeChange, onNavi
     L.control.zoom({ position: 'topleft' }).addTo(map);
     mapInstanceRef.current = map;
 
-    // Load max_depth_v3.tif initially but hide it
-    fetch('/data/processed/tehri_simulations/lisflood_fp/outputs/v3_geometry_corrected/rasters/max_depth_v3.tif')
+    // Load max depth raster initially but hide it
+    fetch(runData.maxDepthUrl || '/data/processed/tehri_simulations/lisflood_fp/outputs/v3_geometry_corrected/rasters/max_depth_v3.tif')
       .then(res => res.arrayBuffer())
       .then(buf => parseGeoraster(buf))
       .then(georaster => {
@@ -138,17 +144,52 @@ export default function SimulationLab({ initialTimeMin = 0, onTimeChange, onNavi
       layersRef.current.floodFrame = null;
     } else {
       const snapped = Math.max(0, Math.min(800, Math.round(currentSec / 50.0) * 50));
-      fetch(`/api/scenarios/v3/frames/${snapped}`)
-        .then(res => res.json())
-        .then(geoJson => {
-          if (!mapInstanceRef.current || !layers.floodPropagation) return;
-          if (layersRef.current.floodFrame) map.removeLayer(layersRef.current.floodFrame);
-          
-          const layer = L.geoJSON(geoJson, {
-            style: { color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.8, weight: 0.5, opacity: 1 }
-          }).addTo(map);
-          layersRef.current.floodFrame = layer;
-        }).catch(() => {});
+      
+      // Find the correct frame URL
+      let frameUrl = `/api/scenarios/v3/frames/${snapped}`; // fallback
+      if (runData.frames && runData.frames.length > 0) {
+        // Find closest frame
+        const frame = runData.frames.reduce((prev, curr) => 
+          Math.abs(curr.time_sec - currentSec) < Math.abs(prev.time_sec - currentSec) ? curr : prev
+        );
+        frameUrl = frame.url;
+      }
+
+      if (frameUrl.includes('.geojson') || frameUrl.includes('/scenarios/v3/')) {
+          fetch(frameUrl)
+            .then(res => res.json())
+            .then(geoJson => {
+              if (!mapInstanceRef.current || !layers.floodPropagation) return;
+              if (layersRef.current.floodFrame) map.removeLayer(layersRef.current.floodFrame);
+              const layer = L.geoJSON(geoJson, {
+                style: { color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.8, weight: 0.5, opacity: 1 }
+              }).addTo(map);
+              layersRef.current.floodFrame = layer;
+            }).catch(() => {});
+      } else {
+          // It's a GeoTIFF
+          fetch(frameUrl)
+            .then(res => res.arrayBuffer())
+            .then(buf => parseGeoraster(buf))
+            .then(georaster => {
+              if (!mapInstanceRef.current || !layers.floodPropagation) return;
+              if (layersRef.current.floodFrame) map.removeLayer(layersRef.current.floodFrame);
+              
+              const layer = new GeoRasterLayer({
+                georaster,
+                opacity: 0.8,
+                resolution: 256,
+                pixelValuesToColorFn: (v) => {
+                  const depth = v[0];
+                  if (depth <= 0.05 || depth === georaster.noDataValue) return null;
+                  return '#3b82f6';
+                }
+              });
+              layer.addTo(mapInstanceRef.current);
+              layersRef.current.floodFrame = layer;
+            }).catch(console.error);
+      }
+
     }
   }, [currentSec, layers.floodPropagation, layers.maxDepth]);
 
@@ -187,27 +228,27 @@ export default function SimulationLab({ initialTimeMin = 0, onTimeChange, onNavi
     };
 
     // Roads
-    syncVector('roadHazard', v3.v3Roads, (feature) => {
+    syncVector('roadHazard', runData.v3Roads, (feature) => {
       const arrTimeSec = (feature.properties.arrival_time_hr || 0) * 3600;
       return arrTimeSec > currentSec ? { color: '#94A3B8', weight: 2, opacity: 0.6 } : { color: '#EA580C', weight: 4, opacity: 1.0 };
     });
 
     // Settlements
-    syncVector('settlements', v3.v3Context?.settlements, () => ({ color: '#64748b', weight: 1 }), (feature, latlng) => L.circleMarker(latlng, { radius: 3, fillColor: '#64748b', fillOpacity: 0.7, color: '#fff', weight: 1 }));
+    syncVector('settlements', runData.v3Context?.settlements, () => ({ color: '#64748b', weight: 1 }), (feature, latlng) => L.circleMarker(latlng, { radius: 3, fillColor: '#64748b', fillOpacity: 0.7, color: '#fff', weight: 1 }));
     // Healthcare
-    syncVector('healthcare', v3.v3Context?.healthcare, () => ({ color: '#ef4444', weight: 1 }), (feature, latlng) => L.circleMarker(latlng, { radius: 4, fillColor: '#ef4444', fillOpacity: 0.8, color: '#fff', weight: 1 }));
+    syncVector('healthcare', runData.v3Context?.healthcare, () => ({ color: '#ef4444', weight: 1 }), (feature, latlng) => L.circleMarker(latlng, { radius: 4, fillColor: '#ef4444', fillOpacity: 0.8, color: '#fff', weight: 1 }));
     // Bridges
-    syncVector('bridges', v3.v3Context?.bridges, () => ({ color: '#eab308', weight: 1 }), (feature, latlng) => L.circleMarker(latlng, { radius: 4, fillColor: '#eab308', fillOpacity: 0.8, color: '#fff', weight: 1 }));
+    syncVector('bridges', runData.v3Context?.bridges, () => ({ color: '#eab308', weight: 1 }), (feature, latlng) => L.circleMarker(latlng, { radius: 4, fillColor: '#eab308', fillOpacity: 0.8, color: '#fff', weight: 1 }));
     // Power
-    syncVector('power', v3.v3Context?.power, () => ({ color: '#a855f7', weight: 1 }), (feature, latlng) => L.circleMarker(latlng, { radius: 4, fillColor: '#a855f7', fillOpacity: 0.8, color: '#fff', weight: 1 }));
+    syncVector('power', runData.v3Context?.power, () => ({ color: '#a855f7', weight: 1 }), (feature, latlng) => L.circleMarker(latlng, { radius: 4, fillColor: '#a855f7', fillOpacity: 0.8, color: '#fff', weight: 1 }));
 
     // Routes
-    syncVector('normalRoute', v3.v3NormalRoute, () => ({ color: '#ef4444', weight: 4, opacity: 0.8, dashArray: '8, 8' }));
-    syncVector('hazardAwareRoute', v3.v3HazardAwareRoute, () => ({ color: '#10b981', weight: 5, opacity: 0.9 }));
+    syncVector('normalRoute', runData.v3NormalRoute, () => ({ color: '#ef4444', weight: 4, opacity: 0.8, dashArray: '8, 8' }));
+    syncVector('hazardAwareRoute', runData.v3HazardAwareRoute, () => ({ color: '#10b981', weight: 5, opacity: 0.9 }));
 
-  }, [v3, layers, currentSec]);
+  }, [runData, layers, currentSec]);
 
-  const roadEdges = v3.v3Roads?.features?.filter(r => (r.properties.arrival_time_hr * 3600) <= currentSec).length || 0;
+  const roadEdges = runData.v3Roads?.features?.filter(r => (r.properties.arrival_time_hr * 3600) <= currentSec).length || 0;
   const pct = Math.round((currentTimeMin / maxTimeMin) * 100);
 
   const handleCheckpoint = (time, lat, lng) => {
@@ -332,7 +373,7 @@ export default function SimulationLab({ initialTimeMin = 0, onTimeChange, onNavi
                     <span className="text-3xl font-light text-slate-800 tracking-tight">{roadEdges}</span>
                     <span className="text-xs font-semibold text-slate-500 mb-1">Road Segments</span>
                   </div>
-                  <p className="text-[10px] text-slate-400 leading-tight">Total modelled exposed roads: 38.788 km. Actual unavailable segments scale with time.</p>
+                  <p className="text-[10px] text-slate-400 leading-tight">Total modelled exposed roads: {roadKm} km. Actual unavailable segments scale with time.</p>
                 </div>
 
                 <div className="bg-slate-50 rounded-xl border border-slate-200 p-4">
