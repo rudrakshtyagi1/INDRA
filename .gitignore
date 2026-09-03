@@ -61,6 +61,12 @@ data/processed/tehri_simulations/delft3d/setup/Delft3D/
 *.bi4
 *.out
 *.mass
+*.wd
+*.max
+*.inittm
+*.maxtm
+*.mxe
+*.totaltm
 *Case_Tehri_Breach_out/*
 
 # Runtime scenario/run artifacts (Phase 1B / Phase 6)
