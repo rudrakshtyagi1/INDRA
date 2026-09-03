@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   Activity,
   CheckCircle2,
+  CloudRain,
   Database,
   FileSpreadsheet,
   Globe,
@@ -9,6 +10,7 @@ import {
   Map,
   Satellite,
   ShieldAlert,
+  Workflow,
 } from 'lucide-react';
 
 export default function NavigationRail({ activeTab, onSelectTab }) {
@@ -16,6 +18,8 @@ export default function NavigationRail({ activeTab, onSelectTab }) {
 
   const NAV_ITEMS = [
     { id: 'overview', icon: LayoutDashboard, label: 'Command Center', tag: 'OPS' },
+    { id: 'physics', icon: Workflow, label: 'Physics Pipeline', tag: 'PHY' },
+    { id: 'hydrology', icon: CloudRain, label: 'Hydrology Lab', tag: 'HYD' },
     { id: 'simulation', icon: Map, label: 'Simulation Lab', tag: 'SIM' },
     { id: 'scenarios', icon: Activity, label: 'Scenario Builder', tag: 'SCN' },
     { id: 'exposure', icon: ShieldAlert, label: 'Exposure & Assets', tag: 'EXP' },
@@ -23,7 +27,7 @@ export default function NavigationRail({ activeTab, onSelectTab }) {
     { id: 'hadr', icon: Globe, label: 'HADR Operations', tag: 'HADR' },
     { id: 'satellite', icon: Satellite, label: 'Satellite Monitor', tag: 'SAR' },
     { id: 'models_qa', icon: CheckCircle2, label: 'Models & QA', tag: 'QA' },
-    { id: 'data', icon: Database, label: 'Data & Provenance', tag: 'DATA' },
+    { id: 'data', icon: Database, label: 'Data Operations', tag: 'DATA' },
   ];
 
   return (

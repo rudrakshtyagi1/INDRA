@@ -4,426 +4,609 @@
     "time_sec": 0,
     "wet_cells": 0,
     "wet_area_km2": 0.0,
-    "max_depth_m": 0.0
+    "max_depth_m": 0.0,
+    "md5": "fd0f3efb",
+    "file": "depth_0000.tif",
+    "is_unique": true
   },
   {
     "frame": 1,
     "time_sec": 60,
     "wet_cells": 0,
     "wet_area_km2": 0.0,
-    "max_depth_m": 0.0
+    "max_depth_m": 0.0,
+    "md5": "fd0f3efb",
+    "file": "depth_0001.tif",
+    "is_unique": true
   },
   {
     "frame": 2,
     "time_sec": 120,
     "wet_cells": 933,
     "wet_area_km2": 0.84,
-    "max_depth_m": 6267.97
+    "max_depth_m": 6267.97,
+    "md5": "db19bf00",
+    "file": "depth_0002.tif",
+    "is_unique": true
   },
   {
     "frame": 3,
     "time_sec": 180,
     "wet_cells": 2250,
     "wet_area_km2": 2.025,
-    "max_depth_m": 15246.46
+    "max_depth_m": 15246.46,
+    "md5": "6c97cc0d",
+    "file": "depth_0003.tif",
+    "is_unique": true
   },
   {
     "frame": 4,
     "time_sec": 240,
     "wet_cells": 4004,
     "wet_area_km2": 3.604,
-    "max_depth_m": 5419.58
+    "max_depth_m": 5419.58,
+    "md5": "3f707db3",
+    "file": "depth_0004.tif",
+    "is_unique": true
   },
   {
     "frame": 5,
     "time_sec": 300,
     "wet_cells": 6085,
     "wet_area_km2": 5.476,
-    "max_depth_m": 2592.64
+    "max_depth_m": 2592.64,
+    "md5": "0f7e9fd2",
+    "file": "depth_0005.tif",
+    "is_unique": true
   },
   {
     "frame": 6,
     "time_sec": 360,
     "wet_cells": 7675,
     "wet_area_km2": 6.907,
-    "max_depth_m": 1943.03
+    "max_depth_m": 1943.03,
+    "md5": "64dba2fb",
+    "file": "depth_0006.tif",
+    "is_unique": true
   },
   {
     "frame": 7,
     "time_sec": 420,
     "wet_cells": 9103,
     "wet_area_km2": 8.193,
-    "max_depth_m": 930.84
+    "max_depth_m": 930.84,
+    "md5": "e58ed0ce",
+    "file": "depth_0007.tif",
+    "is_unique": true
   },
   {
     "frame": 8,
     "time_sec": 480,
     "wet_cells": 10214,
     "wet_area_km2": 9.193,
-    "max_depth_m": 635.16
+    "max_depth_m": 635.16,
+    "md5": "5e3c4412",
+    "file": "depth_0008.tif",
+    "is_unique": true
   },
   {
     "frame": 9,
     "time_sec": 540,
     "wet_cells": 11150,
     "wet_area_km2": 10.035,
-    "max_depth_m": 2208.63
+    "max_depth_m": 2208.63,
+    "md5": "9ebdf115",
+    "file": "depth_0009.tif",
+    "is_unique": true
   },
   {
     "frame": 10,
     "time_sec": 600,
     "wet_cells": 11970,
     "wet_area_km2": 10.773,
-    "max_depth_m": 2061.1
+    "max_depth_m": 2061.1,
+    "md5": "39558135",
+    "file": "depth_0010.tif",
+    "is_unique": true
   },
   {
     "frame": 11,
     "time_sec": 660,
     "wet_cells": 12715,
     "wet_area_km2": 11.444,
-    "max_depth_m": 1701.8
+    "max_depth_m": 1701.8,
+    "md5": "f33930ec",
+    "file": "depth_0011.tif",
+    "is_unique": true
   },
   {
     "frame": 12,
     "time_sec": 720,
     "wet_cells": 13462,
     "wet_area_km2": 12.116,
-    "max_depth_m": 692.14
+    "max_depth_m": 692.14,
+    "md5": "bab86b01",
+    "file": "depth_0012.tif",
+    "is_unique": true
   },
   {
     "frame": 13,
     "time_sec": 780,
     "wet_cells": 14122,
     "wet_area_km2": 12.71,
-    "max_depth_m": 512.67
+    "max_depth_m": 512.67,
+    "md5": "ce311eab",
+    "file": "depth_0013.tif",
+    "is_unique": true
   },
   {
     "frame": 14,
     "time_sec": 840,
     "wet_cells": 14662,
     "wet_area_km2": 13.196,
-    "max_depth_m": 515.47
+    "max_depth_m": 515.47,
+    "md5": "e7dc6608",
+    "file": "depth_0014.tif",
+    "is_unique": true
   },
   {
     "frame": 15,
     "time_sec": 900,
     "wet_cells": 15151,
     "wet_area_km2": 13.636,
-    "max_depth_m": 496.34
+    "max_depth_m": 496.34,
+    "md5": "0225d39a",
+    "file": "depth_0015.tif",
+    "is_unique": true
   },
   {
     "frame": 16,
     "time_sec": 960,
     "wet_cells": 15668,
     "wet_area_km2": 14.101,
-    "max_depth_m": 483.32
+    "max_depth_m": 483.32,
+    "md5": "dd4a32a6",
+    "file": "depth_0016.tif",
+    "is_unique": true
   },
   {
     "frame": 17,
     "time_sec": 1020,
     "wet_cells": 16158,
     "wet_area_km2": 14.542,
-    "max_depth_m": 472.89
+    "max_depth_m": 472.89,
+    "md5": "0e7f6e74",
+    "file": "depth_0017.tif",
+    "is_unique": true
   },
   {
     "frame": 18,
     "time_sec": 1080,
     "wet_cells": 16621,
     "wet_area_km2": 14.959,
-    "max_depth_m": 464.18
+    "max_depth_m": 464.18,
+    "md5": "0b234c66",
+    "file": "depth_0018.tif",
+    "is_unique": true
   },
   {
     "frame": 19,
     "time_sec": 1140,
     "wet_cells": 17034,
     "wet_area_km2": 15.331,
-    "max_depth_m": 456.62
+    "max_depth_m": 456.62,
+    "md5": "9eae5e97",
+    "file": "depth_0019.tif",
+    "is_unique": true
   },
   {
     "frame": 20,
     "time_sec": 1200,
     "wet_cells": 17356,
     "wet_area_km2": 15.62,
-    "max_depth_m": 449.59
+    "max_depth_m": 449.59,
+    "md5": "78e24c4f",
+    "file": "depth_0020.tif",
+    "is_unique": true
   },
   {
     "frame": 21,
     "time_sec": 1260,
     "wet_cells": 17721,
     "wet_area_km2": 15.949,
-    "max_depth_m": 442.92
+    "max_depth_m": 442.92,
+    "md5": "c95e3047",
+    "file": "depth_0021.tif",
+    "is_unique": true
   },
   {
     "frame": 22,
     "time_sec": 1320,
     "wet_cells": 18130,
     "wet_area_km2": 16.317,
-    "max_depth_m": 436.64
+    "max_depth_m": 436.64,
+    "md5": "e28bec46",
+    "file": "depth_0022.tif",
+    "is_unique": true
   },
   {
     "frame": 23,
     "time_sec": 1380,
     "wet_cells": 18547,
     "wet_area_km2": 16.692,
-    "max_depth_m": 430.67
+    "max_depth_m": 430.67,
+    "md5": "30fa758d",
+    "file": "depth_0023.tif",
+    "is_unique": true
   },
   {
     "frame": 24,
     "time_sec": 1440,
     "wet_cells": 18962,
     "wet_area_km2": 17.066,
-    "max_depth_m": 424.98
+    "max_depth_m": 424.98,
+    "md5": "2cb44366",
+    "file": "depth_0024.tif",
+    "is_unique": true
   },
   {
     "frame": 25,
     "time_sec": 1500,
     "wet_cells": 19323,
     "wet_area_km2": 17.391,
-    "max_depth_m": 419.53
+    "max_depth_m": 419.53,
+    "md5": "866d88c2",
+    "file": "depth_0025.tif",
+    "is_unique": true
   },
   {
     "frame": 26,
     "time_sec": 1560,
     "wet_cells": 19688,
     "wet_area_km2": 17.719,
-    "max_depth_m": 414.32
+    "max_depth_m": 414.32,
+    "md5": "0caff84d",
+    "file": "depth_0026.tif",
+    "is_unique": true
   },
   {
     "frame": 27,
     "time_sec": 1620,
     "wet_cells": 19899,
     "wet_area_km2": 17.909,
-    "max_depth_m": 409.32
+    "max_depth_m": 409.32,
+    "md5": "82191d29",
+    "file": "depth_0027.tif",
+    "is_unique": true
   },
   {
     "frame": 28,
     "time_sec": 1680,
     "wet_cells": 20083,
     "wet_area_km2": 18.075,
-    "max_depth_m": 404.48
+    "max_depth_m": 404.48,
+    "md5": "886f8bde",
+    "file": "depth_0028.tif",
+    "is_unique": true
   },
   {
     "frame": 29,
     "time_sec": 1740,
     "wet_cells": 20228,
     "wet_area_km2": 18.205,
-    "max_depth_m": 399.77
+    "max_depth_m": 399.77,
+    "md5": "3e079326",
+    "file": "depth_0029.tif",
+    "is_unique": true
   },
   {
     "frame": 30,
     "time_sec": 1800,
     "wet_cells": 20369,
     "wet_area_km2": 18.332,
-    "max_depth_m": 395.26
+    "max_depth_m": 395.26,
+    "md5": "10a483e8",
+    "file": "depth_0030.tif",
+    "is_unique": true
   },
   {
     "frame": 31,
     "time_sec": 1860,
     "wet_cells": 20512,
     "wet_area_km2": 18.461,
-    "max_depth_m": 390.85
+    "max_depth_m": 390.85,
+    "md5": "1cf6b7a8",
+    "file": "depth_0031.tif",
+    "is_unique": true
   },
   {
     "frame": 32,
     "time_sec": 1920,
     "wet_cells": 20652,
     "wet_area_km2": 18.587,
-    "max_depth_m": 386.46
+    "max_depth_m": 386.46,
+    "md5": "e5904a00",
+    "file": "depth_0032.tif",
+    "is_unique": true
   },
   {
     "frame": 33,
     "time_sec": 1980,
     "wet_cells": 20798,
     "wet_area_km2": 18.718,
-    "max_depth_m": 382.19
+    "max_depth_m": 382.19,
+    "md5": "d1d33c80",
+    "file": "depth_0033.tif",
+    "is_unique": true
   },
   {
     "frame": 34,
     "time_sec": 2040,
     "wet_cells": 20963,
     "wet_area_km2": 18.867,
-    "max_depth_m": 378.08
+    "max_depth_m": 378.08,
+    "md5": "f2e57cc5",
+    "file": "depth_0034.tif",
+    "is_unique": true
   },
   {
     "frame": 35,
     "time_sec": 2100,
     "wet_cells": 21103,
     "wet_area_km2": 18.993,
-    "max_depth_m": 374.12
+    "max_depth_m": 374.12,
+    "md5": "c6a180d7",
+    "file": "depth_0035.tif",
+    "is_unique": true
   },
   {
     "frame": 36,
     "time_sec": 2160,
     "wet_cells": 21262,
     "wet_area_km2": 19.136,
-    "max_depth_m": 370.27
+    "max_depth_m": 370.27,
+    "md5": "73c2308e",
+    "file": "depth_0036.tif",
+    "is_unique": true
   },
   {
     "frame": 37,
     "time_sec": 2220,
     "wet_cells": 21450,
     "wet_area_km2": 19.305,
-    "max_depth_m": 366.55
+    "max_depth_m": 366.55,
+    "md5": "79d9978e",
+    "file": "depth_0037.tif",
+    "is_unique": true
   },
   {
     "frame": 38,
     "time_sec": 2280,
     "wet_cells": 21594,
     "wet_area_km2": 19.435,
-    "max_depth_m": 362.95
+    "max_depth_m": 362.95,
+    "md5": "4f68e690",
+    "file": "depth_0038.tif",
+    "is_unique": true
   },
   {
     "frame": 39,
     "time_sec": 2340,
     "wet_cells": 21714,
     "wet_area_km2": 19.543,
-    "max_depth_m": 359.42
+    "max_depth_m": 359.42,
+    "md5": "34048b6c",
+    "file": "depth_0039.tif",
+    "is_unique": true
   },
   {
     "frame": 40,
     "time_sec": 2400,
     "wet_cells": 21864,
     "wet_area_km2": 19.678,
-    "max_depth_m": 355.95
+    "max_depth_m": 355.95,
+    "md5": "bac04f8a",
+    "file": "depth_0040.tif",
+    "is_unique": true
   },
   {
     "frame": 41,
     "time_sec": 2460,
     "wet_cells": 22029,
     "wet_area_km2": 19.826,
-    "max_depth_m": 352.56
+    "max_depth_m": 352.56,
+    "md5": "a2e01b96",
+    "file": "depth_0041.tif",
+    "is_unique": true
   },
   {
     "frame": 42,
     "time_sec": 2520,
     "wet_cells": 22175,
     "wet_area_km2": 19.957,
-    "max_depth_m": 349.26
+    "max_depth_m": 349.26,
+    "md5": "2cd02396",
+    "file": "depth_0042.tif",
+    "is_unique": true
   },
   {
     "frame": 43,
     "time_sec": 2580,
     "wet_cells": 22315,
     "wet_area_km2": 20.084,
-    "max_depth_m": 346.07
+    "max_depth_m": 346.07,
+    "md5": "0b2df699",
+    "file": "depth_0043.tif",
+    "is_unique": true
   },
   {
     "frame": 44,
     "time_sec": 2640,
     "wet_cells": 22446,
     "wet_area_km2": 20.201,
-    "max_depth_m": 342.98
+    "max_depth_m": 342.98,
+    "md5": "cb772a6d",
+    "file": "depth_0044.tif",
+    "is_unique": true
   },
   {
     "frame": 45,
     "time_sec": 2700,
     "wet_cells": 22579,
     "wet_area_km2": 20.321,
-    "max_depth_m": 339.96
+    "max_depth_m": 339.96,
+    "md5": "300509f4",
+    "file": "depth_0045.tif",
+    "is_unique": true
   },
   {
     "frame": 46,
     "time_sec": 2760,
     "wet_cells": 22695,
     "wet_area_km2": 20.425,
-    "max_depth_m": 336.99
+    "max_depth_m": 336.99,
+    "md5": "d52486fc",
+    "file": "depth_0046.tif",
+    "is_unique": true
   },
   {
     "frame": 47,
     "time_sec": 2820,
     "wet_cells": 22812,
     "wet_area_km2": 20.531,
-    "max_depth_m": 334.11
+    "max_depth_m": 334.11,
+    "md5": "f64cc802",
+    "file": "depth_0047.tif",
+    "is_unique": true
   },
   {
     "frame": 48,
     "time_sec": 2880,
     "wet_cells": 22944,
     "wet_area_km2": 20.65,
-    "max_depth_m": 331.31
+    "max_depth_m": 331.31,
+    "md5": "7e4bc1b1",
+    "file": "depth_0048.tif",
+    "is_unique": true
   },
   {
     "frame": 49,
     "time_sec": 2940,
     "wet_cells": 23071,
     "wet_area_km2": 20.764,
-    "max_depth_m": 328.6
+    "max_depth_m": 328.6,
+    "md5": "a2f35cb2",
+    "file": "depth_0049.tif",
+    "is_unique": true
   },
   {
     "frame": 50,
     "time_sec": 3000,
     "wet_cells": 23179,
     "wet_area_km2": 20.861,
-    "max_depth_m": 326.01
+    "max_depth_m": 326.01,
+    "md5": "55a8118c",
+    "file": "depth_0050.tif",
+    "is_unique": true
   },
   {
     "frame": 51,
     "time_sec": 3060,
     "wet_cells": 23314,
     "wet_area_km2": 20.983,
-    "max_depth_m": 323.5
+    "max_depth_m": 323.5,
+    "md5": "5df6f33c",
+    "file": "depth_0051.tif",
+    "is_unique": true
   },
   {
     "frame": 52,
     "time_sec": 3120,
     "wet_cells": 23469,
     "wet_area_km2": 21.122,
-    "max_depth_m": 321.08
+    "max_depth_m": 321.08,
+    "md5": "a6e17749",
+    "file": "depth_0052.tif",
+    "is_unique": true
   },
   {
     "frame": 53,
     "time_sec": 3180,
     "wet_cells": 23641,
     "wet_area_km2": 21.277,
-    "max_depth_m": 318.75
+    "max_depth_m": 318.75,
+    "md5": "f80bacf6",
+    "file": "depth_0053.tif",
+    "is_unique": true
   },
   {
     "frame": 54,
     "time_sec": 3240,
     "wet_cells": 23735,
     "wet_area_km2": 21.361,
-    "max_depth_m": 316.51
+    "max_depth_m": 316.51,
+    "md5": "21e4c47a",
+    "file": "depth_0054.tif",
+    "is_unique": true
   },
   {
     "frame": 55,
     "time_sec": 3300,
     "wet_cells": 23813,
     "wet_area_km2": 21.432,
-    "max_depth_m": 314.38
+    "max_depth_m": 314.38,
+    "md5": "512684f6",
+    "file": "depth_0055.tif",
+    "is_unique": true
   },
   {
     "frame": 56,
     "time_sec": 3360,
     "wet_cells": 23903,
     "wet_area_km2": 21.513,
-    "max_depth_m": 312.33
+    "max_depth_m": 312.33,
+    "md5": "36ed5979",
+    "file": "depth_0056.tif",
+    "is_unique": true
   },
   {
     "frame": 57,
     "time_sec": 3420,
     "wet_cells": 23988,
     "wet_area_km2": 21.589,
-    "max_depth_m": 310.36
+    "max_depth_m": 310.36,
+    "md5": "3eddfedb",
+    "file": "depth_0057.tif",
+    "is_unique": true
   },
   {
     "frame": 58,
     "time_sec": 3480,
     "wet_cells": 24070,
     "wet_area_km2": 21.663,
-    "max_depth_m": 308.46
+    "max_depth_m": 308.46,
+    "md5": "0bfdb9e3",
+    "file": "depth_0058.tif",
+    "is_unique": true
   },
   {
     "frame": 59,
     "time_sec": 3540,
     "wet_cells": 24160,
     "wet_area_km2": 21.744,
-    "max_depth_m": 306.61
+    "max_depth_m": 306.61,
+    "md5": "cce7357d",
+    "file": "depth_0059.tif",
+    "is_unique": true
   },
   {
     "frame": 60,
     "time_sec": 3600,
     "wet_cells": 24230,
     "wet_area_km2": 21.807,
-    "max_depth_m": 304.85
+    "max_depth_m": 304.85,
+    "md5": "afe53bc3",
+    "file": "depth_0060.tif",
+    "is_unique": true
   }
 ]

@@ -1,9 +1,9 @@
 import React from 'react';
-import { Database } from 'lucide-react';
+import { Database, Compass } from 'lucide-react';
 import { useRun } from '../context/RunContext';
 import ExportMenu from '../components/ExportMenu';
 
-export default function ContextBar() {
+export default function ContextBar({ onOpenTour }) {
   const { selectedRunId, setSelectedRunId, allRuns, currentRun, timeFormatted } = useRun();
 
   return (
@@ -66,6 +66,14 @@ export default function ContextBar() {
         <span className="hidden 2xl:inline text-[10px] text-slate-400 font-sans">
           PHYSICAL VALIDATION: <strong className="text-slate-300 font-mono">NOT AVAILABLE</strong>
         </span>
+
+        <button
+          onClick={onOpenTour}
+          className="px-2.5 py-1 text-[11px] font-bold bg-sky-950/80 hover:bg-sky-900 text-sky-400 border border-sky-800 rounded transition flex items-center gap-1.5 font-sans"
+        >
+          <Compass className="w-3.5 h-3.5" />
+          <span>GUIDED SCIENCE TOUR</span>
+        </button>
 
         <ExportMenu
           type="extent"

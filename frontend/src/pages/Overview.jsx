@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import L from 'leaflet';
 import {
   ArrowRight,
@@ -151,6 +151,8 @@ export default function Overview({ onNavigate }) {
     }
   }, [currentRun, v3.v3Roads]);
 
+  const [inspectorTab, setInspectorTab] = useState('RUN'); // 'RUN', 'PHYSICS', 'EXPOSURE', 'QA', 'PROVENANCE'
+
   return (
     <div className="h-full w-full flex bg-[#0B0F19] text-slate-100 overflow-hidden select-none">
       {/* Center Operational GIS Map Area (70% width) */}
@@ -242,9 +244,9 @@ export default function Overview({ onNavigate }) {
       </div>
 
       {/* Right Command & Control Inspector (30% width, fixed 360px) */}
-      <div className="w-[360px] bg-[#111827] flex flex-col h-full overflow-y-auto shrink-0 text-xs">
+      <div className="w-[360px] bg-[#111827] flex flex-col h-full overflow-y-auto shrink-0 text-xs font-mono">
         {/* Inspector Header */}
-        <div className="h-9 px-4 border-b border-slate-800 flex items-center justify-between shrink-0 bg-[#0F172A]">
+        <div className="h-9 px-3 border-b border-slate-800 flex items-center justify-between shrink-0 bg-[#0F172A]">
           <span className="font-bold text-slate-200 tracking-wider uppercase text-[11px] flex items-center gap-1.5 font-sans">
             <Layers className="w-3.5 h-3.5 text-sky-400" />
             C2 Telemetry Inspector
@@ -254,115 +256,235 @@ export default function Overview({ onNavigate }) {
           </span>
         </div>
 
+        {/* 5-Tab Selector Strip */}
+        <div className="h-8 border-b border-slate-800 bg-[#0B0F19] px-2 flex items-center justify-between shrink-0 text-[10px] select-none">
+          {['RUN', 'PHYSICS', 'EXPOSURE', 'QA', 'PROVENANCE'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setInspectorTab(tab)}
+              className={`px-2 py-0.5 rounded font-bold transition ${
+                inspectorTab === tab
+                  ? 'bg-sky-600 text-white'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+
         <div className="p-4 space-y-4 flex-1">
-          {/* Section: ACTIVE RUN STATE */}
-          <div className="border border-slate-800 rounded bg-[#0B0F19] p-3 space-y-2">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-              Active Run &amp; Solver
-            </div>
-            <div className="space-y-1">
-              <div className="telemetry-row">
-                <span className="telemetry-row__label">Scenario</span>
-                <span className="telemetry-row__value">{currentRun.name}</span>
-              </div>
-              <div className="telemetry-row">
-                <span className="telemetry-row__label">Far-Field Solver</span>
-                <span className="telemetry-row__value">{currentRun.far_field_solver}</span>
-              </div>
-              <div className="telemetry-row">
-                <span className="telemetry-row__label">Near-Field</span>
-                <span className="telemetry-row__value">{currentRun.near_field_solver}</span>
-              </div>
-              <div className="telemetry-row">
-                <span className="telemetry-row__label">Simulation Window</span>
-                <span className="telemetry-row__value">{currentRun.simulation_window_s} s</span>
-              </div>
-              <div className="telemetry-row">
-                <span className="telemetry-row__label">Mass Balance Err</span>
-                <span className="telemetry-row__value text-emerald-400">
-                  {currentRun.mass_balance_error_pct !== null
-                    ? `${currentRun.mass_balance_error_pct}% (PASS)`
-                    : 'N/A (Prototype)'}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Section: COUPLING BOUNDARY */}
-          <div className="border border-slate-800 rounded bg-[#0B0F19] p-3 space-y-2">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-              Hydrodynamic Inflow Boundary
-            </div>
-            <div className="space-y-1">
-              <div className="telemetry-row">
-                <span className="telemetry-row__label">Coupled Peak Q</span>
-                <span className="telemetry-row__value text-sky-400">
-                  {currentRun.coupled_peak_q_m3s.toLocaleString()} m&sup3;/s
-                </span>
-              </div>
-              <p className="text-[10px] text-slate-400 leading-snug pt-1">
-                Froude back-scaled hydrograph derived from DualSPHysics 3D breach collapse transect.
-              </p>
-            </div>
-          </div>
-
-          {/* Section: HAZARD METRICS */}
-          <div className="border border-slate-800 rounded bg-[#0B0F19] p-3 space-y-2">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-              Hazard Reach &amp; Depths
-            </div>
-            <div className="space-y-1">
-              <div className="telemetry-row">
-                <span className="telemetry-row__label">Max Water Depth</span>
-                <span className="telemetry-row__value text-sky-400">{currentRun.max_depth_m} m</span>
-              </div>
-              <div className="text-[9px] text-amber-400/90 leading-tight">
-                {currentRun.max_depth_label}
-              </div>
-              <div className="telemetry-row pt-1">
-                <span className="telemetry-row__label">Model Reach</span>
-                <span className="telemetry-row__value">{currentRun.domain_km} km</span>
-              </div>
-              <div className="telemetry-row">
-                <span className="telemetry-row__label">Temporal Frames</span>
-                <span className="telemetry-row__value">{currentRun.frames_count} frames</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Section: CRITICAL INFRASTRUCTURE EXPOSURE */}
-          <div className="border border-slate-800 rounded bg-[#0B0F19] p-3 space-y-2">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-              Downstream Exposure Summary
-            </div>
-            <div className="space-y-1">
-              <div className="telemetry-row">
-                <span className="telemetry-row__label">Road Inundation</span>
-                <span className="telemetry-row__value text-orange-400">
-                  {currentRun.road_exposed_km} km ({currentRun.road_segments_intersected} seg)
-                </span>
-              </div>
-              <div className="telemetry-row">
-                <span className="telemetry-row__label">Settlements Wetted</span>
-                <span className="telemetry-row__value text-emerald-400">0 in reach</span>
-              </div>
-              <div className="telemetry-row">
-                <span className="telemetry-row__label">Healthcare Facilities</span>
-                <span className="telemetry-row__value text-emerald-400">0 in reach</span>
-              </div>
-              {currentRun.earliest_road_exposure_s && (
-                <div className="telemetry-row">
-                  <span className="telemetry-row__label">Earliest Road Impact</span>
-                  <span className="telemetry-row__value text-amber-400">
-                    T+{currentRun.earliest_road_exposure_s}s
-                  </span>
+          {inspectorTab === 'RUN' && (
+            <>
+              {/* Section: ACTIVE RUN STATE */}
+              <div className="border border-slate-800 rounded bg-[#0B0F19] p-3 space-y-2">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  Active Run &amp; Solvers
                 </div>
-              )}
+                <div className="space-y-1">
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Scenario</span>
+                    <span className="telemetry-row__value font-bold text-white">{currentRun.name}</span>
+                  </div>
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Far-Field Solver</span>
+                    <span className="telemetry-row__value">{currentRun.far_field_solver}</span>
+                  </div>
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Near-Field Solver</span>
+                    <span className="telemetry-row__value">{currentRun.near_field_solver}</span>
+                  </div>
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Simulation Window</span>
+                    <span className="telemetry-row__value">{currentRun.simulation_window_s} s</span>
+                  </div>
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Mass Balance Error</span>
+                    <span className="telemetry-row__value text-emerald-400">
+                      {currentRun.mass_balance_error_pct !== null
+                        ? `${currentRun.mass_balance_error_pct}% (PASS)`
+                        : 'N/A (Prototype)'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section: COUPLING BOUNDARY */}
+              <div className="border border-slate-800 rounded bg-[#0B0F19] p-3 space-y-2">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  Coupled Inflow Boundary Q(t)
+                </div>
+                <div className="space-y-1">
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Coupled Boundary Peak Q</span>
+                    <span className="telemetry-row__value text-sky-400 font-bold">
+                      {currentRun.coupled_peak_q_m3s.toLocaleString()} m&sup3;/s
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-amber-400/90 leading-snug pt-1">
+                    DUALSPHYSICS-DERIVED / FROUDE BACK-SCALED COUPLING BOUNDARY PEAK Q (Not hydrologic inflow).
+                  </p>
+                </div>
+              </div>
+
+              {/* Section: HAZARD METRICS */}
+              <div className="border border-slate-800 rounded bg-[#0B0F19] p-3 space-y-2">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  Hazard Reach &amp; Depths
+                </div>
+                <div className="space-y-1">
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Numerical Max Depth</span>
+                    <span className="telemetry-row__value text-sky-400">{currentRun.max_depth_m} m</span>
+                  </div>
+                  <div className="text-[9px] text-amber-400/90 leading-tight">
+                    {currentRun.max_depth_label}
+                  </div>
+                  <div className="telemetry-row pt-1">
+                    <span className="telemetry-row__label">Model Reach Domain</span>
+                    <span className="telemetry-row__value">{currentRun.domain_km} km</span>
+                  </div>
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Temporal Frames</span>
+                    <span className="telemetry-row__value">{currentRun.frames_count} frames</span>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
+          {inspectorTab === 'PHYSICS' && (
+            <div className="space-y-3">
+              <div className="border border-slate-800 rounded bg-[#0B0F19] p-3 space-y-2">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  Computational Lineage
+                </div>
+                <div className="space-y-1 text-[11px] text-slate-300">
+                  <div>1. ERA5 + SCS-CN: Peak Inflow 866.8 m³/s</div>
+                  <div>2. Froehlich Breach: Peak Outflow 723,705 m³/s</div>
+                  <div>3. DualSPHysics 5.4: 3.0 m³/s at x=20m</div>
+                  <div>4. Froude Scaling: λ_L=100, λ_Q=100,000</div>
+                  <div>5. Coupled Inflow Q: 300,000 m³/s (58.5% peak attenuation)</div>
+                  <div>6. LISFLOOD-FP 8.1: 30 km canyon propagation</div>
+                </div>
+                <button
+                  onClick={() => onNavigate('physics')}
+                  className="w-full mt-2 py-1.5 bg-sky-950 hover:bg-sky-900 border border-sky-800 rounded text-sky-300 text-[10px] font-bold transition flex items-center justify-center gap-1.5"
+                >
+                  <span>Open Deep Physics Pipeline</span>
+                  <ArrowRight className="w-3 h-3" />
+                </button>
+              </div>
+
+              <div className="border border-slate-800 rounded bg-[#0B0F19] p-3 space-y-1.5 text-[10px] text-slate-400">
+                <div className="font-bold text-slate-200">Gorge Hydrodynamic Attenuation</div>
+                <p>
+                  Peak discharge reduces from 723k to 300k m³/s over 2 km near-field gorge. 
+                  Reflects steep wall friction and energy dissipation, not volume loss.
+                </p>
+              </div>
             </div>
-            <p className="text-[9px] text-slate-500 pt-1 leading-tight">
-              0 intersections within current modelled reach. Not classified as safe beyond model boundary.
-            </p>
-          </div>
+          )}
+
+          {inspectorTab === 'EXPOSURE' && (
+            <div className="space-y-3">
+              <div className="border border-slate-800 rounded bg-[#0B0F19] p-3 space-y-2">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  Downstream Exposure Audit
+                </div>
+                <div className="space-y-1">
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Road Inundation</span>
+                    <span className="telemetry-row__value text-orange-400 font-bold">
+                      {currentRun.road_exposed_km} km ({currentRun.road_segments_intersected} segments)
+                    </span>
+                  </div>
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Settlements Wetted</span>
+                    <span className="telemetry-row__value text-emerald-400">0 within reach</span>
+                  </div>
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Healthcare Facilities</span>
+                    <span className="telemetry-row__value text-emerald-400">0 within reach</span>
+                  </div>
+                  {currentRun.earliest_road_exposure_s && (
+                    <div className="telemetry-row">
+                      <span className="telemetry-row__label">Earliest Road Inundation</span>
+                      <span className="telemetry-row__value text-amber-400">
+                        T+{currentRun.earliest_road_exposure_s}s
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="p-2.5 bg-amber-950/40 border border-amber-900/60 rounded text-[10px] text-amber-300 leading-snug">
+                <strong>ZERO EXPOSURE RULE:</strong> Settlements outside modelled reach are outside current hazard window, NOT verified safe.
+              </div>
+
+              <div className="border border-slate-800 rounded bg-[#0B0F19] p-3 space-y-1">
+                <div className="text-[10px] font-bold text-slate-400 uppercase">HADR Tactical Feasibility</div>
+                <div className="text-xs font-bold text-rose-400">NOT FEASIBLE UNDER CURRENT SCENARIO</div>
+                <p className="text-[10px] text-slate-500">6 wetted road segments block the canyon escape corridor.</p>
+              </div>
+            </div>
+          )}
+
+          {inspectorTab === 'QA' && (
+            <div className="space-y-3">
+              <div className="border border-slate-800 rounded bg-[#0B0F19] p-3 space-y-2">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  Numerical Mass Conservation
+                </div>
+                <div className="space-y-1">
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Corrected V4 Error</span>
+                    <span className="telemetry-row__value text-emerald-400 font-bold">0.00023% (PASS)</span>
+                  </div>
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Rejected Run Error</span>
+                    <span className="telemetry-row__value text-rose-400 line-through">29.29% (DISCARDED)</span>
+                  </div>
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Downstream Boundary</span>
+                    <span className="telemetry-row__value">FREE Outflow</span>
+                  </div>
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Courant Condition</span>
+                    <span className="telemetry-row__value">Adaptive α = 0.7</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-2.5 bg-slate-900 border border-slate-800 rounded text-[10px] text-slate-300 leading-snug space-y-1">
+                <div className="text-amber-400 font-bold">PHYSICAL VALIDATION STATEMENT:</div>
+                <p>
+                  PHYSICAL VALIDATION: <strong>NOT AVAILABLE</strong>. 
+                  Model results are what-if numerical benchmarks for planning research. 
+                  Historical Tehri breach observations do not exist.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {inspectorTab === 'PROVENANCE' && (
+            <div className="space-y-2">
+              {[
+                { name: 'Copernicus DEM GLO-30', tag: 'OBSERVED', col: 'text-sky-400' },
+                { name: 'CWC Gauge Telemetry', tag: 'REPORTED', col: 'text-emerald-400' },
+                { name: 'Manning Roughness n=0.06', tag: 'ASSUMED', col: 'text-amber-400' },
+                { name: 'ERA5-Land Monsoon Rain', tag: 'MODELLED', col: 'text-violet-400' },
+                { name: 'Froude Similarity Back-Scale', tag: 'DERIVED', col: 'text-sky-400' },
+                { name: 'DualSPHysics / LISFLOOD-FP', tag: 'PRECOMPUTED', col: 'text-emerald-400' },
+                { name: 'Sentinel-1 SAR / GEE', tag: 'CONTEXT', col: 'text-slate-400' },
+              ].map((p, i) => (
+                <div key={i} className="p-2 bg-[#0B0F19] border border-slate-800 rounded flex justify-between items-center text-[10px]">
+                  <span className="text-slate-300">{p.name}</span>
+                  <span className={`font-bold ${p.col}`}>{p.tag}</span>
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* Section: MISSION WORKSPACE LINKS */}
           <div className="space-y-1.5 pt-1">

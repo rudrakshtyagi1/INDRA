@@ -3,12 +3,17 @@ import {
   Clock,
   Info,
   Layers,
-  MapPin,
   Pause,
   Play,
   RotateCcw,
   SkipBack,
   SkipForward,
+  Activity,
+  Scale,
+  Waves,
+  FileCheck,
+  ChevronUp,
+  ChevronDown,
 } from 'lucide-react';
 import L from 'leaflet';
 import parseGeoraster from 'georaster';
@@ -16,6 +21,10 @@ import GeoRasterLayer from 'georaster-layer-for-leaflet';
 import { useRun } from '../context/RunContext';
 import { useV3Data } from '../hooks/useV3Data';
 import v4FramesMeta from '../data/v4_frames_meta.json';
+import SphParticleCanvas from '../components/simulation/SphParticleCanvas';
+import FroudeCouplingPanel from '../components/simulation/FroudeCouplingPanel';
+import BreachBenchmarkPanel from '../components/simulation/BreachBenchmarkPanel';
+import FrameAuditTable from '../components/simulation/FrameAuditTable';
 
 const SPEEDS = [1, 2, 5, 10];
 
@@ -26,15 +35,36 @@ export default function SimulationLab() {
   const isV4 = selectedRunId === 'v4_extended';
   const durationSec = currentRun.simulation_window_s || 3600;
   const frameIntervalSec = currentRun.frames_interval_s || 60;
-  const totalFrames = currentRun.frames_count || (isV4 ? 61 : 17);
+  const getSubViewFromUrl = () => {
+    if (typeof window === 'undefined') return 'lisflood';
+    let v = new URLSearchParams(window.location.search).get('view');
+    if (v && ['lisflood', 'sph', 'coupling', 'breach', 'audit'].includes(v)) return v;
+    if (window.location.hash.includes('?')) {
+      v = new URLSearchParams(window.location.hash.split('?')[1]).get('view');
+      if (v && ['lisflood', 'sph', 'coupling', 'breach', 'audit'].includes(v)) return v;
+    }
+    return 'lisflood';
+  };
 
-  const [currentSec, setCurrentSec] = useState(() => {
-    const p = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('t') : null;
-    return p ? parseInt(p) : 0;
-  });
+  const getTimeFromUrl = () => {
+    if (typeof window === 'undefined') return 0;
+    let t = new URLSearchParams(window.location.search).get('t');
+    if (t) return parseInt(t, 10);
+    if (window.location.hash.includes('?')) {
+      t = new URLSearchParams(window.location.hash.split('?')[1]).get('t');
+      if (t) return parseInt(t, 10);
+    }
+    return 0;
+  };
+
+  // Sub-view mode: 'lisflood', 'sph', 'coupling', 'breach', 'audit'
+  const [subView, setSubView] = useState(getSubViewFromUrl);
+  const [currentSec, setCurrentSec] = useState(getTimeFromUrl);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [selectedFeature, setSelectedFeature] = useState(null);
+  const [isTimelineOpen, setIsTimelineOpen] = useState(true);
+  const [timelineMetric, setTimelineMetric] = useState('wet_area'); // 'wet_area', 'max_depth', 'roads'
 
   // Layer Toggles
   const [layers, setLayers] = useState({
@@ -51,8 +81,6 @@ export default function SimulationLab() {
   const mapInstanceRef = useRef(null);
   const domainLayerRef = useRef(null);
   const floodFrameRef = useRef(null);
-  const maxDepthLayerRef = useRef(null);
-  const arrivalLayerRef = useRef(null);
   const roadsLayerRef = useRef(null);
 
   // Current Frame Index
@@ -64,6 +92,7 @@ export default function SimulationLab() {
   const currentFrameInfo = isV4 ? v4FramesMeta[frameIndex] : null;
   const wetAreaKm2 = currentFrameInfo ? currentFrameInfo.wet_area_km2 : (currentSec > 0 ? (currentSec / 800) * 12.4 : 0);
   const wetCells = currentFrameInfo ? currentFrameInfo.wet_cells : Math.round(wetAreaKm2 * 1111);
+  const frameMaxDepth = currentFrameInfo ? currentFrameInfo.max_depth_m : (currentSec > 0 ? 27.2 : 0);
 
   // Wetted road calculation for currentSec
   const wettedRoadCount =
@@ -90,6 +119,7 @@ export default function SimulationLab() {
 
   // Initialize Map
   useEffect(() => {
+    if (subView !== 'lisflood') return;
     if (mapInstanceRef.current || !mapContainerRef.current) return;
 
     const map = L.map(mapContainerRef.current, {
@@ -112,19 +142,9 @@ export default function SimulationLab() {
 
     L.control.zoom({ position: 'topleft' }).addTo(map);
 
-    // Initial domain fit
     if (currentRun.domain_bounds) {
       map.fitBounds(currentRun.domain_bounds, { padding: [30, 30] });
     }
-
-    // Dam marker
-    const damIcon = L.divIcon({
-      className: '',
-      html: `<div style="background:#991b1b;color:#f8fafc;border:1px solid #ef4444;border-radius:2px;padding:2px 6px;font-size:9px;font-family:monospace;font-weight:700;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.6)">Tehri Dam (Source Crest 839.5m)</div>`,
-      iconSize: [150, 18],
-      iconAnchor: [75, 9],
-    });
-    L.marker([30.378, 78.480], { icon: damIcon }).addTo(map);
 
     mapInstanceRef.current = map;
 
@@ -132,12 +152,12 @@ export default function SimulationLab() {
       map.remove();
       mapInstanceRef.current = null;
     };
-  }, []);
+  }, [subView, currentRun.domain_bounds]);
 
-  // Sync Domain Boundary
+  // Model Domain Boundary Layer
   useEffect(() => {
+    if (!mapInstanceRef.current) return;
     const map = mapInstanceRef.current;
-    if (!map) return;
 
     if (domainLayerRef.current) {
       map.removeLayer(domainLayerRef.current);
@@ -146,59 +166,28 @@ export default function SimulationLab() {
 
     if (layers.modelDomain && currentRun.domain_bounds) {
       const b = currentRun.domain_bounds;
-      const poly = [
-        [b[0][0], b[0][1]],
-        [b[0][0], b[1][1]],
-        [b[1][0], b[1][1]],
-        [b[1][0], b[0][1]],
-      ];
-      domainLayerRef.current = L.polygon(poly, {
-        color: '#38bdf8',
+      const rect = L.rectangle(b, {
+        color: '#38BDF8',
         weight: 1.5,
-        fill: false,
-        dashArray: '6, 6',
-      }).addTo(map);
+        dashArray: '5, 5',
+        fillColor: '#0369A1',
+        fillOpacity: 0.04,
+      });
+
+      rect.bindTooltip(
+        `MODEL DOMAIN BOUNDARY (${currentRun.domain_km} km canyon reach)`,
+        { permanent: false, direction: 'top', className: 'operational-tooltip' }
+      );
+
+      rect.addTo(map);
+      domainLayerRef.current = rect;
     }
   }, [layers.modelDomain, currentRun]);
 
-  // Sync Roads Layer
+  // Temporal Depth GeoTIFF Layer
   useEffect(() => {
+    if (!mapInstanceRef.current) return;
     const map = mapInstanceRef.current;
-    if (!map) return;
-
-    if (roadsLayerRef.current) {
-      map.removeLayer(roadsLayerRef.current);
-      roadsLayerRef.current = null;
-    }
-
-    if (layers.roads && v3.v3Roads) {
-      roadsLayerRef.current = L.geoJSON(v3.v3Roads, {
-        style: (feat) => {
-          const arrSec = (feat.properties?.arrival_time_hr || 0) * 3600;
-          return arrSec <= currentSec
-            ? { color: '#ef4444', weight: 3, opacity: 1.0 } // Wetted / cut edge
-            : { color: '#f59e0b', weight: 2, opacity: 0.7 }; // Dry road
-        },
-        onEachFeature: (feat, layer) => {
-          layer.on('click', (e) => {
-            L.DomEvent.stopPropagation(e);
-            const arr = feat.properties?.arrival_time_hr ? feat.properties.arrival_time_hr * 3600 : null;
-            setSelectedFeature({
-              name: feat.properties?.name || 'Road Segment',
-              type: 'Road Infrastructure',
-              status: arr && arr <= currentSec ? 'INUNDATED / HAZARD CUT' : 'DRY / PASSABLE AT CURRENT T',
-              arrivalSec: arr,
-            });
-          });
-        },
-      }).addTo(map);
-    }
-  }, [layers.roads, v3.v3Roads, currentSec]);
-
-  // Sync Temporal Depth Raster (Real 61 frames for V4)
-  useEffect(() => {
-    const map = mapInstanceRef.current;
-    if (!map) return;
 
     if (!layers.temporalDepth) {
       if (floodFrameRef.current) {
@@ -208,372 +197,502 @@ export default function SimulationLab() {
       return;
     }
 
-    if (isV4) {
-      const frameFile = `/api/runs/v4_extended/exports/depth_${String(frameIndex).padStart(4, '0')}?format=geotiff`;
-      fetch(frameFile)
-        .then((res) => (res.ok ? res.arrayBuffer() : null))
-        .then((buf) => (buf ? parseGeoraster(buf) : null))
-        .then((georaster) => {
-          if (!mapInstanceRef.current || !layers.temporalDepth || !georaster) return;
-          if (floodFrameRef.current) mapInstanceRef.current.removeLayer(floodFrameRef.current);
+    const frameFile = isV4
+      ? `/api/runs/${selectedRunId}/exports/depth_${String(frameIndex).padStart(4, '0')}?format=geotiff`
+      : `/api/runs/${selectedRunId}/exports/depth_${String(frameIndex).padStart(4, '0')}?format=geotiff`;
 
-          const layer = new GeoRasterLayer({
-            georaster,
-            opacity: 0.88,
-            resolution: 256,
-            pixelValuesToColorFn: (values) => {
-              const depth = values[0];
-              if (depth <= 0.05 || depth === georaster.noDataValue || isNaN(depth)) {
-                return null; // transparent for dry cells
-              }
-              // Continuous scientifically meaningful depth ramp with controlled alpha
-              if (depth < 0.5) {
-                const t = (depth - 0.05) / 0.45;
-                return `rgba(56, 189, 248, ${0.45 + t * 0.2})`; // cyan shallow
-              } else if (depth < 1.5) {
-                const t = (depth - 0.5) / 1.0;
-                return `rgba(2, 132, 199, ${0.65 + t * 0.15})`; // cerulean
-              } else if (depth < 3.0) {
-                const t = (depth - 1.5) / 1.5;
-                return `rgba(29, 78, 216, ${0.80 + t * 0.1})`; // royal blue
-              } else if (depth < 5.0) {
-                const t = (depth - 3.0) / 2.0;
-                return `rgba(30, 64, 175, ${0.88 + t * 0.07})`; // deep cobalt
-              } else {
-                return 'rgba(23, 37, 84, 0.95)'; // navy flood column
-              }
-            },
-          });
+    let isSubscribed = true;
 
-          layer.addTo(mapInstanceRef.current);
-          floodFrameRef.current = layer;
-        })
-        .catch(() => {});
-    } else {
-      // V3 arrival-derived frame
-      const snapped = Math.max(0, Math.min(800, Math.round(currentSec / 50.0) * 50));
-      fetch(`/api/scenarios/v3/frames/${snapped}`)
-        .then((res) => (res.ok ? res.json() : null))
-        .then((geoJson) => {
-          if (!mapInstanceRef.current || !layers.temporalDepth || !geoJson) return;
-          if (floodFrameRef.current) mapInstanceRef.current.removeLayer(floodFrameRef.current);
-          const layer = L.geoJSON(geoJson, {
-            style: { color: '#38bdf8', fillColor: '#0284c7', fillOpacity: 0.7, weight: 1 },
-          }).addTo(mapInstanceRef.current);
-          floodFrameRef.current = layer;
-        })
-        .catch(() => {});
-    }
-  }, [currentSec, frameIndex, layers.temporalDepth, isV4]);
-
-  // Sync Max Depth Raster Layer
-  useEffect(() => {
-    const map = mapInstanceRef.current;
-    if (!map) return;
-
-    if (!layers.maxDepth) {
-      if (maxDepthLayerRef.current) {
-        map.removeLayer(maxDepthLayerRef.current);
-        maxDepthLayerRef.current = null;
-      }
-      return;
-    }
-
-    if (currentRun.max_depth_tif_url && !maxDepthLayerRef.current) {
-      fetch(currentRun.max_depth_tif_url)
-        .then((res) => (res.ok ? res.arrayBuffer() : null))
-        .then((buf) => (buf ? parseGeoraster(buf) : null))
-        .then((georaster) => {
-          if (!mapInstanceRef.current || !layers.maxDepth || !georaster) return;
-          const layer = new GeoRasterLayer({
-            georaster,
-            opacity: 0.85,
-            resolution: 256,
-            pixelValuesToColorFn: (v) => {
-              const depth = v[0];
-              if (depth <= 0.05 || depth === georaster.noDataValue || isNaN(depth)) return null;
-              if (depth < 1.0) return 'rgba(56, 189, 248, 0.6)';
-              if (depth < 3.0) return 'rgba(2, 132, 199, 0.75)';
-              if (depth < 5.0) return 'rgba(29, 78, 216, 0.85)';
-              return 'rgba(23, 37, 84, 0.95)';
-            },
-          });
-          layer.addTo(mapInstanceRef.current);
-          maxDepthLayerRef.current = layer;
-        })
-        .catch(() => {});
-    }
-  }, [layers.maxDepth, currentRun]);
-
-  // Sync Arrival Time Raster Layer
-  useEffect(() => {
-    const map = mapInstanceRef.current;
-    if (!map) return;
-
-    if (!layers.arrivalTime) {
-      if (arrivalLayerRef.current) {
-        map.removeLayer(arrivalLayerRef.current);
-        arrivalLayerRef.current = null;
-      }
-      return;
-    }
-
-    const arrivalUrl = isV4
-      ? '/api/runs/v4_extended/exports/arrival_time?format=geotiff'
-      : '/api/runs/v3_benchmark/exports/arrival_time?format=geotiff';
-
-    fetch(arrivalUrl)
-      .then((res) => (res.ok ? res.arrayBuffer() : null))
-      .then((buf) => (buf ? parseGeoraster(buf) : null))
+    fetch(frameFile)
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.arrayBuffer();
+      })
+      .then(parseGeoraster)
       .then((georaster) => {
-        if (!mapInstanceRef.current || !layers.arrivalTime || !georaster) return;
+        if (!isSubscribed) return;
+
+        if (floodFrameRef.current) {
+          map.removeLayer(floodFrameRef.current);
+          floodFrameRef.current = null;
+        }
+
         const layer = new GeoRasterLayer({
           georaster,
-          opacity: 0.8,
+          opacity: 0.88,
           resolution: 256,
-          pixelValuesToColorFn: (v) => {
-            const arr = v[0];
-            if (arr <= 0 || arr === georaster.noDataValue || isNaN(arr)) return null;
-            if (arr < 900) return 'rgba(239, 68, 68, 0.85)'; // <15 min (fast red)
-            if (arr < 1800) return 'rgba(249, 115, 22, 0.8)'; // 15-30 min (orange)
-            if (arr < 2700) return 'rgba(234, 179, 8, 0.75)'; // 30-45 min (yellow)
-            return 'rgba(16, 185, 129, 0.7)'; // >45 min (green lead time)
+          pixelValuesToColorFn: (values) => {
+            const val = values[0];
+            if (val === undefined || val === null || val <= 0.05 || isNaN(val) || val === georaster.noDataValue) {
+              return null;
+            }
+            if (val <= 0.5) return 'rgba(56, 189, 248, 0.65)';
+            if (val <= 1.5) return 'rgba(2, 132, 199, 0.75)';
+            if (val <= 3.0) return 'rgba(29, 78, 216, 0.85)';
+            if (val <= 5.0) return 'rgba(30, 64, 175, 0.92)';
+            return 'rgba(23, 37, 84, 0.96)';
           },
         });
-        layer.addTo(mapInstanceRef.current);
-        arrivalLayerRef.current = layer;
+
+        layer.addTo(map);
+        floodFrameRef.current = layer;
       })
       .catch(() => {});
-  }, [layers.arrivalTime, isV4]);
 
-  // Playback Loop
-  useEffect(() => {
-    let raf;
-    let last;
-    const tick = (now) => {
-      if (!last) last = now;
-      const elapsed = now - last;
-      const intervalMs = 250 / playbackSpeed;
-      if (elapsed >= intervalMs) {
-        last = now;
-        setCurrentSec((prev) => {
-          if (prev >= durationSec) {
-            setIsPlaying(false);
-            return durationSec;
-          }
-          return Math.min(durationSec, prev + frameIntervalSec);
-        });
-      }
-      raf = requestAnimationFrame(tick);
+    return () => {
+      isSubscribed = false;
     };
-    if (isPlaying) raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [isPlaying, playbackSpeed, durationSec, frameIntervalSec]);
+  }, [frameIndex, layers.temporalDepth, selectedRunId, isV4]);
 
-  // Format T+HH:MM:SS
-  const hrs = Math.floor(currentSec / 3600);
-  const mins = Math.floor((currentSec % 3600) / 60);
-  const secs = currentSec % 60;
-  const timeLabel = `T+${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  // Roads Vector Layer
+  useEffect(() => {
+    if (!mapInstanceRef.current) return;
+    const map = mapInstanceRef.current;
+
+    if (roadsLayerRef.current) {
+      map.removeLayer(roadsLayerRef.current);
+      roadsLayerRef.current = null;
+    }
+
+    if (layers.roads && v3.v3Roads) {
+      const roadLayer = L.geoJSON(v3.v3Roads, {
+        style: (feature) => {
+          const arrHr = feature.properties?.arrival_time_hr || 0;
+          const isFlooded = arrHr * 3600 <= currentSec;
+          return {
+            color: isFlooded ? '#EF4444' : '#F59E0B',
+            weight: isFlooded ? 2.5 : 1.5,
+            opacity: isFlooded ? 0.9 : 0.6,
+          };
+        },
+        onEachFeature: (feature, layer) => {
+          layer.on('click', () => {
+            const arrHr = feature.properties?.arrival_time_hr || 0;
+            const isFlooded = arrHr * 3600 <= currentSec;
+            setSelectedFeature({
+              type: 'Road Segment',
+              name: feature.properties?.name || 'Bhagirathi Valley Road',
+              status: isFlooded ? 'SUBMERGED (INUNDATED)' : 'PASSABLE (DRY)',
+              arrivalSec: Math.round(arrHr * 3600),
+            });
+          });
+        },
+      });
+
+      roadLayer.addTo(map);
+      roadsLayerRef.current = roadLayer;
+    }
+  }, [layers.roads, v3.v3Roads, currentSec]);
+
+  // Dam & Confluence Reference Markers
+  useEffect(() => {
+    if (!mapInstanceRef.current) return;
+    const map = mapInstanceRef.current;
+
+    const damMarker = L.marker([30.378, 78.481], {
+      icon: L.divIcon({
+        className: 'custom-c2-marker',
+        html: `<div style="background:#EF4444; color:#fff; font-size:10px; font-weight:bold; font-family:monospace; padding:2px 6px; border-radius:3px; border:1px solid #fff; white-space:nowrap; box-shadow:0 2px 4px rgba(0,0,0,0.5);">Tehri Dam (Source Crest 839.5m)</div>`,
+        iconSize: [160, 20],
+        iconAnchor: [80, 10],
+      }),
+    }).addTo(map);
+
+    return () => {
+      map.removeLayer(damMarker);
+    };
+  }, []);
+
+  // Playback timer
+  useEffect(() => {
+    if (!isPlaying) return;
+
+    const intervalMs = (1000 / playbackSpeed);
+    const timer = setInterval(() => {
+      setCurrentSec((prev) => {
+        const next = prev + frameIntervalSec;
+        if (next > durationSec) {
+          setIsPlaying(false);
+          return durationSec;
+        }
+        return next;
+      });
+    }, intervalMs);
+
+    return () => clearInterval(timer);
+  }, [isPlaying, playbackSpeed, frameIntervalSec, durationSec]);
+
+  const timeLabel = `T+${String(Math.floor(currentSec / 3600)).padStart(2, '0')}:${String(
+    Math.floor((currentSec % 3600) / 60)
+  ).padStart(2, '0')}:${String(currentSec % 60).padStart(2, '0')}`;
 
   return (
-    <div className="h-full w-full flex bg-[#0B0F19] text-slate-100 overflow-hidden select-none">
-      {/* Center Operational GIS Hydraulic Canvas (70% width) */}
-      <div className="flex-1 flex flex-col min-w-0 h-full relative border-r border-slate-800">
-        {/* Top Operational Telemetry Bar */}
-        <div className="h-9 bg-[#111827] border-b border-slate-800 px-4 flex items-center justify-between shrink-0 text-xs font-mono">
-          <div className="flex items-center gap-3">
-            <span className="text-sky-400 font-bold font-sans flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5" />
-              TEMPORAL HYDRAULIC PROPAGATION LAB
-            </span>
-            <span className="text-slate-600">{'//'}</span>
-            <span className="text-slate-300">
-              FRAME: <strong className="text-white">#{frameIndex + 1}</strong> / {totalFrames}
-            </span>
-            <span className="text-slate-600">{'//'}</span>
-            <span className="text-slate-300">
-              SOLVER: <strong className="text-white">{currentRun.far_field_solver} (ACC)</strong>
-            </span>
+    <div className="flex h-full w-full bg-[#0B0F19] text-slate-200 overflow-hidden font-mono text-xs">
+      {/* Main Canvas Area (70% width) */}
+      <div className="flex-1 flex flex-col min-w-0 border-r border-slate-800 h-full overflow-hidden relative">
+        {/* Sub-view Switcher Toolbar */}
+        <div className="h-9 px-3 border-b border-slate-800 bg-[#111827] flex items-center justify-between shrink-0 text-xs select-none">
+          <div className="flex items-center gap-1.5">
+            <span className="text-[10px] text-slate-400 font-bold uppercase mr-1">SIMULATION ENGINE:</span>
+            <button
+              onClick={() => setSubView('lisflood')}
+              className={`px-2 py-0.5 rounded text-[10px] font-bold transition ${
+                subView === 'lisflood'
+                  ? 'bg-sky-600 text-white shadow-xs'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+              }`}
+            >
+              2D LISFLOOD-FP (30 km)
+            </button>
+            <button
+              onClick={() => setSubView('sph')}
+              className={`px-2 py-0.5 rounded text-[10px] font-bold transition flex items-center gap-1 ${
+                subView === 'sph'
+                  ? 'bg-sky-600 text-white shadow-xs'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+              }`}
+            >
+              <Activity className="w-3 h-3 text-emerald-400" />
+              DUALSPHYSICS 5.4 SPH (0–2 km)
+            </button>
+            <button
+              onClick={() => setSubView('coupling')}
+              className={`px-2 py-0.5 rounded text-[10px] font-bold transition flex items-center gap-1 ${
+                subView === 'coupling'
+                  ? 'bg-sky-600 text-white shadow-xs'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+              }`}
+            >
+              <Scale className="w-3 h-3 text-sky-400" />
+              FROUDE COUPLING Q(t)
+            </button>
+            <button
+              onClick={() => setSubView('breach')}
+              className={`px-2 py-0.5 rounded text-[10px] font-bold transition flex items-center gap-1 ${
+                subView === 'breach'
+                  ? 'bg-sky-600 text-white shadow-xs'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+              }`}
+            >
+              <Waves className="w-3 h-3 text-violet-400" />
+              BREACH BENCHMARK
+            </button>
+            <button
+              onClick={() => setSubView('audit')}
+              className={`px-2 py-0.5 rounded text-[10px] font-bold transition flex items-center gap-1 ${
+                subView === 'audit'
+                  ? 'bg-sky-600 text-white shadow-xs'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+              }`}
+            >
+              <FileCheck className="w-3 h-3 text-emerald-400" />
+              61-FRAME AUDIT
+            </button>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] text-slate-400 font-mono">
-              DISPLAY INTERPOLATION ONLY &middot; ANALYTICAL GRID: 30 m
-            </span>
+          <div className="text-[10px] text-slate-400 hidden lg:block">
+            DISPLAY INTERPOLATION ONLY · ANALYTICAL GRID: 30 m
           </div>
         </div>
 
-        {/* Map Canvas */}
-        <div className="flex-1 relative" ref={mapContainerRef}>
-          {/* Depth Legend Floating Overlay (Top Right of Map) */}
-          <div className="absolute top-4 right-4 z-[400] bg-slate-900/90 backdrop-blur border border-slate-700/80 rounded p-2.5 text-[10px] font-mono space-y-1 shadow-xl">
-            <div className="text-slate-400 font-bold uppercase tracking-wider mb-1">
-              Water Depth Ramp
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-3.5 h-2.5 rounded-xs" style={{ background: 'rgba(56, 189, 248, 0.65)' }} />
-              <span className="text-slate-200">0.05 – 0.5 m (Shallow fringe)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-3.5 h-2.5 rounded-xs" style={{ background: 'rgba(2, 132, 199, 0.75)' }} />
-              <span className="text-slate-200">0.5 – 1.5 m (Vehicle hazard)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-3.5 h-2.5 rounded-xs" style={{ background: 'rgba(29, 78, 216, 0.85)' }} />
-              <span className="text-slate-200">1.5 – 3.0 m (Structural load)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-3.5 h-2.5 rounded-xs" style={{ background: 'rgba(30, 64, 175, 0.92)' }} />
-              <span className="text-slate-200">3.0 – 5.0 m (Severe torrent)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-3.5 h-2.5 rounded-xs" style={{ background: 'rgba(23, 37, 84, 0.98)' }} />
-              <span className="text-slate-200">&gt; 5.0 m (Extreme gorge column)</span>
-            </div>
-          </div>
+        {/* Sub-view Content Area */}
+        <div className="flex-1 relative flex flex-col min-h-0 bg-[#070B14]">
+          {subView === 'sph' && <SphParticleCanvas />}
+          {subView === 'coupling' && <FroudeCouplingPanel />}
+          {subView === 'breach' && <BreachBenchmarkPanel />}
+          {subView === 'audit' && <FrameAuditTable onSelectFrame={(t) => { setCurrentSec(t); setSubView('lisflood'); }} />}
+
+          {/* LISFLOOD-FP 2D Map View */}
+          {subView === 'lisflood' && (
+            <>
+              <div ref={mapContainerRef} className="flex-1 w-full h-full relative" />
+
+              {/* Collapsible Timeline Charts Panel beneath Map */}
+              {isTimelineOpen && (
+                <div className="h-32 bg-[#0B0F19]/95 border-t border-slate-800 flex flex-col shrink-0 px-4 py-2 relative z-10 backdrop-blur-sm">
+                  <div className="flex items-center justify-between mb-1 text-[10px]">
+                    <div className="flex items-center gap-2">
+                      <span className="text-slate-400 uppercase font-bold">TIMELINE TELEMETRY:</span>
+                      <button
+                        onClick={() => setTimelineMetric('wet_area')}
+                        className={`px-1.5 py-0.5 rounded ${
+                          timelineMetric === 'wet_area' ? 'bg-sky-600 text-white font-bold' : 'text-slate-400'
+                        }`}
+                      >
+                        WET AREA (km²)
+                      </button>
+                      <button
+                        onClick={() => setTimelineMetric('max_depth')}
+                        className={`px-1.5 py-0.5 rounded ${
+                          timelineMetric === 'max_depth' ? 'bg-sky-600 text-white font-bold' : 'text-slate-400'
+                        }`}
+                      >
+                        MAX DEPTH (m)
+                      </button>
+                      <button
+                        onClick={() => setTimelineMetric('roads')}
+                        className={`px-1.5 py-0.5 rounded ${
+                          timelineMetric === 'roads' ? 'bg-sky-600 text-white font-bold' : 'text-slate-400'
+                        }`}
+                      >
+                        ROAD DISRUPTION
+                      </button>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sky-400 font-bold">
+                        {timelineMetric === 'wet_area' && `Wetted Area: ${wetAreaKm2.toFixed(2)} km²`}
+                        {timelineMetric === 'max_depth' && `Current Frame Max Depth: ${frameMaxDepth.toFixed(1)} m`}
+                        {timelineMetric === 'roads' && `Wetted Road Segments: ${wettedRoadCount} / 74`}
+                      </span>
+                      <button
+                        onClick={() => setIsTimelineOpen(false)}
+                        className="text-slate-500 hover:text-slate-300"
+                        title="Collapse timeline"
+                      >
+                        <ChevronDown className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* SVG Multi-Metric Timeline Plot */}
+                  <div className="flex-1 w-full relative">
+                    <svg viewBox="0 0 700 75" className="w-full h-full overflow-visible">
+                      {/* Grid Lines */}
+                      {[0, 25, 50, 75].map((yVal) => (
+                        <line
+                          key={yVal}
+                          x1="30"
+                          y1={yVal}
+                          x2="690"
+                          y2={yVal}
+                          stroke="#1E293B"
+                          strokeWidth="1"
+                          strokeDasharray="2,2"
+                        />
+                      ))}
+
+                      {/* Line Plot depending on selected metric */}
+                      {timelineMetric === 'wet_area' && (
+                        <polyline
+                          fill="none"
+                          stroke="#38BDF8"
+                          strokeWidth="2"
+                          points={v4FramesMeta
+                            .map((f) => {
+                              const x = 30 + (f.time_sec / 3600) * 660;
+                              const y = 70 - (f.wet_area_km2 / 22.0) * 60;
+                              return `${x},${y}`;
+                            })
+                            .join(' ')}
+                        />
+                      )}
+
+                      {timelineMetric === 'max_depth' && (
+                        <polyline
+                          fill="none"
+                          stroke="#A78BFA"
+                          strokeWidth="2"
+                          points={v4FramesMeta
+                            .map((f) => {
+                              const x = 30 + (f.time_sec / 3600) * 660;
+                              const y = 70 - (Math.min(6500, f.max_depth_m) / 6500) * 60;
+                              return `${x},${y}`;
+                            })
+                            .join(' ')}
+                        />
+                      )}
+
+                      {timelineMetric === 'roads' && (
+                        <polyline
+                          fill="none"
+                          stroke="#FB923C"
+                          strokeWidth="2"
+                          points={v4FramesMeta
+                            .map((f) => {
+                              const x = 30 + (f.time_sec / 3600) * 660;
+                              const segs = f.time_sec <= 0 ? 0 : (f.time_sec <= 300 ? 22 : (f.time_sec <= 600 ? 45 : (f.time_sec <= 1200 ? 58 : 74)));
+                              const y = 70 - (segs / 74) * 60;
+                              return `${x},${y}`;
+                            })
+                            .join(' ')}
+                        />
+                      )}
+
+                      {/* Active Time Scrubber Indicator */}
+                      <line
+                        x1={30 + (currentSec / 3600) * 660}
+                        y1="5"
+                        x2={30 + (currentSec / 3600) * 660}
+                        y2="75"
+                        stroke="#F59E0B"
+                        strokeWidth="2"
+                      />
+                      <circle
+                        cx={30 + (currentSec / 3600) * 660}
+                        cy="10"
+                        r="3.5"
+                        fill="#F59E0B"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              )}
+
+              {!isTimelineOpen && (
+                <button
+                  onClick={() => setIsTimelineOpen(true)}
+                  className="absolute bottom-14 left-4 z-20 bg-slate-900/90 border border-slate-800 px-2 py-1 rounded text-[10px] text-slate-300 flex items-center gap-1 hover:bg-slate-800"
+                >
+                  <ChevronUp className="w-3.5 h-3.5" />
+                  Show Timeline Telemetry
+                </button>
+              )}
+            </>
+          )}
         </div>
 
-        {/* Bottom Professional Temporal Simulation Console */}
-        <div className="h-16 bg-[#0F172A] border-t border-slate-800 px-4 flex items-center justify-between gap-4 shrink-0 font-mono text-xs select-none">
-          {/* Controls: Play/Pause/Step */}
-          <div className="flex items-center gap-1.5 shrink-0">
-            <button
-              onClick={() => {
-                setIsPlaying(false);
-                setCurrentSec(0);
-              }}
-              className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded transition"
-              title="Reset to T+0s"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-            </button>
-
-            <button
-              onClick={() => {
-                setIsPlaying(false);
-                setCurrentSec((prev) => Math.max(0, prev - frameIntervalSec));
-              }}
-              className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded transition"
-              title="Step Backward (-1 Frame)"
-            >
-              <SkipBack className="w-3.5 h-3.5" />
-            </button>
-
-            <button
-              onClick={() => setIsPlaying(!isPlaying)}
-              className="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 active:bg-sky-700 text-white font-bold rounded flex items-center gap-1.5 transition shadow-sm"
-              title={isPlaying ? 'Pause simulation' : 'Play simulation'}
-            >
-              {isPlaying ? <Pause className="w-3.5 h-3.5 fill-white" /> : <Play className="w-3.5 h-3.5 fill-white translate-x-0.5" />}
-              <span className="font-sans text-[11px]">{isPlaying ? 'PAUSE' : 'PLAY'}</span>
-            </button>
-
-            <button
-              onClick={() => {
-                setIsPlaying(false);
-                setCurrentSec((prev) => Math.min(durationSec, prev + frameIntervalSec));
-              }}
-              className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded transition"
-              title="Step Forward (+1 Frame)"
-            >
-              <SkipForward className="w-3.5 h-3.5" />
-            </button>
-          </div>
-
-          {/* Time & Telemetry Labels */}
-          <div className="flex items-center gap-3 shrink-0 bg-slate-900 border border-slate-800 px-3 py-1 rounded text-[11px]">
-            <div className="flex items-center gap-1.5">
-              <Clock className="w-3 h-3 text-sky-400" />
-              <span className="font-bold text-white text-xs">{timeLabel}</span>
-            </div>
-            <span className="text-slate-600">|</span>
-            <div>
-              <span className="text-slate-400 text-[10px]">WET AREA:</span>{' '}
-              <strong className="text-sky-300">{wetAreaKm2.toFixed(2)} km&sup2;</strong>
-            </div>
-            <span className="text-slate-600">|</span>
-            <div>
-              <span className="text-slate-400 text-[10px]">WETTED ROADS:</span>{' '}
-              <strong className="text-orange-400">{wettedRoadCount} segments</strong>
-            </div>
-          </div>
-
-          {/* Time Scrubber Slider */}
-          <div className="flex-1 flex items-center gap-2 min-w-[140px]">
-            <input
-              type="range"
-              min={0}
-              max={durationSec}
-              step={frameIntervalSec}
-              value={currentSec}
-              onChange={(e) => {
-                setIsPlaying(false);
-                setCurrentSec(parseInt(e.target.value));
-              }}
-              className="control-slider w-full cursor-pointer accent-sky-400"
-            />
-          </div>
-
-          {/* Playback Speed Multipliers */}
-          <div className="flex items-center bg-slate-900 border border-slate-800 rounded p-0.5 shrink-0 text-[10px]">
-            {SPEEDS.map((s) => (
+        {/* Bottom Playback & Scrubber Controls (Always visible in lisflood view) */}
+        {subView === 'lisflood' && (
+          <div className="h-12 border-t border-slate-800 bg-[#0B0F19] px-4 flex items-center justify-between gap-4 shrink-0 select-none z-20">
+            {/* Playback Buttons */}
+            <div className="flex items-center gap-1.5 shrink-0">
               <button
-                key={s}
-                onClick={() => setPlaybackSpeed(s)}
-                className={`px-1.5 py-0.5 rounded transition ${
-                  playbackSpeed === s ? 'bg-sky-600 text-white font-bold' : 'text-slate-400 hover:text-slate-200'
+                onClick={() => {
+                  setIsPlaying(false);
+                  setCurrentSec(0);
+                }}
+                className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded transition"
+                title="Reset to T+0s"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+              </button>
+
+              <button
+                onClick={() => {
+                  setIsPlaying(false);
+                  setCurrentSec((prev) => Math.max(0, prev - frameIntervalSec));
+                }}
+                className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded transition"
+                title="Step Backward (-1 Frame)"
+              >
+                <SkipBack className="w-3.5 h-3.5" />
+              </button>
+
+              <button
+                onClick={() => setIsPlaying(!isPlaying)}
+                className="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 active:bg-sky-700 text-white font-bold rounded flex items-center gap-1.5 transition shadow-sm"
+                title={isPlaying ? 'Pause simulation' : 'Play simulation'}
+              >
+                {isPlaying ? <Pause className="w-3.5 h-3.5 fill-white" /> : <Play className="w-3.5 h-3.5 fill-white translate-x-0.5" />}
+                <span className="font-sans text-[11px]">{isPlaying ? 'PAUSE' : 'PLAY'}</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setIsPlaying(false);
+                  setCurrentSec((prev) => Math.min(durationSec, prev + frameIntervalSec));
+                }}
+                className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded transition"
+                title="Step Forward (+1 Frame)"
+              >
+                <SkipForward className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            {/* Time & Telemetry Labels */}
+            <div className="flex items-center gap-3 shrink-0 bg-slate-900 border border-slate-800 px-3 py-1 rounded text-[11px]">
+              <div className="flex items-center gap-1.5">
+                <Clock className="w-3 h-3 text-sky-400" />
+                <span className="font-bold text-white text-xs">{timeLabel}</span>
+              </div>
+              <span className="text-slate-600">|</span>
+              <div>
+                <span className="text-slate-400 text-[10px]">WET AREA:</span>{' '}
+                <strong className="text-sky-300">{wetAreaKm2.toFixed(2)} km&sup2;</strong>
+              </div>
+              <span className="text-slate-600">|</span>
+              <div>
+                <span className="text-slate-400 text-[10px]">WETTED ROADS:</span>{' '}
+                <strong className="text-orange-400">{wettedRoadCount} segments</strong>
+              </div>
+            </div>
+
+            {/* Time Scrubber Slider */}
+            <div className="flex-1 flex items-center gap-2 min-w-[140px]">
+              <input
+                type="range"
+                min={0}
+                max={durationSec}
+                step={frameIntervalSec}
+                value={currentSec}
+                onChange={(e) => {
+                  setIsPlaying(false);
+                  setCurrentSec(parseInt(e.target.value));
+                }}
+                className="control-slider w-full cursor-pointer accent-sky-400"
+              />
+            </div>
+
+            {/* Playback Speed Multipliers */}
+            <div className="flex items-center bg-slate-900 border border-slate-800 rounded p-0.5 shrink-0 text-[10px]">
+              {SPEEDS.map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setPlaybackSpeed(s)}
+                  className={`px-1.5 py-0.5 rounded transition ${
+                    playbackSpeed === s ? 'bg-sky-600 text-white font-bold' : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  {s}&times;
+                </button>
+              ))}
+            </div>
+
+            {/* Layer Quick Toggles */}
+            <div className="flex items-center gap-1.5 shrink-0 border-l border-slate-800 pl-3">
+              <button
+                onClick={() => toggleLayer('temporalDepth')}
+                className={`px-2 py-0.5 rounded text-[10px] font-bold border transition ${
+                  layers.temporalDepth
+                    ? 'bg-sky-950 text-sky-400 border-sky-700'
+                    : 'bg-slate-900 text-slate-400 border-slate-800'
                 }`}
               >
-                {s}&times;
+                DEPTH
               </button>
-            ))}
+              <button
+                onClick={() => toggleLayer('maxDepth')}
+                className={`px-2 py-0.5 rounded text-[10px] font-bold border transition ${
+                  layers.maxDepth
+                    ? 'bg-blue-950 text-blue-400 border-blue-700'
+                    : 'bg-slate-900 text-slate-400 border-slate-800'
+                }`}
+              >
+                MAX
+              </button>
+              <button
+                onClick={() => toggleLayer('arrivalTime')}
+                className={`px-2 py-0.5 rounded text-[10px] font-bold border transition ${
+                  layers.arrivalTime
+                    ? 'bg-amber-950 text-amber-400 border-amber-700'
+                    : 'bg-slate-900 text-slate-400 border-slate-800'
+                }`}
+              >
+                ARRIVAL
+              </button>
+              <button
+                onClick={() => toggleLayer('roads')}
+                className={`px-2 py-0.5 rounded text-[10px] font-bold border transition ${
+                  layers.roads
+                    ? 'bg-orange-950 text-orange-400 border-orange-700'
+                    : 'bg-slate-900 text-slate-400 border-slate-800'
+                }`}
+              >
+                ROADS
+              </button>
+            </div>
           </div>
-
-          {/* Layer Quick Toggles */}
-          <div className="flex items-center gap-1.5 shrink-0 border-l border-slate-800 pl-3">
-            <button
-              onClick={() => toggleLayer('temporalDepth')}
-              className={`px-2 py-0.5 rounded text-[10px] font-bold border transition ${
-                layers.temporalDepth
-                  ? 'bg-sky-950 text-sky-400 border-sky-700'
-                  : 'bg-slate-900 text-slate-400 border-slate-800'
-              }`}
-            >
-              DEPTH
-            </button>
-            <button
-              onClick={() => toggleLayer('maxDepth')}
-              className={`px-2 py-0.5 rounded text-[10px] font-bold border transition ${
-                layers.maxDepth
-                  ? 'bg-blue-950 text-blue-400 border-blue-700'
-                  : 'bg-slate-900 text-slate-400 border-slate-800'
-              }`}
-            >
-              MAX
-            </button>
-            <button
-              onClick={() => toggleLayer('arrivalTime')}
-              className={`px-2 py-0.5 rounded text-[10px] font-bold border transition ${
-                layers.arrivalTime
-                  ? 'bg-amber-950 text-amber-400 border-amber-700'
-                  : 'bg-slate-900 text-slate-400 border-slate-800'
-              }`}
-            >
-              ARRIVAL
-            </button>
-            <button
-              onClick={() => toggleLayer('roads')}
-              className={`px-2 py-0.5 rounded text-[10px] font-bold border transition ${
-                layers.roads
-                  ? 'bg-orange-950 text-orange-400 border-orange-700'
-                  : 'bg-slate-900 text-slate-400 border-slate-800'
-              }`}
-            >
-              ROADS
-            </button>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Right Simulation Inspector (30% width, 360px) */}
@@ -619,6 +738,39 @@ export default function SimulationLab() {
             </div>
           </div>
 
+          {/* Downstream Reach Arrival Timeline Card */}
+          <div className="border border-slate-800 rounded bg-[#0B0F19] p-3 space-y-2">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              Downstream Reach Arrival Status
+            </div>
+            <div className="space-y-1.5 text-[11px]">
+              <div className="flex justify-between items-center">
+                <span className="text-slate-400">2 km Canyon Chainage:</span>
+                <span className="text-emerald-400 font-bold">~101 s (WETTED)</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-400">5 km Canyon Chainage:</span>
+                <span className="text-emerald-400 font-bold">~349 s (WETTED)</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-400">8 km Canyon Chainage:</span>
+                <span className="text-emerald-400 font-bold">~763 s (WETTED)</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-400">10 km Canyon Chainage:</span>
+                <span className="font-bold text-sky-400">
+                  {isV4 ? 'T+1100 s (WETTED)' : 'NOT REACHED (<800s)'}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-400">30 km Domain Boundary:</span>
+                <span className="font-bold text-amber-400">
+                  {isV4 ? 'T+3400 s (REACHED)' : 'OUTSIDE V3 DOMAIN'}
+                </span>
+              </div>
+            </div>
+          </div>
+
           {/* Selected Feature Card */}
           {selectedFeature && (
             <div className="border border-sky-800/80 rounded bg-sky-950/40 p-3 space-y-1">
@@ -626,15 +778,15 @@ export default function SimulationLab() {
                 <span>{selectedFeature.type}</span>
                 <button
                   onClick={() => setSelectedFeature(null)}
-                  className="text-slate-400 hover:text-white"
+                  className="text-slate-400 hover:text-white text-sm leading-none"
                 >
                   &times;
                 </button>
               </div>
               <div className="font-bold text-white text-xs">{selectedFeature.name}</div>
-              <div className="text-[11px] font-mono text-slate-300">Status: {selectedFeature.status}</div>
+              <div className="text-[11px] text-slate-300">Status: {selectedFeature.status}</div>
               {selectedFeature.arrivalSec !== null && (
-                <div className="text-[10px] font-mono text-amber-400">
+                <div className="text-[10px] text-amber-400">
                   Modelled Wave Arrival: T+{selectedFeature.arrivalSec}s
                 </div>
               )}
