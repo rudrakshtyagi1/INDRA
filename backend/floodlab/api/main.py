@@ -17,6 +17,7 @@ from floodlab.api.routers import (
     runs,
     satellite,
     scenarios,
+    science,
     simulations,
     uncertainty,
     v3,
@@ -55,6 +56,8 @@ app.include_router(routing.router, prefix="/api/routing", tags=["routing"])
 app.include_router(validation.router, prefix="/api/validation", tags=["validation"])
 app.include_router(export.router, prefix="/api/export", tags=["export"])
 app.include_router(jobs.router, prefix="/api/jobs", tags=["jobs"])
+app.include_router(science.router, prefix="/api/science", tags=["science"])
+app.include_router(science.runs_science_router, prefix="/api/runs", tags=["science_runs"])
 
 
 @app.get("/health")

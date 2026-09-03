@@ -248,36 +248,34 @@ export default function SatelliteMonitor() {
   const isReady = Boolean(geeInfo.configured && geeInfo.authenticated);
 
   return (
-    <div className="h-full flex flex-col bg-slate-50 overflow-hidden text-slate-800">
-      <div className="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between shrink-0">
+    <div className="h-full flex flex-col bg-[#0B0F19] overflow-hidden text-slate-100 select-none">
+      <div className="bg-[#0F172A] border-b border-slate-800 px-4 py-2.5 flex items-center justify-between shrink-0 font-mono text-xs">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-sm">
-            <Satellite className="w-5 h-5" />
+          <div className="w-7 h-7 rounded bg-sky-600 text-white flex items-center justify-center font-bold">
+            <Satellite className="w-4 h-4" />
           </div>
           <div>
-            <h1 className="text-base font-bold text-slate-900 leading-tight">
-              Sentinel-1 Observation Lab
+            <h1 className="text-xs font-bold text-white tracking-wider uppercase font-sans">
+              Sentinel-1 SAR Remote Sensing Workstation
             </h1>
-            <p className="text-xs text-slate-500">
-              Google Earth Engine Bitemporal SAR Surface-Water Change Detection
+            <p className="text-[10px] text-slate-400">
+              Google Earth Engine Bitemporal Synthetic Aperture Radar Water Change Detection
             </p>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 px-2.5 py-1 rounded-md text-xs font-medium border bg-slate-50 border-slate-200">
-            <div className={`w-2 h-2 rounded-full ${isReady ? 'bg-emerald-500' : 'bg-amber-500'}`} />
-            <span className="font-semibold text-slate-700">GEE Provider:</span>
-            <span className="text-slate-600">
+          <div className="flex items-center gap-2 px-2 py-0.5 rounded text-[11px] border bg-slate-900 border-slate-800">
+            <div className={`w-2 h-2 rounded-full ${isReady ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
+            <span className="font-semibold text-slate-400">PROVIDER:</span>
+            <span className={isReady ? 'text-emerald-400 font-bold' : 'text-amber-400 font-bold'}>
               {isReady
-                ? `AUTHENTICATED (${geeInfo.project_id || 'active'})`
-                : geeInfo.configured
-                ? 'STANDBY / AUTH UNAVAILABLE'
-                : 'STANDBY / PROJECT NOT CONFIGURED'}
+                ? `GEE LIVE (${geeInfo.project_id || 'active'})`
+                : 'GEE STANDBY / DATA UNAVAILABLE'}
             </span>
           </div>
           <button
             onClick={loadStatus}
-            className="p-1.5 text-slate-500 hover:text-slate-800 rounded border border-slate-200 hover:bg-slate-100 transition"
+            className="p-1 text-slate-400 hover:text-white rounded border border-slate-800 hover:bg-slate-800 transition"
             title="Refresh Provider Status"
           >
             <RefreshCw className="w-3.5 h-3.5" />
@@ -286,45 +284,45 @@ export default function SatelliteMonitor() {
       </div>
 
       {!isReady && (
-        <div className="bg-amber-50 border-b border-amber-200 px-6 py-2.5 flex items-start gap-3 text-xs text-amber-900 shrink-0">
-          <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+        <div className="bg-amber-950/40 border-b border-amber-900/60 px-4 py-2 flex items-start gap-2.5 text-[11px] text-amber-300 shrink-0 font-mono">
+          <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
           <div>
-            <span className="font-semibold">Observation engine is in Standby mode: </span>
+            <span className="font-bold uppercase text-amber-400">GEE STANDBY / LIVE CREDENTIALS UNAVAILABLE: </span>
             {geeInfo.configured
-              ? 'GEE_PROJECT_ID is set, but host credentials could not complete the handshake. Live SAR compute is gated behind credentials.'
-              : 'GEE_PROJECT_ID is not configured in backend/.env. No synthetic SAR observations or fake lake detections are presented.'}
-            <span className="text-amber-700 ml-1">
-              Historical/saved analyses remain readable below.
+              ? 'GEE_PROJECT_ID set, awaiting host authentication handshake.'
+              : 'Host Earth Engine credentials not mounted. Zero synthetic SAR images fabricated.'}
+            <span className="text-slate-400 ml-1">
+              Historical analysis records and comparison engine remain accessible.
             </span>
           </div>
         </div>
       )}
 
       {errorMsg && (
-        <div className="bg-red-50 border-b border-red-200 px-6 py-2 flex items-center justify-between text-xs text-red-700 shrink-0">
+        <div className="bg-red-950/40 border-b border-red-900/60 px-4 py-1.5 flex items-center justify-between text-xs text-red-300 shrink-0 font-mono">
           <div className="flex items-center gap-2">
-            <ShieldAlert className="w-4 h-4 text-red-500" />
+            <ShieldAlert className="w-4 h-4 text-red-400" />
             <span>{errorMsg}</span>
           </div>
-          <button onClick={() => setErrorMsg(null)} className="font-bold px-2 text-red-600 hover:text-red-900">
+          <button onClick={() => setErrorMsg(null)} className="font-bold px-2 text-red-400 hover:text-white">
             &times;
           </button>
         </div>
       )}
 
       <div className="flex-1 flex min-h-0">
-        <div className="w-96 border-r border-slate-200 bg-white flex flex-col shrink-0 overflow-y-auto">
-          <div className="p-4 border-b border-slate-100">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
-              Analysis Configuration
+        <div className="w-80 border-r border-slate-800 bg-[#111827] flex flex-col shrink-0 overflow-y-auto">
+          <div className="p-3.5 border-b border-slate-800">
+            <h2 className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2.5 font-mono">
+              Observation Configuration
             </h2>
-            <div className="space-y-3 text-xs">
+            <div className="space-y-2.5 text-xs">
               <div>
-                <label className="block text-slate-600 font-semibold mb-1">Preset Surveillance Zone</label>
+                <label className="block text-slate-400 text-[10px] uppercase font-bold mb-0.5">Surveillance Zone</label>
                 <select
                   value={selectedZone}
                   onChange={(e) => handleSelectZone(e.target.value)}
-                  className="w-full border border-slate-200 rounded px-2 py-1.5 bg-slate-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full border border-slate-700 rounded px-2 py-1 bg-slate-900 text-slate-200 text-xs focus:outline-none"
                 >
                   {zones.map((z) => (
                     <option key={z.id} value={z.id}>
@@ -335,106 +333,106 @@ export default function SatelliteMonitor() {
               </div>
 
               <div>
-                <label className="block text-slate-600 font-semibold mb-1">AOI Bounding Box [W, S, E, N]</label>
+                <label className="block text-slate-400 text-[10px] uppercase font-bold mb-0.5">AOI Bounds [W, S, E, N]</label>
                 <input
                   type="text"
                   value={bboxInput}
                   onChange={(e) => setBboxInput(e.target.value)}
-                  className="w-full border border-slate-200 rounded px-2 py-1.5 font-mono text-[11px] bg-slate-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full border border-slate-700 rounded px-2 py-1 font-mono text-[11px] bg-slate-900 text-slate-200 focus:outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-slate-600 font-semibold mb-1">Pre-Event Date</label>
+                  <label className="block text-slate-400 text-[10px] uppercase font-bold mb-0.5">Pre-Event</label>
                   <input
                     type="date"
                     value={preDate}
                     onChange={(e) => setPreDate(e.target.value)}
-                    className="w-full border border-slate-200 rounded px-2 py-1 bg-slate-50 focus:bg-white text-[11px]"
+                    className="w-full border border-slate-700 rounded px-2 py-1 bg-slate-900 text-slate-200 text-[10px] font-mono"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-600 font-semibold mb-1">Post-Event Date</label>
+                  <label className="block text-slate-400 text-[10px] uppercase font-bold mb-0.5">Post-Event</label>
                   <input
                     type="date"
                     value={postDate}
                     onChange={(e) => setPostDate(e.target.value)}
-                    className="w-full border border-slate-200 rounded px-2 py-1 bg-slate-50 focus:bg-white text-[11px]"
+                    className="w-full border border-slate-700 rounded px-2 py-1 bg-slate-900 text-slate-200 text-[10px] font-mono"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 gap-1.5">
                 <div>
-                  <label className="block text-slate-600 font-semibold mb-1">Window</label>
+                  <label className="block text-slate-400 text-[10px] uppercase font-bold mb-0.5">Window</label>
                   <select
                     value={windowDays}
                     onChange={(e) => setWindowDays(e.target.value)}
-                    className="w-full border border-slate-200 rounded px-2 py-1 bg-slate-50 text-[11px]"
+                    className="w-full border border-slate-700 rounded px-1.5 py-1 bg-slate-900 text-slate-200 text-[10px] font-mono"
                   >
-                    <option value={6}>&plusmn;6 days</option>
-                    <option value={12}>&plusmn;12 days</option>
-                    <option value={24}>&plusmn;24 days</option>
+                    <option value={6}>&plusmn;6d</option>
+                    <option value={12}>&plusmn;12d</option>
+                    <option value={24}>&plusmn;24d</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-slate-600 font-semibold mb-1">Polarization</label>
+                  <label className="block text-slate-400 text-[10px] uppercase font-bold mb-0.5">Polarization</label>
                   <select
                     value={polarization}
                     onChange={(e) => setPolarization(e.target.value)}
-                    className="w-full border border-slate-200 rounded px-2 py-1 bg-slate-50 text-[11px]"
+                    className="w-full border border-slate-700 rounded px-1.5 py-1 bg-slate-900 text-slate-200 text-[10px] font-mono"
                   >
                     <option value="VV">VV</option>
                     <option value="VH">VH</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-slate-600 font-semibold mb-1">Orbit Pass</label>
+                  <label className="block text-slate-400 text-[10px] uppercase font-bold mb-0.5">Orbit</label>
                   <select
                     value={orbitPass}
                     onChange={(e) => setOrbitPass(e.target.value)}
-                    className="w-full border border-slate-200 rounded px-2 py-1 bg-slate-50 text-[11px]"
+                    className="w-full border border-slate-700 rounded px-1.5 py-1 bg-slate-900 text-slate-200 text-[10px] font-mono"
                   >
-                    <option value="">Auto / Same</option>
-                    <option value="ASCENDING">Ascending</option>
-                    <option value="DESCENDING">Descending</option>
+                    <option value="">Auto</option>
+                    <option value="ASCENDING">Asc</option>
+                    <option value="DESCENDING">Desc</option>
                   </select>
                 </div>
               </div>
 
-              <div className="pt-1">
-                <label className="flex items-center gap-2 cursor-pointer text-slate-700">
+              <div className="pt-0.5">
+                <label className="flex items-center gap-2 cursor-pointer text-slate-300 text-[11px]">
                   <input
                     type="checkbox"
                     checked={excludePermanent}
                     onChange={(e) => setExcludePermanent(e.target.checked)}
-                    className="rounded text-blue-600 focus:ring-0"
+                    className="rounded text-sky-500 focus:ring-0 bg-slate-900 border-slate-700"
                   />
-                  <span>Exclude permanent water (JRC GSW &ge;90%)</span>
+                  <span>Exclude permanent water (&ge;90%)</span>
                 </label>
               </div>
 
               <button
                 onClick={handleRunAnalysis}
                 disabled={!isReady || isRunning}
-                className={`w-full py-2 px-3 rounded font-semibold text-xs flex items-center justify-center gap-2 transition shadow-sm ${
+                className={`w-full py-1.5 px-3 rounded font-bold text-xs flex items-center justify-center gap-1.5 transition ${
                   !isReady
-                    ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                    ? 'bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed'
                     : isRunning
-                    ? 'bg-blue-400 text-white cursor-wait'
-                    : 'bg-blue-600 hover:bg-blue-700 text-white'
+                    ? 'bg-sky-700 text-white cursor-wait'
+                    : 'bg-sky-600 hover:bg-sky-500 text-white'
                 }`}
               >
                 {isRunning ? (
                   <>
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                    Running Earth Engine Job...
+                    <RefreshCw className="w-3 h-3 animate-spin" />
+                    Running SAR Analysis...
                   </>
                 ) : (
                   <>
-                    <Search className="w-3.5 h-3.5" />
-                    Execute Bitemporal SAR Analysis
+                    <Search className="w-3 h-3" />
+                    Execute Bitemporal SAR Job
                   </>
                 )}
               </button>
@@ -499,20 +497,20 @@ export default function SatelliteMonitor() {
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col min-w-0 bg-slate-100">
-          <div className="bg-white border-b border-slate-200 px-4 py-2 flex items-center justify-between shrink-0 text-xs">
+        <div className="flex-1 flex flex-col min-w-0 bg-[#0B0F19]">
+          <div className="bg-[#111827] border-b border-slate-800 px-4 py-2 flex items-center justify-between shrink-0 text-xs font-mono">
             <div className="flex items-center gap-2">
-              <Layers className="w-4 h-4 text-slate-500" />
-              <span className="font-semibold text-slate-700">Map Inspection Layer:</span>
-              <div className="inline-flex rounded border border-slate-200 p-0.5 bg-slate-50">
+              <Layers className="w-4 h-4 text-sky-400" />
+              <span className="font-semibold text-slate-300">Map Inspection Layer:</span>
+              <div className="inline-flex rounded border border-slate-700 p-0.5 bg-slate-900">
                 {['change', 'post', 'pre'].map((layerKey) => (
                   <button
                     key={layerKey}
                     onClick={() => setActiveLayer(layerKey)}
-                    className={`px-2 py-0.5 rounded text-[11px] font-medium transition ${
+                    className={`px-2 py-0.5 rounded text-[10px] font-bold transition ${
                       activeLayer === layerKey
-                        ? 'bg-blue-600 text-white shadow-xs'
-                        : 'text-slate-600 hover:text-slate-900'
+                        ? 'bg-sky-600 text-white shadow-xs'
+                        : 'text-slate-400 hover:text-white'
                     }`}
                   >
                     {layerKey.toUpperCase()}
@@ -520,7 +518,7 @@ export default function SatelliteMonitor() {
                 ))}
               </div>
             </div>
-            <div className="text-[11px] text-slate-500">
+            <div className="text-[11px] text-slate-400">
               {selectedAnalysis
                 ? `Displaying ${selectedAnalysis.analysis_id} (${selectedAnalysis.metrics?.polygon_count || 0} vectors)`
                 : 'Draws active AOI and selected Earth Engine tiles'}
@@ -529,100 +527,100 @@ export default function SatelliteMonitor() {
           <div className="flex-1 relative" ref={mapContainerRef} />
         </div>
 
-        <div className="w-96 border-l border-slate-200 bg-white flex flex-col shrink-0 overflow-y-auto">
-          <div className="p-4 border-b border-slate-100">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
-              Analysis Results & Provenance
+        <div className="w-80 border-l border-slate-800 bg-[#111827] flex flex-col shrink-0 overflow-y-auto font-mono text-xs">
+          <div className="p-3.5 border-b border-slate-800">
+            <h2 className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">
+              Analysis Results &amp; Provenance
             </h2>
             {selectedAnalysis ? (
               <div className="space-y-3 text-xs">
-                <div className="bg-slate-50 border border-slate-200 rounded p-2.5">
+                <div className="bg-[#0B0F19] border border-slate-800 rounded p-2.5">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-slate-500 font-medium">New Water Area</span>
-                    <span className="font-mono font-bold text-sm text-blue-600">
+                    <span className="text-slate-400 font-medium">New Water Area</span>
+                    <span className="font-mono font-bold text-sm text-sky-400">
                       {selectedAnalysis.metrics?.new_surface_water_area_ha} ha
                     </span>
                   </div>
-                  <div className="flex items-center justify-between text-[11px] text-slate-600">
+                  <div className="flex items-center justify-between text-[11px] text-slate-300">
                     <span>Approx Area (km&sup2;)</span>
-                    <span className="font-mono">
+                    <span className="font-mono text-white">
                       {selectedAnalysis.metrics?.new_surface_water_area_km2} km&sup2;
                     </span>
                   </div>
-                  <div className="flex items-center justify-between text-[11px] text-slate-600">
+                  <div className="flex items-center justify-between text-[11px] text-slate-300">
                     <span>Otsu Drop Threshold</span>
-                    <span className="font-mono">
+                    <span className="font-mono text-white">
                       {selectedAnalysis.method?.otsu_threshold_db_drop} dB
                     </span>
                   </div>
-                  <div className="flex items-center justify-between text-[11px] text-slate-600">
+                  <div className="flex items-center justify-between text-[11px] text-slate-300">
                     <span>Vector Patches (&ge;900 m&sup2;)</span>
-                    <span className="font-mono">
+                    <span className="font-mono text-white">
                       {selectedAnalysis.metrics?.polygon_count}
                     </span>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="text-[11px] font-bold text-slate-700 uppercase tracking-wide mb-1">
+                  <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">
                     Acquisition Provenance
                   </h3>
-                  <div className="border border-slate-200 rounded p-2 text-[11px] space-y-1 bg-white">
+                  <div className="border border-slate-800 rounded p-2 text-[11px] space-y-1 bg-[#0B0F19]">
                     <div className="flex justify-between">
-                      <span className="text-slate-500">Sensor:</span>
-                      <span className="font-medium text-slate-800">{selectedAnalysis.sensor}</span>
+                      <span className="text-slate-400">Sensor:</span>
+                      <span className="font-medium text-slate-200">{selectedAnalysis.sensor}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-500">Relative Orbit:</span>
-                      <span className="font-medium text-slate-800">
+                      <span className="text-slate-400">Relative Orbit:</span>
+                      <span className="font-medium text-slate-200">
                         {selectedAnalysis.acquisition?.relative_orbit || '—'}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-500">Pre Scenes:</span>
-                      <span className="font-medium text-slate-800">
+                      <span className="text-slate-400">Pre Scenes:</span>
+                      <span className="font-medium text-slate-200">
                         {selectedAnalysis.acquisition?.pre_scene_count}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-500">Post Scenes:</span>
-                      <span className="font-medium text-slate-800">
+                      <span className="text-slate-400">Post Scenes:</span>
+                      <span className="font-medium text-slate-200">
                         {selectedAnalysis.acquisition?.post_scene_count}
                       </span>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-2.5 rounded bg-blue-50/60 border border-blue-100 text-[11px] text-slate-700 space-y-1">
-                  <div className="font-semibold text-blue-900">Provenance Rule</div>
+                <div className="p-2.5 rounded bg-sky-950/40 border border-sky-800/80 text-[11px] text-slate-300 space-y-1">
+                  <div className="font-semibold text-sky-400">Provenance Rule</div>
                   <div>{selectedAnalysis.provenance?.observation}</div>
-                  <div className="text-[10px] text-slate-500">
+                  <div className="text-[10px] text-slate-400">
                     Validation: {selectedAnalysis.provenance?.validation}
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="text-xs text-slate-400 py-6 text-center border border-dashed rounded-lg">
+              <div className="text-[11px] text-slate-500 py-6 text-center border border-dashed border-slate-800 rounded">
                 Select an analysis from history or execute a new query to inspect results.
               </div>
             )}
           </div>
 
-          <div className="p-4 border-b border-slate-100">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+          <div className="p-3.5 border-b border-slate-800">
+            <h2 className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">
               Model Comparison
             </h2>
-            <p className="text-[11px] text-slate-500 mb-3">
+            <p className="text-[10px] text-slate-400 mb-2.5 leading-snug">
               Intersect satellite-derived surface water with precomputed hydrodynamic model extents.
             </p>
 
-            <div className="space-y-2.5 text-xs">
+            <div className="space-y-2 text-xs">
               <div>
-                <label className="block text-slate-600 font-semibold mb-1">Model Extent Product</label>
+                <label className="block text-slate-400 text-[10px] uppercase font-bold mb-0.5">Model Extent Product</label>
                 <select
                   value={selectedRunId}
                   onChange={(e) => setSelectedRunId(e.target.value)}
-                  className="w-full border border-slate-200 rounded px-2 py-1.5 bg-slate-50 focus:bg-white text-[11px]"
+                  className="w-full border border-slate-700 rounded px-2 py-1 bg-slate-900 text-slate-200 text-[11px] focus:outline-none"
                 >
                   {modelProducts.map((p) => (
                     <option key={p.run_id} value={p.run_id}>
@@ -633,11 +631,11 @@ export default function SatelliteMonitor() {
               </div>
 
               <div>
-                <label className="block text-slate-600 font-semibold mb-1">Comparison Purpose</label>
+                <label className="block text-slate-400 text-[10px] uppercase font-bold mb-0.5">Comparison Purpose</label>
                 <select
                   value={comparisonPurpose}
                   onChange={(e) => setComparisonPurpose(e.target.value)}
-                  className="w-full border border-slate-200 rounded px-2 py-1.5 bg-slate-50 focus:bg-white text-[11px]"
+                  className="w-full border border-slate-700 rounded px-2 py-1 bg-slate-900 text-slate-200 text-[10px] focus:outline-none"
                 >
                   <option value="context">Spatial Context Only (Hypothetical / Benchmark)</option>
                   <option value="historical_validation">
@@ -649,48 +647,48 @@ export default function SatelliteMonitor() {
               <button
                 onClick={handleCompare}
                 disabled={!selectedAnalysis || isComparing}
-                className={`w-full py-1.5 px-3 rounded font-semibold text-xs flex items-center justify-center gap-1.5 border transition ${
+                className={`w-full py-1.5 px-3 rounded font-bold text-xs flex items-center justify-center gap-1.5 border transition ${
                   !selectedAnalysis
-                    ? 'border-slate-200 bg-slate-100 text-slate-400 cursor-not-allowed'
-                    : 'border-blue-600 text-blue-600 hover:bg-blue-50'
+                    ? 'border-slate-800 bg-slate-900 text-slate-500 cursor-not-allowed'
+                    : 'border-sky-600 bg-sky-950/60 text-sky-400 hover:bg-sky-900/60'
                 }`}
               >
                 {isComparing ? 'Computing Spatial Intersect...' : 'Compute Extent Comparison'}
               </button>
 
               {comparisonResult && (
-                <div className="mt-3 p-2.5 rounded bg-slate-50 border border-slate-200 space-y-1.5 text-[11px]">
+                <div className="mt-2.5 p-2.5 rounded bg-[#0B0F19] border border-slate-800 space-y-1 text-[11px]">
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-slate-700">Classification:</span>
-                    <span className="font-bold text-amber-700 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded text-[10px]">
+                    <span className="font-semibold text-slate-400">Classification:</span>
+                    <span className="font-bold text-amber-400 bg-amber-950/80 border border-amber-800 px-1.5 py-0.5 rounded text-[10px]">
                       {comparisonResult.validation_status}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-500">Intersection:</span>
-                    <span className="font-mono font-semibold">
+                    <span className="text-slate-400">Intersection:</span>
+                    <span className="font-mono font-semibold text-white">
                       {comparisonResult.metrics?.intersection_km2} km&sup2;
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-500">Union:</span>
-                    <span className="font-mono">
+                    <span className="text-slate-400">Union:</span>
+                    <span className="font-mono text-white">
                       {comparisonResult.metrics?.union_km2} km&sup2;
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-500">Intersection over Union (IoU):</span>
-                    <span className="font-mono font-bold text-slate-900">
+                    <span className="text-slate-400">IoU Metric:</span>
+                    <span className="font-mono font-bold text-sky-400">
                       {(comparisonResult.metrics?.iou * 100).toFixed(2)}%
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-500">Satellite Coverage of Model:</span>
-                    <span className="font-mono">
+                    <span className="text-slate-400">Satellite Coverage:</span>
+                    <span className="font-mono text-white">
                       {(comparisonResult.metrics?.satellite_coverage_of_model * 100).toFixed(2)}%
                     </span>
                   </div>
-                  <p className="text-[10px] text-slate-500 pt-1 border-t border-slate-200 italic">
+                  <p className="text-[10px] text-slate-500 pt-1 border-t border-slate-800 italic leading-snug">
                     {comparisonResult.interpretation}
                   </p>
                 </div>
@@ -698,11 +696,11 @@ export default function SatelliteMonitor() {
             </div>
           </div>
 
-          <div className="p-4 text-[11px] text-slate-400 space-y-1">
-            <div className="font-semibold text-slate-500 uppercase tracking-wider text-[10px]">
+          <div className="p-3.5 text-[10px] text-slate-400 space-y-1">
+            <div className="font-bold text-slate-500 uppercase tracking-wider text-[9px]">
               Platform Guidance
             </div>
-            <p>
+            <p className="leading-relaxed">
               Tehri dam break is a research what-if benchmark. SAR overlap measures environmental
               reservoir bounds, not validation of a breach event.
             </p>

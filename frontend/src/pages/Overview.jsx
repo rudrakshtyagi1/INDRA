@@ -1,123 +1,544 @@
-import React, { useMemo } from 'react';
-import { ArrowRight, Play, Server, Database, ShieldCheck, Map as MapIcon } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import L from 'leaflet';
+import {
+  ArrowRight,
+  Layers,
+  MapPin,
+  Play,
+} from 'lucide-react';
+import { useRun } from '../context/RunContext';
+import { RIVER_CENTERLINE } from '../data/prototype/tehriPrototypeFlood';
 import { useV3Data } from '../hooks/useV3Data';
-import { generateOperationalInsights } from '../utils/insightsEngine';
+
+const SETTLEMENT_MARKERS = [
+  { name: 'Tehri Dam (Source Crest 839.5m)', lat: 30.378, lon: 78.480, isSource: true },
+  { name: 'Devprayag (Bhagirathi-Alaknanda Confluence)', lat: 30.146, lon: 78.599 },
+  { name: 'Rishikesh (Gorge Exit Gateway)', lat: 30.086, lon: 78.267 },
+  { name: 'Haridwar (Upper Gangetic Plains)', lat: 29.945, lon: 78.164 },
+];
 
 export default function Overview({ onNavigate }) {
+  const { currentRun } = useRun();
   const v3 = useV3Data();
-  const insights = useMemo(() => generateOperationalInsights(v3, 0), [v3]);
 
-  const PIPELINE = [
-    { label: 'Meteorology', status: 'pass' },
-    { label: 'Hydrologic Inflow', status: 'pass' },
-    { label: 'Breach Benchmark', status: 'pass' },
-    { label: 'DualSPHysics 5.4 CPU', status: 'pass' },
-    { label: 'Q(t) Coupling', status: 'pass' },
-    { label: 'LISFLOOD-FP 8.1', status: 'pass' },
-    { label: 'Exposure', status: 'pass' },
-    { label: 'HADR Routing', status: 'pass' },
-  ];
+  const mapContainerRef = useRef(null);
+  const mapInstanceRef = useRef(null);
+  const domainLayerRef = useRef(null);
+  const extentLayerRef = useRef(null);
+  const roadsLayerRef = useRef(null);
+
+  // Initialize Map
+  useEffect(() => {
+    if (mapInstanceRef.current || !mapContainerRef.current) return;
+
+    const map = L.map(mapContainerRef.current, {
+      zoomControl: false,
+      attributionControl: true,
+      maxBounds: [
+        [29.5, 77.8],
+        [31.0, 79.2],
+      ],
+    });
+
+    // High-resolution satellite / terrain imagery
+    L.tileLayer(
+      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      {
+        attribution: '&copy; Esri, Maxar, Earthstar Geographics',
+        maxZoom: 18,
+      }
+    ).addTo(map);
+
+    L.control.zoom({ position: 'topleft' }).addTo(map);
+
+    // River centerline
+    if (RIVER_CENTERLINE && RIVER_CENTERLINE.length > 0) {
+      L.polyline(
+        RIVER_CENTERLINE.map((p) => [p.lat, p.lon]),
+        { color: '#38bdf8', weight: 2.5, opacity: 0.7, dashArray: '4, 4' }
+      ).addTo(map);
+    }
+
+    // Settlements markers
+    SETTLEMENT_MARKERS.forEach((s) => {
+      const isDam = s.isSource;
+      const icon = L.divIcon({
+        className: '',
+        html: `<div style="background:${
+          isDam ? '#991b1b' : '#0f172a'
+        };color:#f8fafc;border:1px solid ${
+          isDam ? '#ef4444' : '#475569'
+        };border-radius:2px;padding:2px 6px;font-size:9px;font-family:monospace;font-weight:700;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.6)">${
+          s.name
+        }</div>`,
+        iconSize: [140, 18],
+        iconAnchor: [70, 9],
+      });
+      L.marker([s.lat, s.lon], { icon }).addTo(map);
+    });
+
+    mapInstanceRef.current = map;
+
+    return () => {
+      map.remove();
+      mapInstanceRef.current = null;
+    };
+  }, []);
+
+  // Sync Camera and Layers when currentRun changes
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+
+    // 1. Fit Camera to Domain Bounds
+    if (currentRun?.domain_bounds) {
+      map.fitBounds(currentRun.domain_bounds, { padding: [30, 30] });
+    }
+
+    // 2. Draw Model Domain Boundary Polygon
+    if (domainLayerRef.current) {
+      map.removeLayer(domainLayerRef.current);
+      domainLayerRef.current = null;
+    }
+    if (currentRun?.domain_bounds) {
+      const b = currentRun.domain_bounds;
+      const domainPoly = [
+        [b[0][0], b[0][1]],
+        [b[0][0], b[1][1]],
+        [b[1][0], b[1][1]],
+        [b[1][0], b[0][1]],
+      ];
+      domainLayerRef.current = L.polygon(domainPoly, {
+        color: '#0284c7',
+        weight: 1.5,
+        fill: false,
+        dashArray: '6, 6',
+      }).addTo(map);
+    }
+
+    // 3. Render Inundation Extent
+    if (extentLayerRef.current) {
+      map.removeLayer(extentLayerRef.current);
+      extentLayerRef.current = null;
+    }
+    if (currentRun?.inundation_geojson_url) {
+      fetch(currentRun.inundation_geojson_url)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data && mapInstanceRef.current) {
+            extentLayerRef.current = L.geoJSON(data, {
+              style: {
+                color: '#38bdf8',
+                weight: 1.5,
+                fillColor: '#0284c7',
+                fillOpacity: 0.45,
+              },
+            }).addTo(mapInstanceRef.current);
+          }
+        })
+        .catch(() => {});
+    }
+
+    // 4. Render Exposed Roads
+    if (roadsLayerRef.current) {
+      map.removeLayer(roadsLayerRef.current);
+      roadsLayerRef.current = null;
+    }
+    if (v3.v3Roads) {
+      roadsLayerRef.current = L.geoJSON(v3.v3Roads, {
+        style: { color: '#f97316', weight: 2.5, opacity: 0.9 },
+      }).addTo(map);
+    }
+  }, [currentRun, v3.v3Roads]);
+
+  const [inspectorTab, setInspectorTab] = useState('RUN'); // 'RUN', 'PHYSICS', 'EXPOSURE', 'QA', 'PROVENANCE'
 
   return (
-    <div className="p-8 max-w-7xl mx-auto flex flex-col gap-8 pb-20">
-      
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight mb-2">Tehri Dam Inundation Study</h1>
-          <p className="text-slate-500 max-w-3xl">Interactive hydrodynamic simulation and emergency-response platform.</p>
-        </div>
-        <div className="flex items-center gap-3">
-           <button onClick={() => onNavigate('scenarios')} className="px-5 py-2.5 bg-white border border-slate-200 text-slate-700 font-bold text-sm rounded-lg hover:bg-slate-50 transition cursor-pointer">Compare Scenarios</button>
-           <button onClick={() => onNavigate('simulation')} className="px-5 py-2.5 bg-blue-600 text-white font-bold text-sm rounded-lg hover:bg-blue-700 transition flex items-center gap-2 cursor-pointer">
-             <Play className="w-4 h-4 fill-white" /> Open Simulation
-           </button>
-        </div>
-      </div>
-
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        {/* Study Map Mockup / Static Image (Using a placeholder box for now, actual map would be Leaflet) */}
-        <div 
-          onClick={() => onNavigate('simulation')} 
-          className="lg:col-span-2 bg-slate-100 rounded-2xl border border-slate-200 h-[400px] flex items-center justify-center relative overflow-hidden cursor-pointer group"
-        >
-           <img src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/13/3389/5801" alt="Tehri Study Area" className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-luminosity group-hover:scale-105 transition-transform duration-700" />
-           <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 to-transparent"></div>
-           <div className="absolute top-4 right-4 bg-white/95 backdrop-blur px-3 py-2 rounded-lg border border-white/20 shadow-sm flex items-center gap-2 text-xs font-bold text-slate-700">
-             <MapIcon className="w-4 h-4 text-blue-600" /> Click to open Interactive Map
-           </div>
-           <div className="relative z-10 text-center text-white bg-slate-900/80 backdrop-blur px-6 py-4 rounded-xl border border-white/10">
-              <h2 className="text-xl font-bold mb-1">Bhagirathi - Ganga Corridor</h2>
-              <p className="text-slate-300 text-sm">Study corridor: ~145 km &bull; V3 hydrodynamic domain: 15 km &bull; Grid resolution: 30 m &bull; Simulation window: 800 s</p>
-           </div>
-        </div>
-
-        {/* Status Panel */}
-        <div className="flex flex-col gap-4">
-          <div className="bg-white border border-slate-200 rounded-xl p-5 flex flex-col gap-4">
-             <h3 className="font-bold text-slate-800 border-b border-slate-100 pb-3">System Readiness</h3>
-             <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-sm text-slate-600"><Server className="w-4 h-4 text-blue-500" /> Solver Status</div>
-                <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded uppercase">Executed</span>
-             </div>
-             <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-sm text-slate-600"><Database className="w-4 h-4 text-purple-500" /> V3 Data Payload</div>
-                <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded uppercase">Precomputed</span>
-             </div>
-             <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-sm text-slate-600"><ShieldCheck className="w-4 h-4 text-amber-500" /> Physical Validation</div>
-                <span className="px-2 py-0.5 bg-slate-100 text-slate-600 text-[10px] font-bold rounded uppercase">Not Available</span>
-             </div>
+    <div className="h-full w-full flex bg-[#0B0F19] text-slate-100 overflow-hidden select-none">
+      {/* Center Operational GIS Map Area (70% width) */}
+      <div className="flex-1 flex flex-col min-w-0 h-full relative border-r border-slate-800">
+        {/* Sub-Header Operational Telemetry Banner */}
+        <div className="h-9 bg-[#111827] border-b border-slate-800 px-4 flex items-center justify-between shrink-0 text-xs font-mono">
+          <div className="flex items-center gap-3">
+            <span className="text-sky-400 font-bold flex items-center gap-1.5 font-sans">
+              <MapPin className="w-3.5 h-3.5" />
+              OPERATIONAL SITUATION MAP
+            </span>
+            <span className="text-slate-600">{'//'}</span>
+            <span className="text-slate-300">
+              DOMAIN: <strong className="text-white">{currentRun.domain_km} km</strong> CANYON REACH
+            </span>
+            <span className="text-slate-600">{'//'}</span>
+            <span className="text-slate-300">
+              GRID: <strong className="text-white">{currentRun.grid_resolution_m} m</strong>
+            </span>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl p-5 flex-1 flex flex-col justify-between">
-             <div>
-               <h3 className="font-bold text-slate-800 mb-2">Model Parameters (V3)</h3>
-               <div className="text-sm text-slate-600 space-y-1 font-mono text-[11px]">
-                 <div className="flex justify-between"><span>Boundary Q:</span><span className="font-bold text-slate-800">300,000 m³/s</span></div>
-                 <div className="flex justify-between"><span>Simulation Window:</span><span className="font-bold text-slate-800">800 s</span></div>
-                 <div className="flex justify-between"><span>Manning n:</span><span className="font-bold text-slate-800">0.06</span></div>
-               </div>
-             </div>
-             <button onClick={() => onNavigate('hadr')} className="mt-6 w-full py-2 bg-slate-800 hover:bg-slate-900 text-white text-sm font-bold rounded-lg transition cursor-pointer">View HADR Operations</button>
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] text-amber-400 bg-amber-950/70 border border-amber-800/80 px-2 py-0.5 rounded">
+              WHAT-IF EMERGENCY-PLANNING BENCHMARK
+            </span>
           </div>
         </div>
-      </div>
 
-      {/* Operational Insights */}
-      <div className="bg-white border border-slate-200 rounded-xl p-6">
-        <h3 className="font-bold text-slate-800 mb-6">Current Operational Picture</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {insights.map(insight => (
-            <div key={insight.id} className={`p-4 rounded-xl border ${insight.severity === 'high' ? 'bg-red-50/50 border-red-200' : insight.severity === 'success' ? 'bg-emerald-50/50 border-emerald-200' : insight.severity === 'warning' ? 'bg-amber-50/50 border-amber-200' : 'bg-blue-50/50 border-blue-200'}`}>
-              <div className="flex items-center justify-between mb-2">
-                <span className={`text-[10px] font-bold uppercase tracking-wider ${insight.severity === 'high' ? 'text-red-600' : insight.severity === 'success' ? 'text-emerald-600' : insight.severity === 'warning' ? 'text-amber-600' : 'text-blue-600'}`}>{insight.category}</span>
-              </div>
-              <h4 className="font-bold text-slate-800 text-sm mb-1">{insight.title}</h4>
-              <p className="text-xs text-slate-600 mb-3">{insight.explanation}</p>
-              <button onClick={() => onNavigate('simulation')} className="text-xs font-bold text-blue-600 hover:text-blue-700 cursor-pointer">{insight.action} &rarr;</button>
+        {/* The Live GIS Map */}
+        <div className="flex-1 relative" ref={mapContainerRef}>
+          {/* Map Overlay Map Legend */}
+          <div className="absolute bottom-4 left-4 z-[400] bg-slate-900/90 backdrop-blur border border-slate-700/80 rounded p-2.5 text-[10px] font-mono space-y-1 shadow-xl">
+            <div className="text-slate-400 font-bold uppercase tracking-wider mb-1">
+              GIS Layer Symbology
             </div>
-          ))}
+            <div className="flex items-center gap-2 text-slate-200">
+              <span className="w-3 h-3 rounded-xs bg-sky-500/50 border border-sky-400" />
+              <span>Modelled Inundation Footprint</span>
+            </div>
+            <div className="flex items-center gap-2 text-slate-200">
+              <span className="w-3 h-1 bg-orange-500 rounded-xs" />
+              <span>Exposed Road Network ({currentRun.road_exposed_km} km)</span>
+            </div>
+            <div className="flex items-center gap-2 text-slate-200">
+              <span className="w-3 h-0.5 border-t border-dashed border-sky-400" />
+              <span>Bhagirathi River Centerline</span>
+            </div>
+            <div className="flex items-center gap-2 text-slate-200">
+              <span className="w-3 h-0.5 border-t border-dashed border-blue-500" />
+              <span>Model Domain Boundary ({currentRun.domain_km} km)</span>
+            </div>
+            <div className="text-[9px] text-slate-400 pt-1 border-t border-slate-800">
+              Areas outside boundary: CONTEXT ONLY
+            </div>
+          </div>
+        </div>
+
+        {/* Small Bottom Telemetry Bar */}
+        <div className="h-10 bg-[#0F172A] border-t border-slate-800 px-4 flex items-center justify-between text-xs font-mono shrink-0">
+          <div className="flex items-center gap-4">
+            <div>
+              <span className="text-slate-500 mr-1.5 text-[10px]">COUPLED BOUNDARY Q:</span>
+              <span className="font-bold text-sky-400">300,000 m&sup3;/s</span>
+            </div>
+            <div>
+              <span className="text-slate-500 mr-1.5 text-[10px]">MAX DEPTH:</span>
+              <span className="font-bold text-sky-400">{currentRun.max_depth_m} m</span>
+              <span className="text-[9px] text-amber-500 ml-1">(numerical max)</span>
+            </div>
+            <div>
+              <span className="text-slate-500 mr-1.5 text-[10px]">WETTED ROAD:</span>
+              <span className="font-bold text-orange-400">{currentRun.road_exposed_km} km</span>
+            </div>
+            <div>
+              <span className="text-slate-500 mr-1.5 text-[10px]">SETTLEMENTS WETTED:</span>
+              <span className="font-bold text-emerald-400">0 in reach</span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => onNavigate('simulation')}
+              className="px-2.5 py-1 bg-sky-700 hover:bg-sky-600 text-white text-[11px] font-bold rounded flex items-center gap-1 transition"
+            >
+              <Play className="w-3 h-3 fill-white" /> Open Simulation Lab
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Physics Pipeline */}
-      <div className="bg-white border border-slate-200 rounded-xl p-6">
-        <h3 className="font-bold text-slate-800 mb-6">Scientific Pipeline Architecture</h3>
-        <div className="flex items-center justify-between gap-2 overflow-x-auto pb-4">
-          {PIPELINE.map((step, i) => (
-             <React.Fragment key={step.label}>
-               <div className="flex-1 min-w-[120px] bg-slate-50 border border-slate-200 rounded-lg p-3 text-center flex flex-col items-center justify-center relative hover:bg-white hover:shadow-sm transition cursor-default">
-                  <span className="text-[11px] font-bold text-slate-700 uppercase mt-1">{step.label}</span>
-               </div>
-               {i < PIPELINE.length - 1 && <ArrowRight className="w-4 h-4 text-slate-300 shrink-0" />}
-             </React.Fragment>
+      {/* Right Command & Control Inspector (30% width, fixed 360px) */}
+      <div className="w-[360px] bg-[#111827] flex flex-col h-full overflow-y-auto shrink-0 text-xs font-mono">
+        {/* Inspector Header */}
+        <div className="h-9 px-3 border-b border-slate-800 flex items-center justify-between shrink-0 bg-[#0F172A]">
+          <span className="font-bold text-slate-200 tracking-wider uppercase text-[11px] flex items-center gap-1.5 font-sans">
+            <Layers className="w-3.5 h-3.5 text-sky-400" />
+            C2 Telemetry Inspector
+          </span>
+          <span className="status-tag status-tag--verified">
+            {currentRun.qa_status}
+          </span>
+        </div>
+
+        {/* 5-Tab Selector Strip */}
+        <div className="h-8 border-b border-slate-800 bg-[#0B0F19] px-2 flex items-center justify-between shrink-0 text-[10px] select-none">
+          {['RUN', 'PHYSICS', 'EXPOSURE', 'QA', 'PROVENANCE'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setInspectorTab(tab)}
+              className={`px-2 py-0.5 rounded font-bold transition ${
+                inspectorTab === tab
+                  ? 'bg-sky-600 text-white'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+              }`}
+            >
+              {tab}
+            </button>
           ))}
         </div>
-      </div>
 
+        <div className="p-4 space-y-4 flex-1">
+          {inspectorTab === 'RUN' && (
+            <>
+              {/* Section: ACTIVE RUN STATE */}
+              <div className="border border-slate-800 rounded bg-[#0B0F19] p-3 space-y-2">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  Active Run &amp; Solvers
+                </div>
+                <div className="space-y-1">
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Scenario</span>
+                    <span className="telemetry-row__value font-bold text-white">{currentRun.name}</span>
+                  </div>
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Far-Field Solver</span>
+                    <span className="telemetry-row__value">{currentRun.far_field_solver}</span>
+                  </div>
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Near-Field Solver</span>
+                    <span className="telemetry-row__value">{currentRun.near_field_solver}</span>
+                  </div>
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Simulation Window</span>
+                    <span className="telemetry-row__value">{currentRun.simulation_window_s} s</span>
+                  </div>
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Mass Balance Error</span>
+                    <span className="telemetry-row__value text-emerald-400">
+                      {currentRun.mass_balance_error_pct !== null
+                        ? `${currentRun.mass_balance_error_pct}% (PASS)`
+                        : 'N/A (Prototype)'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section: COUPLING BOUNDARY */}
+              <div className="border border-slate-800 rounded bg-[#0B0F19] p-3 space-y-2">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  Coupled Inflow Boundary Q(t)
+                </div>
+                <div className="space-y-1">
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Coupled Boundary Peak Q</span>
+                    <span className="telemetry-row__value text-sky-400 font-bold">
+                      {currentRun.coupled_peak_q_m3s.toLocaleString()} m&sup3;/s
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-amber-400/90 leading-snug pt-1">
+                    DUALSPHYSICS-DERIVED / FROUDE BACK-SCALED COUPLING BOUNDARY PEAK Q (Not hydrologic inflow).
+                  </p>
+                </div>
+              </div>
+
+              {/* Section: HAZARD METRICS */}
+              <div className="border border-slate-800 rounded bg-[#0B0F19] p-3 space-y-2">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  Hazard Reach &amp; Depths
+                </div>
+                <div className="space-y-1">
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Numerical Max Depth</span>
+                    <span className="telemetry-row__value text-sky-400">{currentRun.max_depth_m} m</span>
+                  </div>
+                  <div className="text-[9px] text-amber-400/90 leading-tight">
+                    {currentRun.max_depth_label}
+                  </div>
+                  <div className="telemetry-row pt-1">
+                    <span className="telemetry-row__label">Model Reach Domain</span>
+                    <span className="telemetry-row__value">{currentRun.domain_km} km</span>
+                  </div>
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Temporal Frames</span>
+                    <span className="telemetry-row__value">{currentRun.frames_count} frames</span>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
+          {inspectorTab === 'PHYSICS' && (
+            <div className="space-y-3">
+              <div className="border border-slate-800 rounded bg-[#0B0F19] p-3 space-y-2">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  Computational Lineage
+                </div>
+                <div className="space-y-1 text-[11px] text-slate-300">
+                  <div>1. ERA5 + SCS-CN: Peak Inflow 866.8 m³/s</div>
+                  <div>2. Froehlich Breach: Peak Outflow 723,705 m³/s</div>
+                  <div>3. DualSPHysics 5.4: 3.0 m³/s at x=20m</div>
+                  <div>4. Froude Scaling: λ_L=100, λ_Q=100,000</div>
+                  <div>5. Coupled Inflow Q: 300,000 m³/s (58.5% peak attenuation)</div>
+                  <div>6. LISFLOOD-FP 8.1: 30 km canyon propagation</div>
+                </div>
+                <button
+                  onClick={() => onNavigate('physics')}
+                  className="w-full mt-2 py-1.5 bg-sky-950 hover:bg-sky-900 border border-sky-800 rounded text-sky-300 text-[10px] font-bold transition flex items-center justify-center gap-1.5"
+                >
+                  <span>Open Deep Physics Pipeline</span>
+                  <ArrowRight className="w-3 h-3" />
+                </button>
+              </div>
+
+              <div className="border border-slate-800 rounded bg-[#0B0F19] p-3 space-y-1.5 text-[10px] text-slate-400">
+                <div className="font-bold text-slate-200">Gorge Hydrodynamic Attenuation</div>
+                <p>
+                  Peak discharge reduces from 723k to 300k m³/s over 2 km near-field gorge. 
+                  Reflects steep wall friction and energy dissipation, not volume loss.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {inspectorTab === 'EXPOSURE' && (
+            <div className="space-y-3">
+              <div className="border border-slate-800 rounded bg-[#0B0F19] p-3 space-y-2">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  Downstream Exposure Audit
+                </div>
+                <div className="space-y-1">
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Road Inundation</span>
+                    <span className="telemetry-row__value text-orange-400 font-bold">
+                      {currentRun.road_exposed_km} km ({currentRun.road_segments_intersected} segments)
+                    </span>
+                  </div>
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Settlements Wetted</span>
+                    <span className="telemetry-row__value text-emerald-400">0 within reach</span>
+                  </div>
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Healthcare Facilities</span>
+                    <span className="telemetry-row__value text-emerald-400">0 within reach</span>
+                  </div>
+                  {currentRun.earliest_road_exposure_s && (
+                    <div className="telemetry-row">
+                      <span className="telemetry-row__label">Earliest Road Inundation</span>
+                      <span className="telemetry-row__value text-amber-400">
+                        T+{currentRun.earliest_road_exposure_s}s
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="p-2.5 bg-amber-950/40 border border-amber-900/60 rounded text-[10px] text-amber-300 leading-snug">
+                <strong>ZERO EXPOSURE RULE:</strong> Settlements outside modelled reach are outside current hazard window, NOT verified safe.
+              </div>
+
+              <div className="border border-slate-800 rounded bg-[#0B0F19] p-3 space-y-1">
+                <div className="text-[10px] font-bold text-slate-400 uppercase">HADR Tactical Feasibility</div>
+                <div className="text-xs font-bold text-rose-400">NOT FEASIBLE UNDER CURRENT SCENARIO</div>
+                <p className="text-[10px] text-slate-500">6 wetted road segments block the canyon escape corridor.</p>
+              </div>
+            </div>
+          )}
+
+          {inspectorTab === 'QA' && (
+            <div className="space-y-3">
+              <div className="border border-slate-800 rounded bg-[#0B0F19] p-3 space-y-2">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  Numerical Mass Conservation
+                </div>
+                <div className="space-y-1">
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Corrected V4 Error</span>
+                    <span className="telemetry-row__value text-emerald-400 font-bold">0.00023% (PASS)</span>
+                  </div>
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Rejected Run Error</span>
+                    <span className="telemetry-row__value text-rose-400 line-through">29.29% (DISCARDED)</span>
+                  </div>
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Downstream Boundary</span>
+                    <span className="telemetry-row__value">FREE Outflow</span>
+                  </div>
+                  <div className="telemetry-row">
+                    <span className="telemetry-row__label">Courant Condition</span>
+                    <span className="telemetry-row__value">Adaptive α = 0.7</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-2.5 bg-slate-900 border border-slate-800 rounded text-[10px] text-slate-300 leading-snug space-y-1">
+                <div className="text-amber-400 font-bold">PHYSICAL VALIDATION STATEMENT:</div>
+                <p>
+                  PHYSICAL VALIDATION: <strong>NOT AVAILABLE</strong>. 
+                  Model results are what-if numerical benchmarks for planning research. 
+                  Historical Tehri breach observations do not exist.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {inspectorTab === 'PROVENANCE' && (
+            <div className="space-y-2">
+              {[
+                { name: 'Copernicus DEM GLO-30', tag: 'OBSERVED', col: 'text-sky-400' },
+                { name: 'CWC Gauge Telemetry', tag: 'REPORTED', col: 'text-emerald-400' },
+                { name: 'Manning Roughness n=0.06', tag: 'ASSUMED', col: 'text-amber-400' },
+                { name: 'ERA5-Land Monsoon Rain', tag: 'MODELLED', col: 'text-violet-400' },
+                { name: 'Froude Similarity Back-Scale', tag: 'DERIVED', col: 'text-sky-400' },
+                { name: 'DualSPHysics / LISFLOOD-FP', tag: 'PRECOMPUTED', col: 'text-emerald-400' },
+                { name: 'Sentinel-1 SAR / GEE', tag: 'CONTEXT', col: 'text-slate-400' },
+              ].map((p, i) => (
+                <div key={i} className="p-2 bg-[#0B0F19] border border-slate-800 rounded flex justify-between items-center text-[10px]">
+                  <span className="text-slate-300">{p.name}</span>
+                  <span className={`font-bold ${p.col}`}>{p.tag}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Section: MISSION WORKSPACE LINKS */}
+          <div className="space-y-1.5 pt-1">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+              Tactical Workspaces
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                onClick={() => onNavigate('simulation')}
+                className="p-2 rounded bg-slate-900 border border-slate-800 hover:border-sky-700 hover:bg-slate-800/80 text-left transition flex items-center justify-between"
+              >
+                <div>
+                  <div className="font-bold text-slate-200 text-[11px]">Simulation Lab</div>
+                  <div className="text-[9px] text-slate-400">Temporal rasters</div>
+                </div>
+                <ArrowRight className="w-3 h-3 text-slate-500" />
+              </button>
+
+              <button
+                onClick={() => onNavigate('hadr')}
+                className="p-2 rounded bg-slate-900 border border-slate-800 hover:border-sky-700 hover:bg-slate-800/80 text-left transition flex items-center justify-between"
+              >
+                <div>
+                  <div className="font-bold text-slate-200 text-[11px]">HADR Routes</div>
+                  <div className="text-[9px] text-slate-400">Evacuation status</div>
+                </div>
+                <ArrowRight className="w-3 h-3 text-slate-500" />
+              </button>
+
+              <button
+                onClick={() => onNavigate('exposure')}
+                className="p-2 rounded bg-slate-900 border border-slate-800 hover:border-sky-700 hover:bg-slate-800/80 text-left transition flex items-center justify-between"
+              >
+                <div>
+                  <div className="font-bold text-slate-200 text-[11px]">Exposure</div>
+                  <div className="text-[9px] text-slate-400">Asset overlay</div>
+                </div>
+                <ArrowRight className="w-3 h-3 text-slate-500" />
+              </button>
+
+              <button
+                onClick={() => onNavigate('satellite')}
+                className="p-2 rounded bg-slate-900 border border-slate-800 hover:border-sky-700 hover:bg-slate-800/80 text-left transition flex items-center justify-between"
+              >
+                <div>
+                  <div className="font-bold text-slate-200 text-[11px]">Sentinel-1</div>
+                  <div className="text-[9px] text-slate-400">SAR workstation</div>
+                </div>
+                <ArrowRight className="w-3 h-3 text-slate-500" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,195 +1,343 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Navigation, Clock, Route, AlertTriangle, ShieldCheck, CheckCircle2, Info } from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
+import {
+  Info,
+  Layers,
+  Navigation,
+} from 'lucide-react';
 import L from 'leaflet';
-import { useV3Data } from '../hooks/useV3Data';
+import { useRun } from '../context/RunContext';
 import ExportMenu from '../components/ExportMenu';
 
-export default function HADRDashboard() {
-  const v3 = useV3Data();
-  const [activeRoute, setActiveRoute] = useState(null);
-  const [selectedRun, setSelectedRun] = useState('v3_benchmark');
-  
-  const [v4Data, setV4Data] = useState({
-    normalRoute: null,
-    hazardAwareRoute: null
-  });
+const HADR_DESTINATIONS = [
+  { name: 'Prototype HADR Origin', lat: 30.360, lon: 78.470, isOrigin: true },
+  { name: 'Laxman Jhula Govt Hospital (Linear Nearest)', lat: 30.125, lon: 78.330 },
+  { name: "Dr. Arora's Clinic (Reachable in V3)", lat: 30.150, lon: 78.320 },
+];
 
-  useEffect(() => {
-    if (selectedRun === 'v4_extended') {
-      const fetchJson = async (url) => {
-        const res = await fetch(url);
-        if (!res.ok) return null;
-        return await res.json();
-      };
-      Promise.all([
-        fetchJson('/api/exports/normal_route?run_id=v4_extended&format=geojson'),
-        fetchJson('/api/exports/hazard_aware_route?run_id=v4_extended&format=geojson')
-      ]).then(([nr, hr]) => {
-        setV4Data({
-          normalRoute: nr,
-          hazardAwareRoute: hr
-        });
-      });
-    }
-  }, [selectedRun]);
-  
+export default function HADRDashboard() {
+  const { currentRun, selectedRunId } = useRun();
+
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
-  const layersRef = useRef({});
+  const domainLayerRef = useRef(null);
+  const normalRouteRef = useRef(null);
+  const hazardRouteRef = useRef(null);
+  const extentLayerRef = useRef(null);
 
+  const isV4 = selectedRunId === 'v4_extended';
+
+  // Init Map
   useEffect(() => {
-    if (mapInstanceRef.current) return;
-    const map = L.map(mapContainerRef.current, { center: [30.2, 78.35], zoom: 11, zoomControl: false });
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(map);
+    if (mapInstanceRef.current || !mapContainerRef.current) return;
+
+    const map = L.map(mapContainerRef.current, {
+      zoomControl: false,
+      attributionControl: true,
+      maxBounds: [
+        [29.5, 77.8],
+        [31.0, 79.2],
+      ],
+    });
+
+    L.tileLayer(
+      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      { attribution: '&copy; Esri, Maxar', maxZoom: 18 }
+    ).addTo(map);
+
     L.control.zoom({ position: 'topleft' }).addTo(map);
+
+    // Origin and Hospital Markers
+    HADR_DESTINATIONS.forEach((d) => {
+      const isOrig = d.isOrigin;
+      const icon = L.divIcon({
+        className: '',
+        html: `<div style="background:${
+          isOrig ? '#0284c7' : '#991b1b'
+        };color:#fff;border:1px solid ${
+          isOrig ? '#38bdf8' : '#ef4444'
+        };border-radius:2px;padding:2px 6px;font-size:9px;font-family:monospace;font-weight:700;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.6)">${
+          d.name
+        }</div>`,
+        iconSize: [160, 18],
+        iconAnchor: [80, 9],
+      });
+      L.marker([d.lat, d.lon], { icon }).addTo(map);
+    });
+
     mapInstanceRef.current = map;
-    return () => { map.remove(); mapInstanceRef.current = null; };
+
+    return () => {
+      map.remove();
+      mapInstanceRef.current = null;
+    };
   }, []);
 
+  // Sync Layers on run change
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
 
-    ['normal', 'hazard'].forEach(k => {
-       if (layersRef.current[k]) { map.removeLayer(layersRef.current[k]); layersRef.current[k] = null; }
-    });
-
-    const nr = selectedRun === 'v4_extended' ? v4Data.normalRoute : v3.v3NormalRoute;
-    const hr = selectedRun === 'v4_extended' ? v4Data.hazardAwareRoute : v3.v3HazardAwareRoute;
-
-    if (nr && !layersRef.current.normal) {
-      layersRef.current.normal = L.geoJSON(nr, { style: { color: '#ef4444', weight: 4, dashArray: '5, 5' } }).addTo(map);
+    // Fit camera
+    if (currentRun.domain_bounds) {
+      map.fitBounds(currentRun.domain_bounds, { padding: [30, 30] });
     }
 
-    if (hr && !layersRef.current.hazard) {
-      layersRef.current.hazard = L.geoJSON(hr, { style: { color: '#10b981', weight: 5 } }).addTo(map);
+    // Model Domain
+    if (domainLayerRef.current) {
+      map.removeLayer(domainLayerRef.current);
+      domainLayerRef.current = null;
+    }
+    if (currentRun.domain_bounds) {
+      const b = currentRun.domain_bounds;
+      domainLayerRef.current = L.polygon(
+        [
+          [b[0][0], b[0][1]],
+          [b[0][0], b[1][1]],
+          [b[1][0], b[1][1]],
+          [b[1][0], b[0][1]],
+        ],
+        { color: '#38bdf8', weight: 1.5, fill: false, dashArray: '6, 6' }
+      ).addTo(map);
     }
 
-    if (layersRef.current.normal) {
-       layersRef.current.normal.setStyle({ opacity: activeRoute === 'hazard' ? 0.2 : 1.0, weight: activeRoute === 'normal' ? 6 : 4 });
-       if (activeRoute === 'normal') layersRef.current.normal.bringToFront();
+    // Inundation Extent
+    if (extentLayerRef.current) {
+      map.removeLayer(extentLayerRef.current);
+      extentLayerRef.current = null;
     }
-    if (layersRef.current.hazard) {
-       layersRef.current.hazard.setStyle({ opacity: activeRoute === 'normal' ? 0.2 : 1.0, weight: activeRoute === 'hazard' ? 6 : 5 });
-       if (activeRoute === 'hazard') layersRef.current.hazard.bringToFront();
+    if (currentRun.inundation_geojson_url) {
+      fetch(currentRun.inundation_geojson_url)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data && mapInstanceRef.current) {
+            extentLayerRef.current = L.geoJSON(data, {
+              style: { color: '#38bdf8', weight: 1, fillColor: '#0284c7', fillOpacity: 0.35 },
+            }).addTo(mapInstanceRef.current);
+          }
+        })
+        .catch(() => {});
     }
 
-  }, [v3, v4Data, activeRoute, selectedRun]);
+    // Normal Route
+    if (normalRouteRef.current) {
+      map.removeLayer(normalRouteRef.current);
+      normalRouteRef.current = null;
+    }
+    const normalUrl = isV4
+      ? '/api/runs/v4_extended/exports/normal_route?format=geojson'
+      : '/api/scenarios/v3/hadr/route/normal';
 
-  let stats = {
-     normal_route: { distance_km: 0, eta_min: 0, hazard_conflict_edges: 0, status: 'NOT FEASIBLE AGAINST MODELLED HAZARD' },
-     hazard_aware_route: { distance_km: 0, eta_min: 0, hazard_conflict_edges: 0, status: 'ROUTE_NOT_FEASIBLE_UNDER_CURRENT_SCENARIO', extra_distance_km: 0 }
-  };
-  
-  if (selectedRun === 'v4_extended') {
-      stats.normal_route.distance_km = 132.363;
-      stats.normal_route.hazard_conflict_edges = 6;
-      stats.hazard_aware_route.distance_km = -1;
-  } else if (v3.v3Routes && v3.v3Routes.routes && v3.v3Routes.routes.length > 0) {
-      const r = v3.v3Routes.routes[1] || v3.v3Routes.routes[0];
-      stats.normal_route.distance_km = (r.normal_route_dist_m || 0) / 1000;
-      stats.hazard_aware_route.distance_km = (r.hazard_aware_route_dist_m || 0) / 1000;
-      stats.normal_route.hazard_conflict_edges = r.hazard_edges_avoided || 2;
-      stats.hazard_aware_route.extra_distance_km = stats.hazard_aware_route.distance_km - stats.normal_route.distance_km;
-      stats.hazard_aware_route.status = 'AVOIDS CURRENTLY MODELLED HAZARD SEGMENTS';
-      if (stats.hazard_aware_route.extra_distance_km < 0) stats.hazard_aware_route.extra_distance_km = 0;
-  }
+    fetch(normalUrl)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((geoJson) => {
+        if (geoJson && mapInstanceRef.current) {
+          normalRouteRef.current = L.geoJSON(geoJson, {
+            style: { color: '#ef4444', weight: 3.5, dashArray: '6, 6' },
+          }).addTo(mapInstanceRef.current);
+        }
+      })
+      .catch(() => {});
+
+    // Hazard Aware Route (V3 only)
+    if (hazardRouteRef.current) {
+      map.removeLayer(hazardRouteRef.current);
+      hazardRouteRef.current = null;
+    }
+    if (!isV4) {
+      fetch('/api/scenarios/v3/hadr/route/hazard_aware')
+        .then((res) => (res.ok ? res.json() : null))
+        .then((geoJson) => {
+          if (geoJson && mapInstanceRef.current) {
+            hazardRouteRef.current = L.geoJSON(geoJson, {
+              style: { color: '#10b981', weight: 4.5 },
+            }).addTo(mapInstanceRef.current);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [selectedRunId, isV4]);
 
   return (
-    <div className="flex flex-col h-full bg-slate-50">
-      <div className="px-8 py-4 bg-white border-b border-slate-200 shrink-0 flex justify-between items-center">
-        <div>
-         <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-           <Navigation className="w-6 h-6 text-blue-600" /> HADR Operations Console
-         </h1>
-         <p className="text-sm text-slate-500 mt-1">
-            {selectedRun === 'v4_extended' ? 'TEHRI V4 — CORRECTED 3600S MODEL RUN' : 'TEHRI V3 — VERIFIED BENCHMARK'}
-         </p>
+    <div className="h-full w-full flex bg-[#0B0F19] text-slate-100 overflow-hidden select-none">
+      {/* Center Operational Routing Map (70% width) */}
+      <div className="flex-1 flex flex-col min-w-0 h-full relative border-r border-slate-800">
+        {/* Subheader Bar */}
+        <div className="h-9 bg-[#111827] border-b border-slate-800 px-4 flex items-center justify-between shrink-0 text-xs font-mono">
+          <div className="flex items-center gap-3">
+            <span className="text-sky-400 font-bold font-sans flex items-center gap-1.5">
+              <Navigation className="w-3.5 h-3.5" />
+              HADR EVACUATION ROUTING CONSOLE
+            </span>
+            <span className="text-slate-600">{'//'}</span>
+            <span className="text-slate-300">
+              ALGORITHM: <strong className="text-white">DIJKSTRA GRAPH WEIGHTING</strong>
+            </span>
+            <span className="text-slate-600">{'//'}</span>
+            <span className="text-slate-300">
+              HAZARD CONFLICTS: <strong className="text-red-400">{currentRun.normal_route_hazard_edges} EDGES</strong>
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <ExportMenu products={['normal_route', 'hazard_aware_route']} />
+          </div>
         </div>
-        <div className="flex items-center gap-4">
-           <select className="border border-slate-300 rounded px-3 py-1 text-sm font-semibold" value={selectedRun} onChange={e => setSelectedRun(e.target.value)}>
-              <option value="v3_benchmark">TEHRI V3 (800s)</option>
-              <option value="v4_extended">TEHRI V4 (3600s)</option>
-           </select>
-           <ExportMenu products={["normal_route", "hazard_aware_route"]} />
+
+        {/* Map */}
+        <div className="flex-1 relative" ref={mapContainerRef}>
+          {/* Legend */}
+          <div className="absolute bottom-4 left-4 z-[400] bg-slate-900/90 backdrop-blur border border-slate-700/80 rounded p-2.5 text-[10px] font-mono space-y-1 shadow-xl">
+            <div className="text-slate-400 font-bold uppercase tracking-wider mb-1">Routing Symbology</div>
+            <div className="flex items-center gap-2 text-slate-200">
+              <span className="w-4 h-0.5 border-t-2 border-dashed border-red-500" />
+              <span>Normal Route (Crosses {currentRun.normal_route_hazard_edges} Inundated Edges)</span>
+            </div>
+            {!isV4 && (
+              <div className="flex items-center gap-2 text-slate-200">
+                <span className="w-4 h-1 bg-emerald-500" />
+                <span>Hazard-Aware Route (143.93 km &middot; Feasible)</span>
+              </div>
+            )}
+            <div className="flex items-center gap-2 text-slate-200">
+              <span className="w-3 h-3 rounded-xs bg-sky-500/40 border border-sky-400" />
+              <span>Active Modelled Inundation</span>
+            </div>
+            <div className="flex items-center gap-2 text-slate-200">
+              <span className="w-4 h-0.5 border-t border-dashed border-sky-400" />
+              <span>Model Domain Boundary</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Banner */}
+        <div className="h-10 bg-[#0F172A] border-t border-slate-800 px-4 flex items-center justify-between text-xs font-mono shrink-0">
+          <div className="flex items-center gap-3">
+            <span className="text-slate-400 text-[10px]">CURRENT CORRIDOR:</span>
+            <span className="font-bold text-white">Bhagirathi Gorge to Rishikesh (145 km total network)</span>
+          </div>
+          <span className="text-[10px] text-amber-400 bg-amber-950/60 border border-amber-800 px-2 py-0.5 rounded">
+            AREAS BEYOND MODEL EXTENT ARE NOT CLASSIFIED AS SAFE
+          </span>
         </div>
       </div>
 
-      <div className="flex-1 flex min-h-0 px-8 py-6 gap-6">
-         <div className="flex-1 bg-white border border-slate-200 rounded-xl overflow-hidden relative shadow-sm">
-            <div ref={mapContainerRef} className="absolute inset-0 z-0" />
-            <div className="absolute top-4 right-4 z-[400] bg-white/95 backdrop-blur p-3 rounded-lg border border-slate-200 shadow-sm flex flex-col gap-2">
-               <span className="text-xs font-bold text-slate-800 uppercase mb-1">Precomputed Mission</span>
-               <div className="flex items-center gap-2 text-[10px] text-slate-600 font-mono"><span className="w-2 h-2 rounded-full bg-blue-500"></span> ORIGIN: PROTOTYPE HADR MISSION ORIGIN</div>
-               <div className="flex items-center gap-2 text-[10px] text-slate-600 font-mono"><span className="w-2 h-2 rounded-full bg-purple-500"></span> DEST: CRITICAL HEALTHCARE CLUSTER</div>
-            </div>
-         </div>
-         
-         <div className="w-[400px] flex flex-col gap-4 overflow-y-auto custom-scrollbar pr-2">
-            <div className="bg-white border border-slate-200 p-5 rounded-xl shadow-sm">
-               <h3 className="font-bold text-slate-800 mb-4 text-sm border-b border-slate-100 pb-2">Mission Parameters</h3>
-               <div className="space-y-3">
-                  <div>
-                    <label className="text-[10px] font-bold text-slate-500 uppercase">Departure Time</label>
-                    <select disabled className="w-full mt-1 p-2 bg-slate-50 border border-slate-200 rounded text-sm text-slate-600 opacity-70 cursor-not-allowed">
-                       <option>T+0s (Immediate)</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text-[10px] font-bold text-slate-500 uppercase">Routing Engine</label>
-                    <select disabled className="w-full mt-1 p-2 bg-slate-50 border border-slate-200 rounded text-sm text-slate-600 opacity-70 cursor-not-allowed">
-                       <option>Precomputed Static Validation</option>
-                    </select>
-                  </div>
-                  <button disabled className="w-full py-2 mt-2 bg-slate-100 text-slate-400 border border-slate-200 font-bold text-sm rounded cursor-not-allowed flex items-center justify-center gap-2">
-                     <Clock className="w-4 h-4" /> Live Recalculation Disabled
-                  </button>
-                  <p className="text-[9px] text-slate-400 text-center uppercase tracking-wider">Viewing Precomputed Model Results</p>
-               </div>
-            </div>
+      {/* Right Mission Inspector (30% width, 360px) */}
+      <div className="w-[360px] bg-[#111827] flex flex-col h-full overflow-y-auto shrink-0 text-xs">
+        <div className="h-9 px-4 border-b border-slate-800 flex items-center justify-between shrink-0 bg-[#0F172A]">
+          <span className="font-bold text-slate-200 tracking-wider uppercase text-[11px] flex items-center gap-1.5 font-sans">
+            <Layers className="w-3.5 h-3.5 text-sky-400" />
+            Tactical Route Analysis
+          </span>
+          <span className="status-tag status-tag--data">
+            {isV4 ? 'V4 EXTENDED' : 'V3 BENCHMARK'}
+          </span>
+        </div>
 
-            <div 
-              onMouseEnter={() => setActiveRoute('normal')} 
-              onMouseLeave={() => setActiveRoute(null)}
-              className={`bg-white border p-5 rounded-xl cursor-pointer transition ${activeRoute === 'normal' ? 'border-red-400 shadow-md ring-2 ring-red-50' : 'border-slate-200 hover:border-red-200'}`}
-            >
-               <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-bold text-slate-800 flex items-center gap-2"><Route className="w-4 h-4 text-red-500" /> Normal Route</h4>
-                  <span className="text-xs font-mono font-bold bg-slate-100 px-2 py-1 rounded text-slate-600">{stats.normal_route.distance_km > 0 ? stats.normal_route.distance_km.toFixed(1) : 'N/A'} km</span>
-               </div>
-               <div className="flex items-start gap-2 bg-red-50 border border-red-100 p-2 rounded mb-3">
-                  <AlertTriangle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
-                  <p className="text-[10px] font-bold text-red-700 uppercase tracking-wide leading-tight">{stats.normal_route.status}</p>
-               </div>
-               <p className="text-xs text-slate-600">This baseline route intersects {stats.normal_route.hazard_conflict_edges} known hazard-conflict edges within the hydrodynamic domain.</p>
+        <div className="p-4 space-y-4 flex-1">
+          {/* Normal Shortest Route */}
+          <div className="border border-red-900/60 rounded bg-red-950/20 p-3 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-red-400 uppercase tracking-wider text-[10px]">
+                Normal Shortest Path
+              </span>
+              <span className="status-tag status-tag--alert">NOT FEASIBLE</span>
             </div>
-
-            <div 
-              onMouseEnter={() => setActiveRoute('hazard')} 
-              onMouseLeave={() => setActiveRoute(null)}
-              className={`bg-white border p-5 rounded-xl cursor-pointer transition ${activeRoute === 'hazard' ? 'border-emerald-400 shadow-md ring-2 ring-emerald-50' : 'border-slate-200 hover:border-emerald-200'}`}
-            >
-               <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-bold text-slate-800 flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-emerald-500" /> Hazard-Aware Route</h4>
-                  <span className="text-xs font-mono font-bold bg-slate-100 px-2 py-1 rounded text-slate-600">{stats.hazard_aware_route.distance_km > 0 ? stats.hazard_aware_route.distance_km.toFixed(1) : 'N/A'} km</span>
-               </div>
-               <div className="flex items-start gap-2 bg-emerald-50 border border-emerald-100 p-2 rounded mb-3">
-                  <CheckCircle2 className={`w-4 h-4 shrink-0 mt-0.5 ${stats.hazard_aware_route.distance_km > 0 ? 'text-emerald-600' : 'text-slate-400'}`} />
-                  <p className={`text-[10px] font-bold uppercase tracking-wide leading-tight ${stats.hazard_aware_route.distance_km > 0 ? 'text-emerald-700' : 'text-slate-600'}`}>{stats.hazard_aware_route.status}</p>
-               </div>
-               {stats.hazard_aware_route.distance_km > 0 ? (
-                 <>
-                   <p className="text-xs text-slate-600 mb-2">Algorithm successfully bypassed all currently modelled hazard segments.</p>
-                   <div className="text-[10px] bg-slate-50 border border-slate-100 p-2 rounded font-mono text-slate-500 flex items-center gap-2">
-                      <Info className="w-3 h-3 text-blue-500" /> +{stats.hazard_aware_route.extra_distance_km.toFixed(2)} km detour required.
-                   </div>
-                 </>
-               ) : (
-                 <p className="text-xs text-slate-600">All available routes are severed by the modelled hazard before mission arrival.</p>
-               )}
+            <div className="space-y-1">
+              <div className="telemetry-row">
+                <span className="telemetry-row__label">Distance</span>
+                <span className="telemetry-row__value">{currentRun.normal_route_dist_km} km</span>
+              </div>
+              <div className="telemetry-row">
+                <span className="telemetry-row__label">Hazard Conflict Edges</span>
+                <span className="telemetry-row__value text-red-400 font-bold">
+                  {currentRun.normal_route_hazard_edges} segments wetted
+                </span>
+              </div>
+              <div className="telemetry-row">
+                <span className="telemetry-row__label">Tactical State</span>
+                <span className="telemetry-row__value text-red-300">Direct road blocked by flood front</span>
+              </div>
             </div>
+          </div>
 
-         </div>
+          {/* Hazard-Aware Route */}
+          <div
+            className={`border rounded p-3 space-y-2 ${
+              isV4 ? 'border-amber-900/60 bg-amber-950/20' : 'border-emerald-900/60 bg-emerald-950/20'
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <span className={`font-bold uppercase tracking-wider text-[10px] ${isV4 ? 'text-amber-400' : 'text-emerald-400'}`}>
+                Hazard-Aware Bypass
+              </span>
+              <span className={`status-tag ${isV4 ? 'status-tag--warning' : 'status-tag--verified'}`}>
+                {isV4 ? 'UNFEASIBLE' : 'FEASIBLE'}
+              </span>
+            </div>
+            <div className="space-y-1">
+              <div className="telemetry-row">
+                <span className="telemetry-row__label">Distance</span>
+                <span className="telemetry-row__value">
+                  {currentRun.hazard_aware_route_dist_km !== null
+                    ? `${currentRun.hazard_aware_route_dist_km} km`
+                    : '— (No Passable Path)'}
+                </span>
+              </div>
+              {!isV4 && (
+                <div className="telemetry-row">
+                  <span className="telemetry-row__label">Detour Penalty</span>
+                  <span className="telemetry-row__value text-orange-400">
+                    +{currentRun.hazard_aware_detour_km} km
+                  </span>
+                </div>
+              )}
+              <div className="telemetry-row">
+                <span className="telemetry-row__label">Status</span>
+                <span className={`telemetry-row__value ${isV4 ? 'text-amber-300' : 'text-emerald-400'}`}>
+                  {currentRun.hazard_aware_route_status}
+                </span>
+              </div>
+            </div>
+            {isV4 && (
+              <p className="text-[10px] text-amber-400/90 leading-snug pt-1">
+                Under extended 3600s flood extent, downstream valley road network is inundated. No passable detour exists within the current mountain valley corridor without traversing hazard water.
+              </p>
+            )}
+          </div>
+
+          {/* Destination Reachability Analysis */}
+          <div className="border border-slate-800 rounded bg-[#0B0F19] p-3 space-y-2">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              Destination Reachability
+            </div>
+            <div className="space-y-2 text-[11px]">
+              <div>
+                <span className="text-slate-500 text-[10px] block">Linear Nearest Facility:</span>
+                <span className="font-bold text-slate-200">Laxman Jhula Government Hospital</span>
+              </div>
+              <div className="pt-1.5 border-t border-slate-800">
+                <span className="text-slate-500 text-[10px] block">Reachable (Avoiding Hazard):</span>
+                <span className="font-bold text-sky-400">
+                  {isV4 ? 'None in valley corridor' : "Dr. Arora's Clinic"}
+                </span>
+              </div>
+              <div className="flex items-start gap-1.5 text-[10px] text-sky-300/80 pt-1">
+                <Info className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+                <span>Nearest &ne; Reachable. Assessed strictly against wetted road network.</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Mission Disclaimer */}
+          <div className="border border-slate-800 rounded bg-slate-900/60 p-3 space-y-1 text-[10px] text-slate-400">
+            <span className="font-bold text-slate-300 uppercase tracking-wider text-[9px] block">
+              Origin Provenance Note
+            </span>
+            <p>
+              Mission Origin is a designated research benchmark coordinate. It is not an operational NDRF facility.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

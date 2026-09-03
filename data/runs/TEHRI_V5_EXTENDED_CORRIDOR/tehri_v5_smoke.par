@@ -1,0 +1,13 @@
+DEMfile         v5_dem_90m.asc
+resroot         tehri_v5_smoke
+dirroot         outputs_smoke
+sim_time        300.0
+initial_tstep   1.0
+massint         50.0
+saveint         60.0
+fpfric          0.06
+manningfile     v5_roughness_90m.asc
+bcifile         v5_boundary.bci
+bdyfile         v5_boundary.bdy
+chainageoff
+elevoff
