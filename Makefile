@@ -1,4 +1,4 @@
-.PHONY: setup-backend run-backend run-frontend test test-unit test-integration build-frontend clean
+.PHONY: setup-backend run-backend run-frontend test test-unit test-integration build-frontend check-structure clean
 
 setup-backend:
 	cd backend && pip install -r requirements.txt
@@ -20,6 +20,9 @@ test-integration:
 
 build-frontend:
 	cd frontend && npm run build
+
+check-structure:
+	python3 scripts/check_repository_structure.py
 
 clean:
 	find backend -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null; true

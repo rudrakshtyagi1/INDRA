@@ -217,10 +217,14 @@ Frontend linting is available with `npm run lint` from `frontend/`. Tests cover 
 | `backend/tests/` | Unit, integration, and API tests |
 | `frontend/src/` | Application pages, maps, scientific views, and benchmark metadata |
 | `data/` | Selected inputs, processed artifacts, and run configurations |
-| `scripts/` | Data acquisition, preprocessing, and modelling workflows |
-| `docs/` | Methodology notes, design documents, and screenshots |
+| `scripts/` | Data acquisition and preprocessing; modelling, analysis, and diagnostic subdirectories |
+| `docs/` | Methodology notes, design documents, screenshots, and historical reports |
 | `configs/` | Scientific and routing configuration |
 | `workers/` | Worker scaffolding for extended execution workflows |
+
+See the [repository structure guide](docs/repository_structure.md),
+[script catalog](scripts/README.md), and [contribution guidelines](CONTRIBUTING.md)
+for file placement and cleanup checks.
 
 ## Scientific scope
 

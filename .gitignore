@@ -49,13 +49,11 @@ backend/.env.local
 backend/.env.*.local
 .DS_Store
 Thumbs.db
-*.tif
 *.pack
 dualsphysics_bin/
 data/processed/tehri_simulations/dualsphysics/setup/DualSPHysics/
 data/processed/tehri_simulations/delft3d/setup/Delft3D/
 *.vtk
-*.tif
 *.asc
 *.geojson
 *.bi4
@@ -81,3 +79,21 @@ secrets/
 
 # Scratch directory
 scratch/
+
+# Local Python environments and editor backups
+.venv/
+venv/
+*.bak
+*.orig
+*.rej
+*~
+
+# Generated hydraulic grids and particle metadata (summaries stay versioned)
+*.elev
+*.dem
+*.ibi4
+*.obi4
+*.vrt
+*.asc.aux.xml
+*_ascii.prj
+data/processed/tehri_simulations/lisflood_fp/setup/LISFLOOD-FP-8.1/
