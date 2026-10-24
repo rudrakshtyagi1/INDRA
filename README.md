@@ -39,6 +39,8 @@ The interface includes a Command Center, Simulation Lab, Scenario Builder, Expos
 
 ## Architecture
 
+The proposed next-generation design is documented in the [complete system design](docs/system_design.md), covering continuous observation ingestion, satellite monitoring, CV, physics/ML prediction, infrastructure isolation, rescue missions, cloud deployment and voice access. The [integration architecture](docs/hackathon_architecture.md) details credentials, sponsor services and the demonstration workflow. These are implementation plans; the current capabilities and limitations below remain applicable.
+
 ### Modelling and decision workflow
 
 ```mermaid
