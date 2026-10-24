@@ -1,0 +1,73 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.435,
+          30.375
+        ]
+      },
+      "properties": {
+        "name": "Tehri District Hospital",
+        "lat": 30.375,
+        "lon": 78.435,
+        "beds": 150,
+        "arr_sec": 950
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.475,
+          30.392
+        ]
+      },
+      "properties": {
+        "name": "Koti Community Health Centre",
+        "lat": 30.392,
+        "lon": 78.475,
+        "beds": 30,
+        "arr_sec": 250
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.597,
+          30.148
+        ]
+      },
+      "properties": {
+        "name": "Devprayag Base Hospital",
+        "lat": 30.148,
+        "lon": 78.597,
+        "beds": 60,
+        "arr_sec": 2800
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.288,
+          30.076
+        ]
+      },
+      "properties": {
+        "name": "AIIMS Rishikesh",
+        "lat": 30.076,
+        "lon": 78.288,
+        "beds": 960,
+        "arr_sec": 3600
+      }
+    }
+  ]
+}

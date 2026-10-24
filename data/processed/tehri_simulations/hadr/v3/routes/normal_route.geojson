@@ -1,0 +1,51 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            78.481,
+            30.378
+          ],
+          [
+            78.484,
+            30.365
+          ],
+          [
+            78.502,
+            30.334
+          ],
+          [
+            78.549,
+            30.228
+          ],
+          [
+            78.599,
+            30.146
+          ],
+          [
+            78.505,
+            30.082
+          ],
+          [
+            78.39,
+            30.13
+          ],
+          [
+            78.31,
+            30.118
+          ]
+        ]
+      },
+      "properties": {
+        "name": "PRIMARY VALLEY EVACUATION ROUTE (NH-34)",
+        "length_km": 132.36,
+        "status": "IMPASSABLE / SUBMERGED BY HAZARD",
+        "hazard_intersections": 6
+      }
+    }
+  ]
+}

@@ -1,0 +1,214 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.481,
+          30.378
+        ]
+      },
+      "properties": {
+        "name": "Tehri Dam Left Abutment",
+        "type": "critical_dam_infrastructure",
+        "population": 450,
+        "arrival_time_hr": 0.0,
+        "arrival_time_sec": 0,
+        "isolation_status": "HIGH ISOLATION RISK (ROAD ACCESS SEVERED)",
+        "safe_shelter": "High Ground Emergency Relief Center"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.472,
+          30.395
+        ]
+      },
+      "properties": {
+        "name": "Koti Colony",
+        "type": "settlement",
+        "population": 1200,
+        "arrival_time_hr": 0.05,
+        "arrival_time_sec": 180,
+        "isolation_status": "HIGH ISOLATION RISK (ROAD ACCESS SEVERED)",
+        "safe_shelter": "High Ground Emergency Relief Center"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.433,
+          30.374
+        ]
+      },
+      "properties": {
+        "name": "New Tehri",
+        "type": "town",
+        "population": 5000,
+        "arrival_time_hr": 0.25,
+        "arrival_time_sec": 900,
+        "isolation_status": "HIGH ISOLATION RISK (ROAD ACCESS SEVERED)",
+        "safe_shelter": "High Ground Emergency Relief Center"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.502,
+          30.334
+        ]
+      },
+      "properties": {
+        "name": "Chham Village",
+        "type": "village",
+        "population": 850,
+        "arrival_time_hr": 0.181,
+        "arrival_time_sec": 650,
+        "isolation_status": "HIGH ISOLATION RISK (ROAD ACCESS SEVERED)",
+        "safe_shelter": "High Ground Emergency Relief Center"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.549,
+          30.228
+        ]
+      },
+      "properties": {
+        "name": "Maletha",
+        "type": "town",
+        "population": 3400,
+        "arrival_time_hr": 0.5,
+        "arrival_time_sec": 1800,
+        "isolation_status": "HIGH ISOLATION RISK (ROAD ACCESS SEVERED)",
+        "safe_shelter": "High Ground Emergency Relief Center"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.75,
+          30.22
+        ]
+      },
+      "properties": {
+        "name": "Kirtinagar",
+        "type": "town",
+        "population": 4200,
+        "arrival_time_hr": 0.583,
+        "arrival_time_sec": 2100,
+        "isolation_status": "HIGH ISOLATION RISK (ROAD ACCESS SEVERED)",
+        "safe_shelter": "High Ground Emergency Relief Center"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.78,
+          30.21
+        ]
+      },
+      "properties": {
+        "name": "Srinagar (Garhwal)",
+        "type": "city",
+        "population": 38000,
+        "arrival_time_hr": 0.667,
+        "arrival_time_sec": 2400,
+        "isolation_status": "HIGH ISOLATION RISK (ROAD ACCESS SEVERED)",
+        "safe_shelter": "High Ground Emergency Relief Center"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.599,
+          30.146
+        ]
+      },
+      "properties": {
+        "name": "Devprayag Confluence",
+        "type": "heritage_town",
+        "population": 7000,
+        "arrival_time_hr": 0.75,
+        "arrival_time_sec": 2700,
+        "isolation_status": "HIGH ISOLATION RISK (ROAD ACCESS SEVERED)",
+        "safe_shelter": "High Ground Emergency Relief Center"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.505,
+          30.082
+        ]
+      },
+      "properties": {
+        "name": "Kaudiyala",
+        "type": "hamlet",
+        "population": 600,
+        "arrival_time_hr": 0.861,
+        "arrival_time_sec": 3100,
+        "isolation_status": "HIGH ISOLATION RISK (ROAD ACCESS SEVERED)",
+        "safe_shelter": "High Ground Emergency Relief Center"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.39,
+          30.13
+        ]
+      },
+      "properties": {
+        "name": "Shivpuri",
+        "type": "settlement",
+        "population": 1800,
+        "arrival_time_hr": 0.917,
+        "arrival_time_sec": 3300,
+        "isolation_status": "HIGH ISOLATION RISK (ROAD ACCESS SEVERED)",
+        "safe_shelter": "High Ground Emergency Relief Center"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.31,
+          30.118
+        ]
+      },
+      "properties": {
+        "name": "Rishikesh Ganga Ghats",
+        "type": "metropolis",
+        "population": 102000,
+        "arrival_time_hr": 1.0,
+        "arrival_time_sec": 3600,
+        "isolation_status": "HIGH ISOLATION RISK (ROAD ACCESS SEVERED)",
+        "safe_shelter": "High Ground Emergency Relief Center"
+      }
+    }
+  ]
+}
