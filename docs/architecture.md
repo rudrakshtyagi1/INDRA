@@ -1,5 +1,7 @@
 # INDRA Architecture
 
+> Historical design reference. This document describes the earlier Delft3D-oriented architecture, not the current implementation or the new target system. See [the complete system design](system_design.md) for the proposed continuous monitoring, prediction and response architecture, and [the integration design](hackathon_architecture.md) for credentials, satellite updates, Render, Agent37 and ElevenLabs. Neither document is a claim that the proposed capabilities are deployed.
+
 ## Overview
 
 INDRA is an end-to-end dam-break and flash flood simulation platform integrating
