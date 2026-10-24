@@ -22,6 +22,7 @@ from floodlab.api.routers import (
     uncertainty,
     v3,
     validation,
+    cv,
 )
 
 settings = get_settings()
@@ -58,6 +59,7 @@ app.include_router(export.router, prefix="/api/export", tags=["export"])
 app.include_router(jobs.router, prefix="/api/jobs", tags=["jobs"])
 app.include_router(science.router, prefix="/api/science", tags=["science"])
 app.include_router(science.runs_science_router, prefix="/api/runs", tags=["science_runs"])
+app.include_router(cv.router, prefix="/api/cv", tags=["computer_vision"])
 
 
 @app.get("/health")

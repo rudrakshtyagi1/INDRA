@@ -7,7 +7,7 @@ export default function BreachBenchmarkPanel() {
   const [breachData, setBreachData] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:8000/api/runs/${selectedRunId}/breach`)
+    fetch(`/api/runs/${selectedRunId}/breach`)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data) setBreachData(data);

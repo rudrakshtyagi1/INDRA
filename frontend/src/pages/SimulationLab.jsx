@@ -14,6 +14,9 @@ import {
   FileCheck,
   ChevronUp,
   ChevronDown,
+  Camera,
+  ShieldAlert,
+  Zap,
 } from 'lucide-react';
 import L from 'leaflet';
 import parseGeoraster from 'georaster';
@@ -25,6 +28,7 @@ import SphParticleCanvas from '../components/simulation/SphParticleCanvas';
 import FroudeCouplingPanel from '../components/simulation/FroudeCouplingPanel';
 import BreachBenchmarkPanel from '../components/simulation/BreachBenchmarkPanel';
 import FrameAuditTable from '../components/simulation/FrameAuditTable';
+import CVDamMonitorPanel from '../components/simulation/CVDamMonitorPanel';
 
 const SPEEDS = [1, 2, 5, 10];
 
@@ -38,10 +42,10 @@ export default function SimulationLab() {
   const getSubViewFromUrl = () => {
     if (typeof window === 'undefined') return 'lisflood';
     let v = new URLSearchParams(window.location.search).get('view');
-    if (v && ['lisflood', 'sph', 'coupling', 'breach', 'audit'].includes(v)) return v;
+    if (v && ['lisflood', 'cv', 'sph', 'coupling', 'breach', 'audit'].includes(v)) return v;
     if (window.location.hash.includes('?')) {
       v = new URLSearchParams(window.location.hash.split('?')[1]).get('view');
-      if (v && ['lisflood', 'sph', 'coupling', 'breach', 'audit'].includes(v)) return v;
+      if (v && ['lisflood', 'cv', 'sph', 'coupling', 'breach', 'audit'].includes(v)) return v;
     }
     return 'lisflood';
   };
@@ -65,6 +69,7 @@ export default function SimulationLab() {
   const [selectedFeature, setSelectedFeature] = useState(null);
   const [isTimelineOpen, setIsTimelineOpen] = useState(true);
   const [timelineMetric, setTimelineMetric] = useState('wet_area'); // 'wet_area', 'max_depth', 'roads'
+  const [cvAlert, setCvAlert] = useState(null);
 
   // Layer Toggles
   const [layers, setLayers] = useState({
@@ -292,11 +297,15 @@ export default function SimulationLab() {
     const damMarker = L.marker([30.378, 78.481], {
       icon: L.divIcon({
         className: 'custom-c2-marker',
-        html: `<div style="background:#EF4444; color:#fff; font-size:10px; font-weight:bold; font-family:monospace; padding:2px 6px; border-radius:3px; border:1px solid #fff; white-space:nowrap; box-shadow:0 2px 4px rgba(0,0,0,0.5);">Tehri Dam (Source Crest 839.5m)</div>`,
-        iconSize: [160, 20],
-        iconAnchor: [80, 10],
+        html: `<div style="background:#EF4444; color:#fff; font-size:10px; font-weight:bold; font-family:monospace; padding:2px 8px; border-radius:3px; border:1px solid #fff; white-space:nowrap; box-shadow:0 2px 6px rgba(0,0,0,0.6); cursor:pointer; display:flex; align-items:center; gap:4px;"><span>📷 Tehri Dam (839.5m) · CV Optical</span></div>`,
+        iconSize: [210, 22],
+        iconAnchor: [105, 11],
       }),
     }).addTo(map);
+
+    damMarker.on('click', () => {
+      setSubView('cv');
+    });
 
     return () => {
       map.removeLayer(damMarker);
@@ -343,6 +352,20 @@ export default function SimulationLab() {
               }`}
             >
               2D LISFLOOD-FP (30 km)
+            </button>
+            <button
+              onClick={() => setSubView('cv')}
+              className={`px-2 py-0.5 rounded text-[10px] font-bold transition flex items-center gap-1 ${
+                subView === 'cv'
+                  ? 'bg-sky-600 text-white shadow-xs'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+              }`}
+            >
+              <Camera className="w-3 h-3 text-sky-400" />
+              CV DAM BREACH VISION
+              {cvAlert?.sync_state?.cv_breach_detected && (
+                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping inline-block ml-0.5" />
+              )}
             </button>
             <button
               onClick={() => setSubView('sph')}
@@ -397,6 +420,17 @@ export default function SimulationLab() {
 
         {/* Sub-view Content Area */}
         <div className="flex-1 relative flex flex-col min-h-0 bg-[#070B14]">
+          {subView === 'cv' && (
+            <CVDamMonitorPanel
+              onSyncToSimulation={(data) => {
+                setCvAlert(data);
+                if (data.sync_state?.cv_breach_detected) {
+                  setCurrentSec(1800);
+                }
+                setSubView('lisflood');
+              }}
+            />
+          )}
           {subView === 'sph' && <SphParticleCanvas />}
           {subView === 'coupling' && <FroudeCouplingPanel />}
           {subView === 'breach' && <BreachBenchmarkPanel />}
@@ -405,6 +439,30 @@ export default function SimulationLab() {
           {/* LISFLOOD-FP 2D Map View */}
           {subView === 'lisflood' && (
             <>
+              {/* CV Dam Breach Alert Banner on Map */}
+              {cvAlert?.sync_state?.cv_breach_detected && (
+                <div className="absolute top-3 left-4 right-4 z-[1000] bg-red-950/90 border border-red-500 text-red-200 px-3.5 py-2 rounded shadow-2xl flex items-center justify-between backdrop-blur-md">
+                  <div className="flex items-center gap-2">
+                    <ShieldAlert className="w-4 h-4 text-red-400 shrink-0 animate-bounce" />
+                    <div>
+                      <span className="text-xs font-bold text-white uppercase tracking-wider mr-2">
+                        CRITICAL: CV DAM BREACH CONFIRMED (124.5m NOTCH)
+                      </span>
+                      <span className="text-[10px] text-red-300">
+                        Boundary inflow updated to Froehlich collapse peak (723,705 m³/s). 2D LISFLOOD-FP flood propagation active.
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setSubView('cv')}
+                    className="px-2.5 py-1 bg-red-700 hover:bg-red-600 text-white text-[10px] font-bold rounded flex items-center gap-1 transition shrink-0"
+                  >
+                    <Camera className="w-3 h-3" />
+                    INSPECT OPTICAL HUD
+                  </button>
+                </div>
+              )}
+
               <div ref={mapContainerRef} className="flex-1 w-full h-full relative" />
 
               {/* Collapsible Timeline Charts Panel beneath Map */}
