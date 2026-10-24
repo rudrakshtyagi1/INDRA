@@ -5,7 +5,7 @@ build-backend = "setuptools.backends.legacy:build"
 [project]
 name = "floodlab"
 version = "1.0.0"
-description = "FloodLab: Dam Break & Flash Flood Simulation Platform"
+description = "INDRA: India's National Disaster Response Architect"
 requires-python = ">=3.10"
 dependencies = [
     "fastapi>=0.110.0",

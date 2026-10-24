@@ -1,4 +1,4 @@
-# FloodLab — Tehri Reservoir Inflow Hydrograph Report (Step 7C Validation)
+# INDRA — Tehri Reservoir Inflow Hydrograph Report (Step 7C Validation)
 
 ## 1. Catchment Area Reconciliation & Delineation
 - **Tekhla Gauged Area (`TEKHLA_GAUGED_AREA_KM2`)**: **4,577.29 km²** (62.70% of Tehri basin). Gauges Upper Bhagirathi headwaters at Uttarkashi.

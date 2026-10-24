@@ -39,7 +39,7 @@ class NASAEarthdataService:
 
         headers = {
             "Authorization": f"Bearer {self._token}",
-            "User-Agent": "FloodLab-Himalayan-Hydrology/1.0",
+            "User-Agent": "INDRA-Himalayan-Hydrology/1.0",
             "Accept": "application/json",
         }
 

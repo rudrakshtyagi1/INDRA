@@ -2,7 +2,7 @@
 
 ## Two Operational Missions
 
-FloodLab implements two distinct routing missions for HADR operations:
+INDRA implements two distinct routing missions for HADR operations:
 
 ### Mission A: Civilian Evacuation
 **Route:** Village -> Safe Shelter / High Ground

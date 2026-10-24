@@ -26,7 +26,7 @@ const TOUR_STEPS = [
     realArtifact: 'Copernicus GLO-30 DEM (30m) & ERA5-Land Reanalysis',
     provenance: 'OBSERVED / REPORTED',
     description:
-      'FloodLab ingests hydrologically conditioned 30m DEM elevation grids, delineating the 7,300.30 km² Tehri catchment with 0.18% area agreement against CWC telemetry.',
+      'INDRA ingests hydrologically conditioned 30m DEM elevation grids, delineating the 7,300.30 km² Tehri catchment with 0.18% area agreement against CWC telemetry.',
     keyMetric: 'Catchment Area: 7,300.30 km² · 4,677 HydroRIVERS reaches',
   },
   {

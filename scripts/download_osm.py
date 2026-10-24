@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 
 def main():
-    parser = argparse.ArgumentParser(description="Download OSM data for FloodLab.")
+    parser = argparse.ArgumentParser(description="Download OSM data for INDRA.")
     parser.add_argument("--bbox", default="77.5,29.5,79.5,31.0")
     parser.add_argument("--output", default="data/raw/osm")
     args = parser.parse_args()

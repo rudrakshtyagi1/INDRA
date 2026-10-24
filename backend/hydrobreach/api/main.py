@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from hydrobreach.api.routers import scenarios, simulation, comparison, damage, gee, export, hydrology, uncertainty
 
 app = FastAPI(
-    title="FLOODLAB - Tehri Dam Break & Flash Flood Decision-Support Platform",
+    title="INDRA — India's National Disaster Response Architect",
     description="Operational HADR hydrodynamic modeling platform integrating SPH, Delft3D 2D SWE, Sentinel-1 SAR change detection, SCS-CN hydrology, and uncertainty ensembles.",
     version="1.0.0"
 )

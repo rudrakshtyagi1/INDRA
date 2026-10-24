@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-FloodLab — Step 6: Meteorology, Observations & Hydrologic Forcing Preparation.
+INDRA — Step 6: Meteorology, Observations & Hydrologic Forcing Preparation.
 
 1. Uses the final conditioned Tehri upstream catchment polygon (tehri_catchment_dem_conditioned.gpkg).
 2. Acquires hourly satellite precipitation across the 96 intersecting 0.1° grid cells covering the catchment for the 2024 Monsoon period (2024-06-01 to 2024-09-30).
@@ -50,7 +50,7 @@ def get_sha256(filepath):
 
 def main():
     print("="*75)
-    print("FLOODLAB STEP 6: METEOROLOGY & HYDROLOGIC FORCING PREPARATION")
+    print("INDRA STEP 6: METEOROLOGY & HYDROLOGIC FORCING PREPARATION")
     print(f"Timestamp: {datetime.now(timezone.utc).isoformat()}")
     print("="*75)
 
@@ -421,7 +421,7 @@ def main():
     # Write QA Markdown
     qa_md_p = HYDRO_OUT_DIR / "hydrologic_forcing_qa.md"
     with open(qa_md_p, "w") as f:
-        f.write(f"""# FloodLab — Hydrologic Forcing Quality Assurance Report (Step 6)
+        f.write(f"""# INDRA — Hydrologic Forcing Quality Assurance Report (Step 6)
 
 ## 1. Catchment Boundary & Spatial Averaging Domain
 - **Catchment Polygon**: `tehri_catchment_dem_conditioned.gpkg`

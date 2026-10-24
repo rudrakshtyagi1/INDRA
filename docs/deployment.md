@@ -65,7 +65,7 @@ Download from: https://dual.sphysics.org/downloads/
 Linux: extract to /opt/dualsphysics/
 Set DUALSPHYSICS_BIN_DIR=/opt/dualsphysics/bin in .env
 
-FloodLab will discover the installed version at runtime and record it in manifest.json.
+INDRA will discover the installed version at runtime and record it in manifest.json.
 If not installed, simulations run in adapter-stub mode (clearly labelled in provenance).
 
 ## Delft3D FM Installation
@@ -74,7 +74,7 @@ Obtain from Deltares: https://oss.deltares.nl/web/delft3dfm
 Community edition available.
 Set DFLOWFM_BIN_DIR=/path/to/delft3d/bin in .env
 
-FloodLab will discover the installed version at runtime.
+INDRA will discover the installed version at runtime.
 If not installed, simulations run in adapter-stub mode.
 
 ## PostgreSQL + PostGIS

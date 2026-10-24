@@ -1,4 +1,4 @@
-# FloodLab Utility Scripts
+# INDRA Utility Scripts
 
 | Script | Purpose | Example Usage |
 |--------|---------|---------------|

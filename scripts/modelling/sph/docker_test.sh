@@ -5,7 +5,7 @@ echo "Starting Docker environment setup..."
 apt-get update
 apt-get install -y git wget ca-certificates build-essential libgomp1 cmake jq
 
-cd /workspace/FloodLab/data/processed/tehri_simulations/dualsphysics/setup/
+cd /workspace/INDRA/data/processed/tehri_simulations/dualsphysics/setup/
 
 if [ ! -d "DualSPHysics" ]; then
     git clone --depth 1 https://github.com/DualSPHysics/DualSPHysics.git

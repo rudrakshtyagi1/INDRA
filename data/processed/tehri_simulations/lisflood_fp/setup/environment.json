@@ -1,5 +1,5 @@
 {
-  "project": "FloodLab",
+  "project": "INDRA",
   "solver": "LISFLOOD-FP",
   "version": "8.1.0",
   "build_platform": {

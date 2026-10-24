@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-FloodLab — Canonical GIS Input Layer Generator & Quality Verifier.
+INDRA — Canonical GIS Input Layer Generator & Quality Verifier.
 
 Processes raw OpenStreetMap and geoBoundaries administrative datasets into
 standardized, traceable, reproducible geospatial layers under data/processed/tehri_inputs/.
@@ -80,7 +80,7 @@ def compute_corridor_proximity_utm(gdf_wgs84):
 
 def main():
     print("="*75)
-    print("FLOODLAB GIS PIPELINE: BUILDING CANONICAL INPUT LAYERS")
+    print("INDRA GIS PIPELINE: BUILDING CANONICAL INPUT LAYERS")
     print(f"Timestamp: {datetime.now(timezone.utc).isoformat()}")
     print(f"Storage CRS: {STORAGE_CRS} | Processing Metric CRS: {METRIC_CRS}")
     print("="*75)
@@ -597,7 +597,7 @@ def main():
     missing_surface = int(gdf_edges.get("surface", pd.Series([""]*len(gdf_edges))).isna().sum() + (gdf_edges.get("surface", pd.Series([""]*len(gdf_edges))) == "").sum())
     missing_maxspeed = int(gdf_edges.get("maxspeed", pd.Series([""]*len(gdf_edges))).isna().sum() + (gdf_edges.get("maxspeed", pd.Series([""]*len(gdf_edges))) == "").sum())
 
-    report_md = f"""# FloodLab GIS Input Processing Report
+    report_md = f"""# INDRA GIS Input Processing Report
 
 **Processing Date:** {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")}  
 **Study Corridor:** Tehri Dam (30.378°N, 78.481°E) → Bijnor Barrage (29.375°N, 78.130°E)  
@@ -661,7 +661,7 @@ def main():
     print(f"  Saved processing report: {report_path}")
 
     print("\n" + "="*75)
-    print("STEP 4 COMPLETE: CANONICAL FLOODLAB GIS LAYERS READY.")
+    print("STEP 4 COMPLETE: CANONICAL INDRA GIS LAYERS READY.")
     print("="*75)
 
 if __name__ == "__main__":

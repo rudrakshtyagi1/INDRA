@@ -1,4 +1,4 @@
-# FloodLab — Hydrologic Forcing Quality Assurance & Provenance Report (Step 6B)
+# INDRA — Hydrologic Forcing Quality Assurance & Provenance Report (Step 6B)
 
 ## 1. Actual Precipitation Source & Provenance
 - **Source Product**: **ECMWF ERA5-Land Hourly Surface Reanalysis** (served via Open-Meteo Historical Weather Archive API)

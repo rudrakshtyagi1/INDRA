@@ -189,7 +189,7 @@ export default function DataProvenance() {
                   <tr>
                     <th className="py-2.5 px-4">Dataset Name</th>
                     <th className="py-2.5 px-3">Category</th>
-                    <th className="py-2.5 px-3">Role in FloodLab</th>
+                    <th className="py-2.5 px-3">Role in INDRA</th>
                     <th className="py-2.5 px-3">Resolution / Coverage</th>
                     <th className="py-2.5 px-3">Provenance</th>
                     <th className="py-2.5 px-3 text-center">Status</th>

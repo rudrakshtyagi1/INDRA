@@ -1,6 +1,6 @@
 /**
  * SINGLE AUTHORITATIVE GEOSPATIAL DOMAIN CONFIGURATION
- * FloodLab Tehri Dam to Bijnor Barrage Corridor (0–145 km)
+ * INDRA Tehri Dam to Bijnor Barrage Corridor (0–145 km)
  *
  * PROVENANCE: WHAT-IF HYDRODYNAMIC BENCHMARK
  */

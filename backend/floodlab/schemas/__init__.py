@@ -1,1 +1,1 @@
-"""FloodLab schemas."""
+"""INDRA schemas."""

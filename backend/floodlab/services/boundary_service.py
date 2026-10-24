@@ -1,4 +1,4 @@
-"""Generalized source hydrograph generation for FloodLab Phase 6.
+"""Generalized source hydrograph generation for INDRA Phase 6.
 
 The service intentionally separates source generation from downstream hydraulic
 execution.  It produces a validated Q(t) boundary with explicit provenance and
@@ -155,7 +155,7 @@ class BoundaryService:
                 provenance="USER_CONFIGURED",
                 method="UPLOADED_QT_HYDROGRAPH",
                 assumptions=[
-                    "Hydrograph values are user supplied; FloodLab validates "
+                    "Hydrograph values are user supplied; INDRA validates "
                     "structure and units but does not infer observational provenance."
                 ],
             )

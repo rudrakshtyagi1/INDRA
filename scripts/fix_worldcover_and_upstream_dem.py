@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-FloodLab — Step 5C: Fix WorldCover Coverage & Perform Real DEM Catchment Delineation.
+INDRA — Step 5C: Fix WorldCover Coverage & Perform Real DEM Catchment Delineation.
 
 1. Completes ESA WorldCover 2021 downstream domain coverage by downloading missing western tiles (N30E075, N27E075).
 2. Acquires complete upstream Copernicus DEM GLO-30 tiles (N30E078, N30E079, N31E078, N31E079) covering the entire Tehri headwaters.
@@ -83,7 +83,7 @@ def download_file_stream(url, target_path, label=""):
 
 def main():
     print("="*75)
-    print("FLOODLAB STEP 5C: REPAIR WORLDCOVER & DELINEATE DEM CATCHMENT")
+    print("INDRA STEP 5C: REPAIR WORLDCOVER & DELINEATE DEM CATCHMENT")
     print(f"Timestamp: {datetime.now(timezone.utc).isoformat()}")
     print("="*75)
 

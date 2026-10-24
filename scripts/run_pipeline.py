@@ -30,7 +30,7 @@ def main():
     run_dir = Path("storage/simulations") / run_id
     run_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"Starting FloodLab simulation pipeline [{run_id}]...")
+    print(f"Starting INDRA simulation pipeline [{run_id}]...")
     breach_res = BreachMechanicsEngine().evaluate(
         DamBreachInput(
             dam_height_m=260.5,

@@ -3,8 +3,8 @@ apt-get update >/dev/null && apt-get install -y libgomp1 >/dev/null
 set -e
 
 # Setup paths
-export PROJECT_DIR="/workspace/FloodLab/data/processed/tehri_simulations/dualsphysics"
-export BIN_DIR="/workspace/FloodLab/data/processed/tehri_simulations/dualsphysics/setup/DualSPHysics/bin/linux"
+export PROJECT_DIR="/workspace/INDRA/data/processed/tehri_simulations/dualsphysics"
+export BIN_DIR="/workspace/INDRA/data/processed/tehri_simulations/dualsphysics/setup/DualSPHysics/bin/linux"
 export LD_LIBRARY_PATH=$BIN_DIR:$LD_LIBRARY_PATH
 export OMP_NUM_THREADS=8
 

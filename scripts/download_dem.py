@@ -11,7 +11,7 @@ import json
 from pathlib import Path
 
 def main():
-    parser = argparse.ArgumentParser(description="Download DEM for FloodLab catchment.")
+    parser = argparse.ArgumentParser(description="Download DEM for INDRA catchment.")
     parser.add_argument("--source", default="copernicus", choices=["copernicus", "cartodem", "srtm"])
     parser.add_argument("--bbox", default="77.5,29.5,79.5,31.0")
     parser.add_argument("--output-dir", default="data/raw/dem")

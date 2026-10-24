@@ -1,8 +1,8 @@
-# FloodLab Architecture
+# INDRA Architecture
 
 ## Overview
 
-FloodLab is an end-to-end dam-break and flash flood simulation platform integrating
+INDRA is an end-to-end dam-break and flash flood simulation platform integrating
 DualSPHysics (near-field 3D SPH) with Delft3D FM (far-field 2D shallow water) through
 a first-class coupling subsystem, supplemented by satellite surveillance, hazard rating,
 exposure assessment, and HADR (Humanitarian Assistance and Disaster Relief) routing.

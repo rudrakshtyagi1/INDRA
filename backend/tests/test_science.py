@@ -1,5 +1,5 @@
 """
-Automated tests for FloodLab Scientific Pipeline and Artifact Registry endpoints.
+Automated tests for INDRA Scientific Pipeline and Artifact Registry endpoints.
 """
 from fastapi.testclient import TestClient
 from floodlab.api.main import app

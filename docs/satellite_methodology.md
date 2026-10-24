@@ -2,14 +2,14 @@
 
 ## 1. Scope & Scientific Boundaries
 
-FloodLab uses Google Earth Engine (GEE) to provide **observational environmental context** alongside hydrodynamic models.
+INDRA uses Google Earth Engine (GEE) to provide **observational environmental context** alongside hydrodynamic models.
 
 - **Hypothetical benchmarks (e.g. Tehri catastrophic dam break):**
   Tehri has never suffered a catastrophic dam failure. Any spatial overlap between satellite observations and the Tehri benchmark is labelled `SPATIAL_CONTEXT_ONLY`. It indicates where surface water or reservoir geometry existed at the time of observation; **it is not physical validation of the failure model**.
 - **Real historical disasters (e.g. Chamoli 2021 / Rishi Ganga):**
   When configured with dates bounding an actual event, bitemporal SAR change detection captures newly impounded water, valley ponding, or scouring. When validated against external field/optical data, this can serve as `HISTORICAL_SPATIAL_COMPARISON`.
 - **Truthful execution:**
-  FloodLab never fabricates SAR values, Otsu thresholds, or active alert cards. If Earth Engine is unconfigured or authentication fails, the application truthfully displays `STANDBY / DATA UNAVAILABLE`.
+  INDRA never fabricates SAR values, Otsu thresholds, or active alert cards. If Earth Engine is unconfigured or authentication fails, the application truthfully displays `STANDBY / DATA UNAVAILABLE`.
 
 ## 2. SAR Data Source & Collection
 
@@ -35,7 +35,7 @@ FloodLab uses Google Earth Engine (GEE) to provide **observational environmental
    Smooth open water acts as a specular reflector, scattering radar energy away from the sensor. A sharp **decrease** in backscatter ($\Delta\sigma^0 > 0$) is the characteristic signature of new open surface water.
 2. **Locally Adaptive Otsu Threshold:**
    - Earth Engine computes the histogram of $\Delta\sigma^0$ within the AOI across 128 bins.
-   - FloodLab executes Otsu's discriminant algorithm locally in Python on the returned histogram.
+   - INDRA executes Otsu's discriminant algorithm locally in Python on the returned histogram.
    - This maximizes the between-class variance $\sigma_B^2(t) = \omega_0(t)\omega_1(t)[\mu_0(t) - \mu_1(t)]^2$ to find an optimal scene-specific drop threshold, avoiding brittle hardcoded dB cutoffs.
 3. **Absolute Post-Event Water Constraint:**
    - Candidate pixels must satisfy both $\Delta\sigma^0 > T_{otsu}$ AND $\sigma^0_{post} < T_{water}$ (configurable, default -14 dB for VV).

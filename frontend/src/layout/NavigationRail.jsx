@@ -40,10 +40,10 @@ export default function NavigationRail({ activeTab, onSelectTab }) {
       {/* Brand Header */}
       <div className="h-11 flex items-center px-3.5 w-full shrink-0 border-b border-slate-800">
         <div className="w-7 h-7 bg-sky-600 rounded flex items-center justify-center shrink-0 font-bold text-white text-xs">
-          FL
+          IN
         </div>
         <div className={`ml-3 transition-opacity duration-150 overflow-hidden ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-          <div className="font-bold text-slate-100 text-xs tracking-wider uppercase">FloodLab</div>
+          <div className="font-bold text-slate-100 text-xs tracking-wider uppercase">INDRA</div>
           <div className="text-[9px] text-slate-400 font-mono">C2 GIS Console</div>
         </div>
       </div>

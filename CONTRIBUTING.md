@@ -1,4 +1,4 @@
-# Contributing to FloodLab
+# Contributing to INDRA
 
 Use the [repository guide](docs/repository_structure.md) to choose where a file
 belongs. Keep the root for project documentation, Makefile, and shared configuration.

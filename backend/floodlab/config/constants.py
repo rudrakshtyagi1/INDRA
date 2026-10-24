@@ -1,5 +1,5 @@
 """
-FloodLab constants and enumerations.
+INDRA constants and enumerations.
 """
 from enum import Enum
 

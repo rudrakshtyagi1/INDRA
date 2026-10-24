@@ -1,4 +1,4 @@
-# FloodLab AWS Deployment Architecture
+# INDRA AWS Deployment Architecture
 
 ## Architecture Overview
 

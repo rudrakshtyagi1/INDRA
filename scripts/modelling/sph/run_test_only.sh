@@ -3,7 +3,7 @@ set -e
 apt-get update >/dev/null
 apt-get install -y libgomp1 >/dev/null
 
-cd /workspace/FloodLab/data/processed/tehri_simulations/dualsphysics/setup/DualSPHysics/examples/main/01_DamBreak
+cd /workspace/INDRA/data/processed/tehri_simulations/dualsphysics/setup/DualSPHysics/examples/main/01_DamBreak
 rm -rf CaseDambreak_out
 
 echo "Running GenCase..."

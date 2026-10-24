@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-FloodLab — Step 5: Terrain, Land Cover & Hydrography Acquisition & Verification Pipeline.
+INDRA — Step 5: Terrain, Land Cover & Hydrography Acquisition & Verification Pipeline.
 
 Acquires and verifies authentic physical geography inputs:
   1. Copernicus DEM GLO-30 (30 m DSM, EGM2008)
@@ -77,7 +77,7 @@ def download_file_stream(url, target_path, label=""):
 
 def main():
     print("="*75)
-    print("FLOODLAB STEP 5: PHYSICAL GEOGRAPHY DATA ACQUISITION & QA")
+    print("INDRA STEP 5: PHYSICAL GEOGRAPHY DATA ACQUISITION & QA")
     print(f"Timestamp: {datetime.now(timezone.utc).isoformat()}")
     print(f"Discovery AOI: Bounding box {AOI_BBOX_WGS84} | Area: {AOI_AREA_KM2:,.2f} km²")
     print("="*75)

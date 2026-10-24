@@ -204,7 +204,7 @@ def geojson_to_shp_zip(geojson_path: str, output_path: str, product_name: str):
                 "product": product_name,
                 "format": "shapefile",
                 "provenance": "MODELLED",
-                "solver": "LISFLOOD-FP 8.1 / FloodLab",
+                "solver": "LISFLOOD-FP 8.1 / INDRA",
             },
             mf,
             indent=2,

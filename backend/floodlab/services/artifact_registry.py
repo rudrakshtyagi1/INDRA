@@ -1,5 +1,5 @@
 """
-FloodLab Scientific Artifact Registry.
+INDRA Scientific Artifact Registry.
 
 Central catalog and parser for verified physical, hydrodynamic,
 and remote sensing model outputs, calibration metrics, and forcing datasets.

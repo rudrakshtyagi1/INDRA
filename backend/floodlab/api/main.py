@@ -1,5 +1,5 @@
 """
-FloodLab FastAPI application.
+INDRA FastAPI application.
 
 Registers all routers, CORS middleware, and health endpoint.
 """
@@ -27,8 +27,8 @@ from floodlab.api.routers import (
 settings = get_settings()
 
 app = FastAPI(
-    title="FloodLab API",
-    description="Dam Break & Flash Flood Simulation Platform",
+    title="INDRA — India's National Disaster Response Architect API",
+    description="Flood-risk modelling, infrastructure exposure, and emergency-route planning.",
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
@@ -124,7 +124,7 @@ async def verify_nasa_earthdata_connectivity():
 @app.get("/")
 async def root():
     return {
-        "name": "FloodLab API",
+        "name": "INDRA API",
         "version": "1.0.0",
         "docs": "/docs",
     }

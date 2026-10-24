@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-FloodLab — Step 6C: True Gridded Precipitation Finalization & Basin Area-Weighting.
+INDRA — Step 6C: True Gridded Precipitation Finalization & Basin Area-Weighting.
 
 1. Audits previous Open-Meteo point-sampled coordinates (displacement & duplicate analysis).
 2. Preserves preliminary output under data/raw/meteorology/preliminary/ as OPEN_METEO_POINT_SAMPLED_REANALYSIS_PRELIMINARY.
@@ -49,7 +49,7 @@ def get_sha256(filepath):
 
 def main():
     print("="*75)
-    print("FLOODLAB STEP 6C: TRUE GRIDDED PRECIPITATION FINALIZATION")
+    print("INDRA STEP 6C: TRUE GRIDDED PRECIPITATION FINALIZATION")
     print(f"Timestamp: {datetime.now(timezone.utc).isoformat()}")
     print("="*75)
 

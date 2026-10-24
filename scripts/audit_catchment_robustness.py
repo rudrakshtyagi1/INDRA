@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-FloodLab — Step 5E: Final Catchment Robustness & Conditioning Spectrum Audit.
+INDRA — Step 5E: Final Catchment Robustness & Conditioning Spectrum Audit.
 
 1. Operates on the cleanly re-mosaicked Copernicus DEM: tehri_upstream_validation_dem_glo30_v2.tif (0 zero pixels, valid NoData).
 2. Evaluates the full stream-conditioning parameter spectrum (5m, 8m, 10m, 12m, 13m, 14m, 15m, 16m, 17m, 18m, 20m, 25m, 30m).
@@ -42,7 +42,7 @@ DOWNSTREAM_REACH_COORD = (30.3767, 78.4800)    # Centroid of reach 40669084
 
 def main():
     print("="*75)
-    print("FLOODLAB STEP 5E: CATCHMENT ROBUSTNESS & CONDITIONING SPECTRUM AUDIT")
+    print("INDRA STEP 5E: CATCHMENT ROBUSTNESS & CONDITIONING SPECTRUM AUDIT")
     print(f"Timestamp: {datetime.now(timezone.utc).isoformat()}")
     print("="*75)
 

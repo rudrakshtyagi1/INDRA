@@ -181,7 +181,7 @@ def main():
             print(f"  • Relabeled hydrograph CSV: {s_file}")
 
     # 5. GENERATE COMPREHENSIVE STEP 8B QA & SCIENTIFIC AUDIT REPORT
-    qa_report_md = """# FloodLab — Step 8B: Theoretical Breach Benchmark QA & Scientific Audit Report
+    qa_report_md = """# INDRA — Step 8B: Theoretical Breach Benchmark QA & Scientific Audit Report
 
 ## 1. Provenance Classification & Project Safety Gate
 - **Tehri-Specific Stage-Storage Status**: **`NOT AVAILABLE`**
@@ -248,7 +248,7 @@ To unblock full, validated Tehri-specific reservoir routing:
     # 6. UPDATE PROVENANCE JSON
     prov_data = {
         "step": "STEP 8B",
-        "project": "FloodLab — Tehri Dam Emergency-Planning Prototype",
+        "project": "INDRA — Tehri Dam Emergency-Planning Prototype",
         "study_mode": "PRECOMPUTED WHAT-IF EMERGENCY-PLANNING SCENARIO",
         "tehri_specific_stage_storage_status": "NOT AVAILABLE",
         "tehri_specific_reservoir_routing_status": "BLOCKED_STAGE_STORAGE_DATA",

@@ -1,5 +1,5 @@
 """
-FloodLab application settings loaded from environment variables / .env file.
+INDRA application settings loaded from environment variables / .env file.
 """
 from functools import lru_cache
 from pathlib import Path

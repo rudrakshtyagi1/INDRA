@@ -4,7 +4,7 @@
 
 **PHASE_7_STATUS = IMPLEMENTED / READY_FOR_LIVE_CREDENTIAL_TEST**
 
-The repository now contains a real Google Earth Engine Sentinel-1 workflow. No synthetic SAR values or fake active alerts are used by the primary FloodLab application.
+The repository now contains a real Google Earth Engine Sentinel-1 workflow. No synthetic SAR values or fake active alerts are used by the primary INDRA application.
 
 ## Implemented
 

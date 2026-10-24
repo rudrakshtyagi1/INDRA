@@ -1,5 +1,5 @@
 """
-Unit tests for FloodLab scientific data integrity, numerical guards, unit conversions,
+Unit tests for INDRA scientific data integrity, numerical guards, unit conversions,
 CSI comparison logic, mass conservation, uncertainty intervals, and provenance propagation.
 """
 import math

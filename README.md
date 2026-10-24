@@ -1,14 +1,14 @@
-# FloodLab
+# INDRA — India's National Disaster Response Architect
 
 **Flood simulation, infrastructure exposure, and emergency-route planning.**
 
-FloodLab connects physics-based flood modelling with geospatial analysis to help planners explore **where flooding may occur, when roads could become unavailable, and whether affected areas remain reachable**.
+INDRA connects physics-based flood modelling with geospatial analysis to help planners explore **where flooding may occur, when roads could become unavailable, and whether affected areas remain reachable**.
 
 The reference case is the **Tehri Dam–Bhagirathi River system in Uttarakhand, India**, developed in the SIH 2026 disaster-management context.
 
 > **Project status:** Research and emergency-planning prototype. The catastrophic Tehri breach is a hypothetical scenario, not a historical event or an operational forecast. The current core is physics-based; ML-assisted scenario exploration is a proposed extension.
 
-![FloodLab command center showing the Tehri V4 benchmark](docs/screenshots/COMMAND_CENTER_V4.png)
+![INDRA command center showing the Tehri V4 benchmark](docs/screenshots/COMMAND_CENTER_V4.png)
 
 ## The problem
 
@@ -20,9 +20,9 @@ During a dam-break or sudden-release emergency, a flood outline alone does not a
 - Is there an alternative route, or is the destination unreachable under the scenario?
 - Which conclusions come from observations, assumptions, or numerical models?
 
-FloodLab brings those questions into one workflow. Its longer-term goal includes identifying communities that could become isolated when their access roads flood, even before water reaches the settlements themselves.
+INDRA brings those questions into one workflow. Its longer-term goal includes identifying communities that could become isolated when their access roads flood, even before water reaches the settlements themselves.
 
-## What FloodLab does
+## What INDRA does
 
 | Capability | Purpose |
 | --- | --- |
@@ -92,7 +92,7 @@ Current scenario/run registries include in-memory state alongside files. Postgre
 
 ## How routing works
 
-FloodLab uses road geometry, assumed travel speeds, and modelled flood-arrival information to evaluate route conflicts. The V4 routing script checks cumulative travel time against flood arrival, including a prototype 600-second margin.
+INDRA uses road geometry, assumed travel speeds, and modelled flood-arrival information to evaluate route conflicts. The V4 routing script checks cumulative travel time against flood arrival, including a prototype 600-second margin.
 
 The documented V4 example reports an ordinary route with hazard conflicts and no feasible hazard-aware alternative under its assumptions. Reporting **“no passable path”** is a valid outcome.
 
@@ -112,7 +112,7 @@ The committed exposure summary records **74 road segments / 60.819 km** intersec
 | Sentinel-1 | Processing implementation exists; requires credentials and suitable observations. |
 | Scenario execution | Input validation, boundary generation, and run creation exist; creating a run does not establish that a hydraulic solver executed. |
 | Damage assessment | Exploratory vulnerability curves; not validated economic-loss or casualty estimation. |
-| Delft3D-FM | Adapter/integration work; no completed FloodLab numerical comparison result established. |
+| Delft3D-FM | Adapter/integration work; no completed INDRA numerical comparison result established. |
 | Extended V5 corridor | Preparatory configurations and artifacts; not presented as a completed, validated downstream model. |
 | AI/ML | Proposed extension; no trained flood-surrogate model is claimed. |
 
@@ -139,8 +139,8 @@ Observed measurements, reported specifications, assumptions, model outputs, deri
 ### Web application with Docker
 
 ```bash
-git clone https://github.com/rudrakshtyagi1/Floodlab.git
-cd Floodlab
+git clone https://github.com/rudrakshtyagi1/INDRA.git
+cd INDRA
 cp .env.example .env
 docker compose up --build
 ```

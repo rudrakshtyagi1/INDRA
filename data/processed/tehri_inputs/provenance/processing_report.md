@@ -1,4 +1,4 @@
-# FloodLab GIS Input Processing Report
+# INDRA GIS Input Processing Report
 
 **Processing Date:** 2026-09-01 11:00:00 UTC  
 **Study Corridor:** Tehri Dam (30.378°N, 78.481°E) → Bijnor Barrage (29.375°N, 78.130°E)  

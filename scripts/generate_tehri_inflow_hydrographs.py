@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-FloodLab — Step 7: Tehri Reservoir Inflow Hydrograph Generation.
+INDRA — Step 7: Tehri Reservoir Inflow Hydrograph Generation.
 
 1. Freezes canonical Step 5 & 6 inputs.
 2. Builds 3 topologically distinct subcatchments (Upper Bhagirathi/Tekhla, Bhilangna, Lateral Intermediate).
@@ -76,7 +76,7 @@ def run_rainfall_runoff_model(P, area_km2, C_runoff, f_loss, N_nash, K_nash, K_b
 
 def main():
     print("="*75)
-    print("FLOODLAB STEP 7: TEHRI RESERVOIR INFLOW HYDROGRAPH GENERATION")
+    print("INDRA STEP 7: TEHRI RESERVOIR INFLOW HYDROGRAPH GENERATION")
     print(f"Prototype Event: {EVENT_START} to {EVENT_END} UTC")
     print(f"Timestamp: {datetime.now(timezone.utc).isoformat()}")
     print("="*75)
@@ -492,7 +492,7 @@ def main():
         json.dump(calib_metrics, f, indent=2)
 
     # Hydrologic Model Report Markdown
-    report_md = f"""# FloodLab — Tehri Reservoir Inflow Hydrograph Report (Step 7)
+    report_md = f"""# INDRA — Tehri Reservoir Inflow Hydrograph Report (Step 7)
 
 ## 1. Topologically Delineated Subcatchments
 - **Upper Bhagirathi / Tekhla Contributing Region**: **{area_tek:,.2f} km²** ({gdf_subs[gdf_subs['subcatchment_name'] == 'Upper_Bhagirathi_Tekhla']['percentage_of_basin'].iloc[0]:.2f}%)

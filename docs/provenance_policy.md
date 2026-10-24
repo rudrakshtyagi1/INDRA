@@ -1,8 +1,8 @@
-# FloodLab Provenance Policy
+# INDRA Provenance Policy
 
 ## Overview
 
-Every data value, parameter, and model output in FloodLab carries a provenance label
+Every data value, parameter, and model output in INDRA carries a provenance label
 that describes how it was produced. Provenance attaches to the *value-generation
 process*, not permanently to a variable type.
 

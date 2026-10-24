@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-FloodLab — Step 8: Tehri Reservoir Routing & What-If Breach Hydrograph.
+INDRA — Step 8: Tehri Reservoir Routing & What-If Breach Hydrograph.
 
 1. Audits project data for official Tehri stage-storage / elevation-capacity relationship.
 2. Identifies available reported structural design parameters (FRL 830m, MDDL 740m, Gross 3,540 MCM, Dead 925 MCM, Bed 570m).
@@ -45,7 +45,7 @@ def get_sha256(filepath):
 
 def main():
     print("="*75)
-    print("FLOODLAB STEP 8: TEHRI RESERVOIR ROUTING & WHAT-IF BREACH HYDROGRAPH")
+    print("INDRA STEP 8: TEHRI RESERVOIR ROUTING & WHAT-IF BREACH HYDROGRAPH")
     print(f"Timestamp: {datetime.now(timezone.utc).isoformat()}")
     print("="*75)
 
@@ -376,7 +376,7 @@ def main():
     df_mb.to_csv(QA_DIR / "reservoir_mass_balance.csv", index=False)
     print(df_mb.to_string(index=False))
 
-    qa_report_md = f"""# FloodLab — Step 8: What-If Reservoir Routing & Breach Hydrograph QA Report
+    qa_report_md = f"""# INDRA — Step 8: What-If Reservoir Routing & Breach Hydrograph QA Report
 
 ## 1. Provenance & Operational Qualification
 - **Study Mode**: **WHAT-IF EMERGENCY-PLANNING SCENARIO**
@@ -411,7 +411,7 @@ def main():
 
     prov_data = {
         "step": "STEP 8",
-        "project": "FloodLab — Tehri Dam Emergency-Planning Prototype",
+        "project": "INDRA — Tehri Dam Emergency-Planning Prototype",
         "study_mode": "WHAT-IF EMERGENCY-PLANNING SCENARIO",
         "dam_name": "Tehri Dam",
         "provenance_classifications": {

@@ -11,7 +11,7 @@ export default function ContextBar({ onOpenTour }) {
       {/* Left: Global Mission Telemetry String */}
       <div className="flex items-center gap-2 overflow-x-auto min-w-0">
         <span className="font-extrabold text-sky-400 tracking-wider font-sans text-xs">
-          FLOODLAB
+          INDRA
         </span>
         <span className="text-slate-600 font-bold">{'//'}</span>
 

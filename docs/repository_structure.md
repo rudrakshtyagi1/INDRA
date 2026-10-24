@@ -3,7 +3,7 @@
 | Location | Responsibility |
 | --- | --- |
 | `backend/floodlab/` | Primary FastAPI application, scientific engines, services, and schemas |
-| `backend/hydrobreach/` | Earlier engines and compatibility API; still imported by FloodLab and its tests |
+| `backend/hydrobreach/` | Earlier engines and compatibility API; still imported by INDRA and its tests |
 | `backend/tests/` | Automated backend unit, API, and integration tests |
 | `backend/migrations/` | Database migration scaffolding |
 | `frontend/src/` | Active React application, starting at `main.jsx` → `App.jsx` |
@@ -50,7 +50,7 @@ patchers, no-op experiments, duplicate credential probes, and editor backups.
 Scientific scripts previously mixed into the root and `data/` now live under
 `scripts/`; historical reports moved into `docs/reports/`.
 
-The `hydrobreach` package remains because active FloodLab routers depend on it.
+The `hydrobreach` package remains because active INDRA routers depend on it.
 Versioned V2/V3/V4/V5 scientific configuration and historical reports are retained
 for provenance. Their presence does not imply a completed or validated solver run.
 The orphan LISFLOOD Git entry had no `.gitmodules` configuration; obtain that

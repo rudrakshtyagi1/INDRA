@@ -1,7 +1,7 @@
 """Lazy, backend-only Google Earth Engine authentication.
 
 Secrets are never returned by this module.  Earth Engine is optional for the core
-FloodLab benchmark; when it is unavailable the satellite API reports a truthful
+INDRA benchmark; when it is unavailable the satellite API reports a truthful
 standby state rather than synthesising observations.
 """
 from __future__ import annotations

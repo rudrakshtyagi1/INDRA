@@ -1,5 +1,5 @@
 """
-FastAPI router for FloodLab Scientific Pipeline and Model Observability.
+FastAPI router for INDRA Scientific Pipeline and Model Observability.
 """
 from fastapi import APIRouter
 from floodlab.services.artifact_registry import artifact_registry

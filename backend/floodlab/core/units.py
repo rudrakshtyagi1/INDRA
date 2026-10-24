@@ -1,5 +1,5 @@
 """
-FloodLab - Centralized Scientific Unit Conversions & Numerical Validation Utilities.
+INDRA - Centralized Scientific Unit Conversions & Numerical Validation Utilities.
 
 Standard unit definitions:
 - 1 km² = 1,000,000 m² (10^6 m²)
