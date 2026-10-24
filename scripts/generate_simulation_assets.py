@@ -137,20 +137,64 @@ with open(v3_roads_path, "w", encoding="utf-8") as f:
 with open(v4_roads_path, "w", encoding="utf-8") as f:
     json.dump({"type": "FeatureCollection", "features": v4_features}, f, indent=2)
 
-print("2. Generating inundation extent polygons and temporal frames...")
-# Create a natural canyon flood corridor polygon along the river
-corridor_polys = []
-for i in range(len(RIVER_WAYPOINTS) - 1):
-    p1 = RIVER_WAYPOINTS[i]
-    p2 = RIVER_WAYPOINTS[i+1]
-    seg = shapely.geometry.LineString([p1, p2])
-    # Canyon width expands from 280m near dam to 850m at confluence
-    frac = i / float(len(RIVER_WAYPOINTS))
-    width_deg = 0.0035 + (frac * 0.0055)
-    buf = seg.buffer(width_deg, cap_style=2)
-    corridor_polys.append(buf)
+print("2. Generating smooth spline-interpolated canyon corridor and temporal frames...")
+import numpy as np
+from scipy.interpolate import splprep, splev
 
-full_inundation_geom = shapely.ops.unary_union(corridor_polys)
+# Detailed canyon river centerline waypoints from Tehri Dam down to Devprayag and Rishikesh
+RIVER_WAYPOINTS_EXPANDED = [
+    (78.4810, 30.3780),  # Tehri Dam Crest (839.5m)
+    (78.4828, 30.3695),  # Gorge below spillway
+    (78.4845, 30.3610),  # Tailrace Gorge
+    (78.4880, 30.3540),  # Canyon Upper Bend
+    (78.4940, 30.3470),  # Canyon Lower Loop
+    (78.5020, 30.3340),  # Chham Reach
+    (78.5080, 30.3220),  # Pindras Valley
+    (78.5140, 30.3090),  # Kandi Valley
+    (78.5210, 30.2970),  # Koteshwar Inflow
+    (78.5280, 30.2850),  # Koteshwar Reservoir
+    (78.5340, 30.2710),  # Koteshwar Dam
+    (78.5390, 30.2580),  # Koteshwar Tailrace
+    (78.5440, 30.2420),  # Bhaldiana Bend
+    (78.5490, 30.2280),  # Maletha Meander
+    (78.5580, 30.2100),  # Rani Bagh Reach
+    (78.5720, 30.1850),  # Alaknanda Approach
+    (78.5850, 30.1650),  # Devprayag Gorge
+    (78.5990, 30.1460),  # Devprayag Confluence (Bhagirathi + Alaknanda)
+    (78.5750, 30.1310),  # Ganga Upper Gorge
+    (78.5400, 30.1100),  # Ganga Gorge West
+    (78.5100, 30.0980),  # Singtali Reach
+    (78.4800, 30.0900),  # Kaudiyala Canyon
+    (78.4500, 30.1050),  # Marine Drive Meander
+    (78.4200, 30.1200),  # Byasi Canyon
+    (78.3900, 30.1260),  # Gular Dogi Reach
+    (78.3700, 30.1300),  # Shivpuri Gorge
+    (78.3450, 30.1310),  # Brahmpuri Rapid
+    (78.3200, 30.1240),  # Lakshman Jhula
+    (78.3050, 30.1020),  # Ram Jhula Cable
+    (78.2900, 30.0800),  # Rishikesh Plain / Triveni Ghat
+]
+
+# Fit B-Spline with C2 smoothness along 500 points
+wx = [p[0] for p in RIVER_WAYPOINTS_EXPANDED]
+wy = [p[1] for p in RIVER_WAYPOINTS_EXPANDED]
+tck, u_params = splprep([wx, wy], s=0.000003, k=3)
+u_eval = np.linspace(0, 1, 500)
+spline_x, spline_y = splev(u_eval, tck)
+spline_pts = list(zip(spline_x, spline_y))
+
+# Tehri Reservoir upstream water pool (smooth lake body)
+res_lake_pts = [
+    (78.470, 30.415), (78.473, 30.402), (78.477, 30.388),
+    (78.481, 30.378), (78.478, 30.376), (78.471, 30.385),
+    (78.465, 30.405)
+]
+reservoir_poly = shapely.geometry.Polygon(res_lake_pts).buffer(0.0025, cap_style=1, join_style=1, quad_segs=16)
+
+# Full natural inundation extent (entire 65 km reach)
+full_river_line = shapely.geometry.LineString(spline_pts)
+full_corridor = full_river_line.buffer(0.0045, cap_style=1, join_style=1, quad_segs=16)
+full_inundation_geom = shapely.ops.unary_union([reservoir_poly, full_corridor]).simplify(0.00006)
 
 inundation_geojson = {
     "type": "FeatureCollection",
@@ -175,17 +219,20 @@ with open(v3_hazard_path, "w", encoding="utf-8") as f:
 with open(v4_hazard_path, "w", encoding="utf-8") as f:
     json.dump(inundation_geojson, f, indent=2)
 
-# Generate temporal frames: at each timestep T, flood wave extends down to waypoint k
+# Generate smooth temporal frames with progressive surge head and rounded wave front
 for t in range(0, 3601, 50):
-    # Fraction of river reach reached at time t
-    # Wave arrives at dam at T=0, reaches 30km at T=2400, reaches 60km at T=3600
     if t == 0:
-        active_reach = 0.05
+        reach_frac = 0.025
     else:
-        active_reach = min(1.0, 0.08 + (t / 3600.0) * 0.92)
+        reach_frac = min(1.0, 0.03 + 0.97 * ((t / 3600.0) ** 0.92))
 
-    num_segs = max(1, int(round(active_reach * len(corridor_polys))))
-    t_geom = shapely.ops.unary_union(corridor_polys[:num_segs])
+    idx_front = max(3, int(round(reach_frac * len(spline_pts))))
+    sub_line = shapely.geometry.LineString(spline_pts[:idx_front])
+    # Channel width gently widens downstream
+    w_deg = 0.0032 + (reach_frac * 0.0042)
+    sub_corridor = sub_line.buffer(w_deg, cap_style=1, join_style=1, quad_segs=16)
+    t_geom = shapely.ops.unary_union([reservoir_poly, sub_corridor]).simplify(0.00006)
+
     frame_obj = {
         "type": "FeatureCollection",
         "time_sec": t,
@@ -195,8 +242,8 @@ for t in range(0, 3601, 50):
                 "geometry": shapely.geometry.mapping(t_geom),
                 "properties": {
                     "time_sec": t,
-                    "wave_front_km": round(active_reach * 65.0, 1),
-                    "depth_at_head_m": max(1.2, round(27.2 * (1.0 - active_reach * 0.7), 1)),
+                    "wave_front_km": round(reach_frac * 65.0, 1),
+                    "depth_at_head_m": max(1.5, round(27.2 * (1.0 - reach_frac * 0.68), 1)),
                 }
             }
         ]

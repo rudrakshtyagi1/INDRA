@@ -29,6 +29,7 @@ import FroudeCouplingPanel from '../components/simulation/FroudeCouplingPanel';
 import BreachBenchmarkPanel from '../components/simulation/BreachBenchmarkPanel';
 import FrameAuditTable from '../components/simulation/FrameAuditTable';
 import CVDamMonitorPanel from '../components/simulation/CVDamMonitorPanel';
+import Himalayan3DSimulation from '../components/simulation/Himalayan3DSimulation';
 
 const SPEEDS = [1, 2, 5, 10];
 
@@ -42,10 +43,10 @@ export default function SimulationLab() {
   const getSubViewFromUrl = () => {
     if (typeof window === 'undefined') return 'lisflood';
     let v = new URLSearchParams(window.location.search).get('view');
-    if (v && ['lisflood', 'cv', 'sph', 'coupling', 'breach', 'audit'].includes(v)) return v;
+    if (v && ['lisflood', '3d', 'cv', 'sph', 'coupling', 'breach', 'audit'].includes(v)) return v;
     if (window.location.hash.includes('?')) {
       v = new URLSearchParams(window.location.hash.split('?')[1]).get('view');
-      if (v && ['lisflood', 'cv', 'sph', 'coupling', 'breach', 'audit'].includes(v)) return v;
+      if (v && ['lisflood', '3d', 'cv', 'sph', 'coupling', 'breach', 'audit'].includes(v)) return v;
     }
     return 'lisflood';
   };
@@ -61,7 +62,7 @@ export default function SimulationLab() {
     return 0;
   };
 
-  // Sub-view mode: 'lisflood', 'sph', 'coupling', 'breach', 'audit'
+  // Sub-view mode: 'lisflood', '3d', 'cv', 'sph', 'coupling', 'breach', 'audit'
   const [subView, setSubView] = useState(getSubViewFromUrl);
   const [currentSec, setCurrentSec] = useState(getTimeFromUrl);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -71,7 +72,7 @@ export default function SimulationLab() {
   const [timelineMetric, setTimelineMetric] = useState('wet_area'); // 'wet_area', 'max_depth', 'roads'
   const [cvAlert, setCvAlert] = useState(null);
 
-  // Layer Toggles
+  // Layer Toggles - modelDomain disabled by default to eliminate square clutter
   const [layers, setLayers] = useState({
     temporalDepth: true,
     maxDepth: false,
@@ -79,7 +80,7 @@ export default function SimulationLab() {
     roads: true,
     settlements: true,
     bridges: true,
-    modelDomain: true,
+    modelDomain: false,
   });
 
   const toggleLayer = (k) => setLayers((prev) => ({ ...prev, [k]: !prev[k] }));
@@ -177,15 +178,15 @@ export default function SimulationLab() {
     if (layers.modelDomain && currentRun.domain_bounds) {
       const b = currentRun.domain_bounds;
       const rect = L.rectangle(b, {
-        color: '#38BDF8',
-        weight: 1.5,
-        dashArray: '5, 5',
-        fillColor: '#0369A1',
-        fillOpacity: 0.04,
+        color: '#0284C7',
+        weight: 1,
+        dashArray: '3, 6',
+        fill: false,
+        opacity: 0.35,
       });
 
       rect.bindTooltip(
-        `MODEL DOMAIN BOUNDARY (${currentRun.domain_km} km canyon reach)`,
+        `MODEL DOMAIN (${currentRun.domain_km} km reach)`,
         { permanent: false, direction: 'top', className: 'operational-tooltip' }
       );
 
@@ -223,12 +224,14 @@ export default function SimulationLab() {
         const isBreached = cvAlert?.sync_state?.cv_breach_detected;
 
         const layer = L.geoJSON(frameGeoJson, {
+          smoothFactor: 0.5,
           style: () => ({
-            fillColor: isBreached ? '#1D4ED8' : '#0284C7',
-            fillOpacity: isBreached ? 0.85 : 0.72,
+            fillColor: isBreached ? '#1E40AF' : '#0284C7',
+            fillOpacity: isBreached ? 0.82 : 0.72,
             color: isBreached ? '#60A5FA' : '#38BDF8',
-            weight: isBreached ? 3 : 2,
-            dashArray: isBreached ? '4, 4' : null,
+            weight: 1.5,
+            lineCap: 'round',
+            lineJoin: 'round',
           }),
           onEachFeature: (feature, l) => {
             const reachKm = feature.properties?.wave_front_km || Math.round((currentSec / 3600) * 65);
@@ -317,16 +320,21 @@ export default function SimulationLab() {
         const name = feat.properties?.name || 'Settlement';
         const pop = feat.properties?.population ? feat.properties.population.toLocaleString() : 'N/A';
 
-        const marker = L.marker([lat, lon], {
-          icon: L.divIcon({
-            className: 'custom-settlement-marker',
-            html: isFlooded
-              ? `<div style="background:#B91C1C; color:#fff; font-size:9px; font-weight:bold; font-family:monospace; padding:2px 7px; border-radius:4px; border:1px solid #ff6666; box-shadow:0 0 12px rgba(220,38,38,0.9); cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap:4px;"><span style="color:#FECACA;">⚠️</span><span>ISOLATED: ${name} (Pop: ${pop})</span></div>`
-              : `<div style="background:#0F172A; color:#38BDF8; font-size:9px; font-weight:bold; font-family:monospace; padding:2px 6px; border-radius:3px; border:1px solid #0284C7; cursor:pointer; white-space:nowrap;">🏘️ ${name}</div>`,
-            iconSize: [isFlooded ? 190 : 120, 20],
-            iconAnchor: [isFlooded ? 95 : 60, 10],
-          }),
+        const marker = L.circleMarker([lat, lon], {
+          radius: isFlooded ? 6.5 : 4.5,
+          color: isFlooded ? '#EF4444' : '#38BDF8',
+          fillColor: isFlooded ? '#DC2626' : '#0284C7',
+          fillOpacity: 0.95,
+          weight: isFlooded ? 2.5 : 1.5,
         });
+
+        marker.bindTooltip(
+          `<div style="font-family:monospace; font-size:10px; font-weight:bold; padding:2px 4px;">
+            <div style="color:${isFlooded ? '#EF4444' : '#38BDF8'};">${isFlooded ? '⚠️ ISOLATED' : '🏘️ COMMUNITY'}: ${name}</div>
+            <div style="color:#94A3B8; font-size:9px;">Pop: ${pop} · Arrival: T+${Math.round(arrSec)}s</div>
+          </div>`,
+          { className: 'operational-tooltip', direction: 'top', offset: [0, -6] }
+        );
 
         marker.on('click', () => {
           setSelectedFeature({
@@ -366,16 +374,21 @@ export default function SimulationLab() {
         const isFlooded = currentSec > 0 && arrSec <= currentSec;
         const name = feat.properties?.name || 'Bridge';
 
-        const marker = L.marker([lat, lon], {
-          icon: L.divIcon({
-            className: 'custom-bridge-marker',
-            html: isFlooded
-              ? `<div style="background:#7F1D1D; color:#FECACA; font-size:8px; font-weight:bold; font-family:monospace; padding:1px 5px; border-radius:2px; border:1px solid #DC2626; white-space:nowrap;">⛔ BRIDGE SUBMERGED: ${name}</div>`
-              : `<div style="background:#0F172A; color:#10B981; font-size:8px; font-weight:bold; font-family:monospace; padding:1px 5px; border-radius:2px; border:1px solid #059669; white-space:nowrap;">🌉 ${name} (OPEN)</div>`,
-            iconSize: [160, 18],
-            iconAnchor: [80, 9],
-          }),
+        const marker = L.circleMarker([lat, lon], {
+          radius: isFlooded ? 5.5 : 4,
+          color: isFlooded ? '#F87171' : '#34D399',
+          fillColor: isFlooded ? '#DC2626' : '#059669',
+          fillOpacity: 0.95,
+          weight: 1.5,
         });
+
+        marker.bindTooltip(
+          `<div style="font-family:monospace; font-size:10px; font-weight:bold; padding:2px 4px;">
+            <div style="color:${isFlooded ? '#EF4444' : '#10B981'};">${isFlooded ? '⛔ SUBMERGED' : '🌉 OPEN'}: ${name}</div>
+            <div style="color:#94A3B8; font-size:9px;">Arrival: T+${Math.round(arrSec)}s</div>
+          </div>`,
+          { className: 'operational-tooltip', direction: 'top', offset: [0, -5] }
+        );
 
         marker.on('click', () => {
           setSelectedFeature({
@@ -407,17 +420,23 @@ export default function SimulationLab() {
 
     if (currentSec > 0) {
       const isBreached = cvAlert?.sync_state?.cv_breach_detected;
-      const jetMarker = L.marker([30.365, 78.484], {
-        icon: L.divIcon({
-          className: 'custom-jet-marker',
-          html: `<div style="background:${isBreached ? '#DC2626' : '#0284C7'}; color:#fff; font-size:9px; font-weight:bold; font-family:monospace; padding:3px 8px; border-radius:4px; border:1px solid #fff; box-shadow:0 0 14px ${isBreached ? 'rgba(220,38,38,0.9)' : 'rgba(2,132,199,0.8)'}; white-space:nowrap; display:flex; align-items:center; gap:4px; animation:pulse 1.2s infinite;">
-            <span>${isBreached ? '💥 BREACH JET' : '🌊 TAILRACE DISCHARGE'}</span>
-            <span>(${isBreached ? '723,705 m³/s' : '2,113 m³/s'})</span>
-          </div>`,
-          iconSize: [210, 22],
-          iconAnchor: [105, 11],
-        }),
-      }).addTo(map);
+      const jetMarker = L.circleMarker([30.365, 78.484], {
+        radius: isBreached ? 8 : 5,
+        color: isBreached ? '#EF4444' : '#38BDF8',
+        fillColor: isBreached ? '#DC2626' : '#0284C7',
+        fillOpacity: 0.85,
+        weight: 2,
+      });
+
+      jetMarker.bindTooltip(
+        `<div style="font-family:monospace; font-size:10px; font-weight:bold; padding:2px 4px;">
+          <span style="color:${isBreached ? '#EF4444' : '#38BDF8'}">${isBreached ? '💥 BREACH DISCHARGE' : '🌊 TAILRACE DISCHARGE'}</span>
+          <div style="color:#CBD5E1;">${isBreached ? '723,705 m³/s (Froehlich)' : '2,113 m³/s (Regulated)'}</div>
+        </div>`,
+        { className: 'operational-tooltip', direction: 'top', offset: [0, -6] }
+      );
+
+      jetMarker.addTo(map);
 
       floodJetRef.current = jetMarker;
     }
@@ -428,14 +447,23 @@ export default function SimulationLab() {
     if (!mapInstanceRef.current) return;
     const map = mapInstanceRef.current;
 
-    const damMarker = L.marker([30.378, 78.481], {
-      icon: L.divIcon({
-        className: 'custom-c2-marker',
-        html: `<div style="background:#EF4444; color:#fff; font-size:10px; font-weight:bold; font-family:monospace; padding:2px 8px; border-radius:3px; border:1px solid #fff; white-space:nowrap; box-shadow:0 2px 6px rgba(0,0,0,0.6); cursor:pointer; display:flex; align-items:center; gap:4px;"><span>📷 Tehri Dam (839.5m) · CV Optical</span></div>`,
-        iconSize: [210, 22],
-        iconAnchor: [105, 11],
-      }),
-    }).addTo(map);
+    const damMarker = L.circleMarker([30.378, 78.481], {
+      radius: 6,
+      color: '#EF4444',
+      fillColor: '#B91C1C',
+      fillOpacity: 0.95,
+      weight: 2,
+    });
+
+    damMarker.bindTooltip(
+      `<div style="font-family:monospace; font-size:10px; font-weight:bold; padding:2px 4px;">
+        <span style="color:#FCA5A5;">📷 TEHRI DAM CREST (839.5m)</span>
+        <div style="color:#94A3B8; font-size:9px;">Click to inspect CV Optical HUD</div>
+      </div>`,
+      { className: 'operational-tooltip', direction: 'top', offset: [0, -6] }
+    );
+
+    damMarker.addTo(map);
 
     damMarker.on('click', () => {
       setSubView('cv');
@@ -486,6 +514,18 @@ export default function SimulationLab() {
               }`}
             >
               2D LISFLOOD-FP (30 km)
+            </button>
+            <button
+              onClick={() => setSubView('3d')}
+              className={`px-2.5 py-0.5 rounded text-[10px] font-bold transition flex items-center gap-1.5 ${
+                subView === '3d'
+                  ? 'bg-gradient-to-r from-sky-600 to-indigo-600 text-white shadow-md shadow-sky-900/40 ring-1 ring-sky-400'
+                  : 'text-sky-400 hover:text-white hover:bg-slate-800'
+              }`}
+            >
+              <Waves className="w-3.5 h-3.5 text-sky-400 animate-pulse" />
+              <span>3D FLUID SIMULATION</span>
+              <span className="text-[8px] px-1 py-0.2 bg-sky-500/20 text-sky-300 rounded border border-sky-400/30">WEBGL</span>
             </button>
             <button
               onClick={() => setSubView('cv')}
@@ -554,6 +594,13 @@ export default function SimulationLab() {
 
         {/* Sub-view Content Area */}
         <div className="flex-1 relative flex flex-col min-h-0 bg-[#070B14]">
+          {subView === '3d' && (
+            <Himalayan3DSimulation
+              cvAlert={cvAlert}
+              onSwitchToCv={() => setSubView('cv')}
+              onSwitchTo2D={() => setSubView('lisflood')}
+            />
+          )}
           {subView === 'cv' && (
             <CVDamMonitorPanel
               onSyncToSimulation={(data) => {
