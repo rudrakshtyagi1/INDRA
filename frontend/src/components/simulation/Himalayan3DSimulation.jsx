@@ -154,8 +154,10 @@ export default function Himalayan3DSimulation({ cvAlert, onSwitchToCv, onSwitchT
   const durationSec = currentRun?.simulation_window_s || 3600;
   const isBreached = cvAlert?.sync_state?.cv_breach_detected || false;
 
-  // Sync simTimeSec to global context
+  // Sync simTimeSec to global context & animation ref
+  const currentSecRef = useRef(currentSec);
   useEffect(() => {
+    currentSecRef.current = currentSec;
     setSimTimeSec(currentSec);
   }, [currentSec, setSimTimeSec]);
 
@@ -314,21 +316,10 @@ export default function Himalayan3DSimulation({ cvAlert, onSwitchToCv, onSwitchT
     scene.add(resMesh);
 
     // 8. Downstream Smooth Fluid Water Mesh
-    const riverSegments = 180;
-    const riverWidth = 36;
-    const riverGeo = new THREE.PlaneGeometry(riverWidth, 700, 24, riverSegments);
+    const riverSegments = 160;
+    const riverCols = 16;
+    const riverGeo = new THREE.PlaneGeometry(1, 1, riverCols, riverSegments);
     riverGeo.rotateX(-Math.PI / 2);
-
-    const riverPos = riverGeo.attributes.position;
-    for (let i = 0; i < riverPos.count; i++) {
-      const x = riverPos.getX(i);
-      const z = riverPos.getZ(i);
-      const cX = canyonCurve(z - 180);
-      riverPos.setX(i, x + cX);
-      const riverElevation = 18 - (z + 180) * 0.055;
-      riverPos.setY(i, riverElevation);
-    }
-    riverGeo.computeVertexNormals();
 
     const waterMat = new THREE.MeshStandardMaterial({
       color: 0x0ea5e9,
@@ -338,7 +329,7 @@ export default function Himalayan3DSimulation({ cvAlert, onSwitchToCv, onSwitchT
       opacity: 0.82,
     });
     const waterMesh = new THREE.Mesh(riverGeo, waterMat);
-    waterMesh.position.set(0, 2, 170);
+    waterMesh.position.set(0, 0, 0);
     waterMesh.castShadow = true;
     waterMesh.receiveShadow = true;
     scene.add(waterMesh);
@@ -762,37 +753,66 @@ export default function Himalayan3DSimulation({ cvAlert, onSwitchToCv, onSwitchT
       reqIdRef.current = requestAnimationFrame(animate);
       const elapsedTime = clock.getElapsedTime();
 
-      // Fluid Wave Undulation on Water Mesh
+      // Dynamic Hydrodynamic Water Surface Propagation from Dam Toe downstream
       if (waterMeshRef.current) {
-        const wPos = waterMeshRef.current.geometry.attributes.position;
+        const geom = waterMeshRef.current.geometry;
+        const wPos = geom.attributes.position;
+        const simSec = currentSecRef.current;
+        const reachFraction = Math.max(0.04, Math.min(1.0, 0.04 + (simSec / durationSec) * 0.96));
+        const activeLength = 480 * reachFraction;
+        const frontZ = -180 + activeLength;
+
         const waveSpeed = isBreached ? 4.5 : 2.0;
-        const waveHeight = isBreached ? 3.2 : 1.4;
+        const waveHeight = isBreached ? 3.0 : 1.4;
 
-        for (let i = 0; i < wPos.count; i++) {
-          const uX = wPos.getX(i);
-          const uZ = wPos.getZ(i);
-          const waveDisplacement =
-            Math.sin(uZ * 0.08 - elapsedTime * waveSpeed) * waveHeight +
-            Math.cos(uX * 0.15 + elapsedTime * 1.5) * (waveHeight * 0.4);
+        let vIdx = 0;
+        for (let seg = 0; seg <= 160; seg++) {
+          const segFrac = seg / 160;
+          const worldZ = -180 + segFrac * activeLength;
+          const cX = canyonCurve(worldZ);
+          const riverBedY = 16 - (worldZ + 180) * 0.045;
 
-          const baseElevation = 18 - (uZ + 180) * 0.055;
-          wPos.setY(i, baseElevation + waveDisplacement);
+          let surgeTaper = 1.0;
+          const distToFront = frontZ - worldZ;
+          if (distToFront < 24) {
+            surgeTaper = Math.sin(Math.max(0, distToFront / 24) * (Math.PI / 2));
+          }
+          const waterDepth = (isBreached ? 6.5 : 3.5) * surgeTaper;
+          const waveOffset = Math.sin(worldZ * 0.08 - elapsedTime * waveSpeed) * waveHeight * surgeTaper;
+
+          for (let col = 0; col <= 16; col++) {
+            const colFrac = col / 16 - 0.5;
+            const widthAtZ = 28 + segFrac * 16;
+            const worldX = cX + colFrac * widthAtZ;
+            const worldY = riverBedY + waterDepth + waveOffset;
+
+            wPos.setXYZ(vIdx, worldX, worldY, worldZ);
+            vIdx++;
+          }
         }
-        waterMeshRef.current.geometry.attributes.position.needsUpdate = true;
+        wPos.needsUpdate = true;
+        geom.computeVertexNormals();
       }
 
-      // Spray foam particle update
+      // Foam particles splashing at the surging wave front and dam toe
       if (foamParticlesRef.current) {
         const { mesh, velocities } = foamParticlesRef.current;
         const pPos = mesh.geometry.attributes.position;
+        const simSec = currentSecRef.current;
+        const reachFraction = Math.max(0.04, Math.min(1.0, 0.04 + (simSec / durationSec) * 0.96));
+        const frontZ = -180 + 480 * reachFraction;
+
         for (let i = 0; i < pCount; i++) {
           pPos.setZ(i, pPos.getZ(i) + velocities[i * 3 + 2]);
           pPos.setX(i, pPos.getX(i) + velocities[i * 3 + 0]);
 
-          if (pPos.getZ(i) > 220) {
-            pPos.setZ(i, -160 + Math.random() * 20);
-            pPos.setX(i, (Math.random() - 0.5) * 20);
-            pPos.setY(i, 12 + Math.random() * 8);
+          if (pPos.getZ(i) > frontZ || pPos.getZ(i) < -180) {
+            const spawnAtFront = Math.random() > 0.35;
+            const spawnZ = spawnAtFront ? frontZ - Math.random() * 22 : -170 + Math.random() * 20;
+            const spawnX = canyonCurve(spawnZ) + (Math.random() - 0.5) * 18;
+            pPos.setZ(i, spawnZ);
+            pPos.setX(i, spawnX);
+            pPos.setY(i, 16 - (spawnZ + 180) * 0.045 + 4.0);
           }
         }
         pPos.needsUpdate = true;
@@ -913,26 +933,26 @@ export default function Himalayan3DSimulation({ cvAlert, onSwitchToCv, onSwitchT
 
     // Dynamic wave reach expansion as time progresses
     if (waterMeshRef.current) {
-      const reachProgress = Math.min(1.0, 0.12 + (currentSec / durationSec) * 0.88);
-      waterMeshRef.current.scale.set(1.0 + (isBreached ? 0.35 : 0), 1.0, reachProgress);
-
       const mat = waterMeshRef.current.material;
       if (isBreached) {
         mat.color.setHex(0x1d4ed8);
         mat.opacity = 0.92;
       } else {
         mat.color.setHex(0x0ea5e9);
-        mat.opacity = 0.82;
+        mat.opacity = 0.85;
       }
     }
 
     // Dynamic Structure Submersion Logic
-    const waveFrontZ = -160 + (currentSec / durationSec) * 380;
+    const reachFraction = Math.max(0.04, Math.min(1.0, 0.04 + (currentSec / durationSec) * 0.96));
+    const waveFrontZ = -180 + 480 * reachFraction;
     interactiveObjectsRef.current.forEach((obj) => {
       const z = obj.position.z;
       const y = obj.userData?.baseY ?? obj.position.y;
-      if (z <= waveFrontZ && y <= 23 && currentSec > 300) {
+      if (z <= waveFrontZ && y <= 24 && currentSec > 100) {
         obj.userData.status = 'CRITICAL: INUNDATED';
+      } else if (obj.userData.status?.includes('INUNDATED')) {
+        obj.userData.status = 'SAFE / RESTORED';
       }
     });
   }, [currentSec, isBreached, durationSec]);
