@@ -270,11 +270,11 @@ export default function VillageRisk() {
       <div className="h-10 bg-[#111827] border-b border-slate-800 px-4 flex items-center justify-between shrink-0 text-xs font-mono">
         <div className="flex items-center gap-3">
           <span className="text-red-400 font-bold flex items-center gap-1.5"><Shield className="w-3.5 h-3.5"/>VILLAGE RISK &amp; RESCUE PRIORITY</span>
-          <span className="text-slate-600">//</span>
+          <span className="text-slate-600">{'//'}</span>
           <span className="text-amber-400 bg-amber-950/60 border border-amber-800 px-2 py-0.5 rounded font-bold animate-pulse">SYNTHETIC DEMO - NOT REAL-WORLD DATA</span>
-          <span className="text-slate-600">//</span>
+          <span className="text-slate-600">{'//'}</span>
           <span className="text-slate-300">T+{simMin} min</span>
-          <span className="text-slate-600">//</span>
+          <span className="text-slate-600">{'//'}</span>
           <span className="text-sky-300">{data?.scenario_id || '---'}</span>
         </div>
         <div className="flex items-center gap-2">

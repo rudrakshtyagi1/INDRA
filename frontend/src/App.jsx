@@ -84,13 +84,7 @@ export default function App() {
       case 'data':
         return <DataProvenance />;
       case 'village_risk':
-        return (
-          <SimulationLab
-            initialTimeMin={simTimeMin}
-            onTimeChange={setSimTimeMin}
-            onNavigateToHadr={() => setActiveTab('hadr')}
-          />
-        );
+        return <VillageRisk />;
       default:
         return <Overview onNavigate={setActiveTab} onOpenTour={() => setIsTourOpen(true)} />;
     }

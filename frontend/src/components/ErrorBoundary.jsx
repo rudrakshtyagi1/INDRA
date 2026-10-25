@@ -16,6 +16,20 @@ export class ErrorBoundary extends React.Component {
     this.setState({ errorInfo });
   }
 
+  componentDidMount() {
+    window.addEventListener('hashchange', this.handleReset);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('hashchange', this.handleReset);
+  }
+
+  handleReset = () => {
+    if (this.state.hasError) {
+      this.setState({ hasError: false, error: null, errorInfo: null });
+    }
+  };
+
   render() {
     if (this.state.hasError) {
       return (
