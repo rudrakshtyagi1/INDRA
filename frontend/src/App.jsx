@@ -13,6 +13,8 @@ import SatelliteMonitor from './pages/SatelliteMonitor';
 import ModelsQA from './pages/ModelsQA';
 import DataProvenance from './pages/DataProvenance';
 import GuidedScienceTour from './components/guided/GuidedScienceTour';
+import VillageRisk from './pages/VillageRisk';
+
 
 export default function App() {
   const getInitialTab = () => {
@@ -81,6 +83,14 @@ export default function App() {
         return <ModelsQA />;
       case 'data':
         return <DataProvenance />;
+      case 'village_risk':
+        return (
+          <SimulationLab
+            initialTimeMin={simTimeMin}
+            onTimeChange={setSimTimeMin}
+            onNavigateToHadr={() => setActiveTab('hadr')}
+          />
+        );
       default:
         return <Overview onNavigate={setActiveTab} onOpenTour={() => setIsTourOpen(true)} />;
     }

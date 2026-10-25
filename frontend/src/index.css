@@ -177,3 +177,73 @@ input[type="range"].control-slider::-webkit-slider-thumb {
   border: 1px solid #FFFFFF;
   cursor: pointer;
 }
+
+/* Water-Road Physical Collision Animation Styles */
+@keyframes collisionPulse {
+  0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.85); }
+  50% { transform: scale(1.15); box-shadow: 0 0 0 14px rgba(239, 68, 68, 0); }
+  100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+@keyframes waterSplashRipple {
+  0% { transform: scale(0.5); opacity: 0.95; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+.collision-beacon {
+  position: relative;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.collision-beacon__ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid #ef4444;
+  animation: waterSplashRipple 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+}
+
+.collision-beacon__ring-delay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid #f87171;
+  animation: waterSplashRipple 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) 0.6s infinite;
+}
+
+.collision-beacon__core {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #dc2626;
+  border: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: 900;
+  color: #fff;
+  box-shadow: 0 0 12px #ef4444;
+  animation: collisionPulse 1.2s ease-in-out infinite;
+  z-index: 2;
+}
+
+.rescue-convoy-marker {
+  width: 24px;
+  height: 24px;
+  background: #064e3b;
+  border: 2px solid #34d399;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 14px rgba(52, 211, 153, 0.85);
+  font-size: 11px;
+}
+

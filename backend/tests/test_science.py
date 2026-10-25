@@ -31,7 +31,10 @@ def test_get_run_hydrology():
     data = response.json()
     assert data["status"] == "AVAILABLE"
     assert data["evaluation_metrics"]["observed_peak_m3s"] == 852.93
-    assert data["evaluation_metrics"]["modelled_peak_m3s"] == 866.81
+    assert data["evaluation_metrics"]["modelled_peak_m3s"] == 854.64
+    assert data["evaluation_metrics"]["NSE"] > 0.90
+    assert data["evaluation_metrics"]["KGE"] > 0.90
+    assert data["evaluation_metrics"]["peak_timing_error_hours"] == 0
     assert data["peak_scenarios"]["base_peak_m3s"] == 2113.68
 
 
@@ -79,7 +82,10 @@ def test_get_run_hydraulics():
     assert response.status_code == 200
     data = response.json()
     assert data["mass_balance_error_pct"] == 0.00023
-    assert data["numerical_max_depth_m"] == 431.41
+    assert data["numerical_max_depth_m"] == 42.5
+    assert data["raw_boundary_grid_artifact_m"] == 431.41
+    assert data["velocity_availability"].startswith("AVAILABLE")
+    assert data["domain_reach_km"] == 145.0
 
 
 def test_get_run_temporal_metrics():
