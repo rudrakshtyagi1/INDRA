@@ -1,0 +1,53 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.481,
+          30.378
+        ]
+      },
+      "properties": {
+        "name": "Tehri Hydroelectric Power Plant (1000MW)",
+        "lat": 30.378,
+        "lon": 78.481,
+        "arr_sec": 0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.528,
+          30.285
+        ]
+      },
+      "properties": {
+        "name": "Koteshwar Dam Powerhouse (400MW)",
+        "lat": 30.285,
+        "lon": 78.528,
+        "arr_sec": 1200
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.78,
+          30.21
+        ]
+      },
+      "properties": {
+        "name": "Srinagar Hydropower Switchyard",
+        "lat": 30.21,
+        "lon": 78.78,
+        "arr_sec": 2400
+      }
+    }
+  ]
+}

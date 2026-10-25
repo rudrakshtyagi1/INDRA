@@ -56,6 +56,7 @@ data/processed/tehri_simulations/delft3d/setup/Delft3D/
 *.vtk
 *.asc
 *.geojson
+!data/processed/tehri_simulations/**/*.geojson
 *.bi4
 *.out
 *.mass

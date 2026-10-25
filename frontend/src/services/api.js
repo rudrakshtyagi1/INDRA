@@ -373,4 +373,42 @@ export const api = {
 
   downloadDelft3DFiles: (payload) =>
     window.open(`${API_BASE}/api/export/${payload.run_id || 'latest'}/manifest`, '_blank'),
+
+  // Village Risk & Rescue Priority
+  assessVillageRisk: async (params = {}) => {
+    const payload = {
+      mode: params.mode || 'DEMO',
+      scenario_id: params.scenario_id || 'ENS_P50',
+      sim_time_s: params.sim_time_s ?? 0.0,
+      settlements_geojson: params.settlements_geojson || null,
+      shelters_geojson: params.shelters_geojson || null,
+      flood_outputs: params.flood_outputs || null,
+    };
+    try {
+      return await fetchJson('/api/village-risk/assess', { method: 'POST', body: JSON.stringify(payload) });
+    } catch (err) {
+      console.error('Village risk assessment failed:', err.message);
+      throw err;
+    }
+  },
+
+  streamVillageRisk: (params = {}) => {
+    const qs = new URLSearchParams({
+      mode: params.mode || 'DEMO',
+      scenario_id: params.scenario_id || 'ENS_P50',
+      start_s: params.start_s ?? 0,
+      end_s: params.end_s ?? 3600,
+      step_s: params.step_s ?? 300,
+      speed_x: params.speed_x ?? 60,
+    });
+    return new EventSource(`${API_BASE}/api/village-risk/stream?${qs}`);
+  },
+
+  getDemoEnsemble: () => fetchJson('/api/village-risk/demo/ensemble'),
+  getDemoSettlements: () => fetchJson('/api/village-risk/demo/settlements'),
+  getDemoShelters: () => fetchJson('/api/village-risk/demo/shelters'),
+  getAlertQueue: () => fetchJson('/api/village-risk/alerts'),
+  reviewAlert: (alertId, body) =>
+    fetchJson(`/api/village-risk/alerts/${alertId}/review`, { method: 'POST', body: JSON.stringify(body) }),
+  getVillageRiskStatus: () => fetchJson('/api/village-risk/status'),
 };

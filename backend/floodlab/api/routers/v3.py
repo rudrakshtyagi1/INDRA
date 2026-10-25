@@ -116,7 +116,7 @@ async def get_v3_frame(time_sec: int):
     time_sec should be snapped to nearest 50s.
     """
     snapped = int(round(time_sec / 50.0) * 50)
-    snapped = max(0, min(800, snapped))
+    snapped = max(0, min(3600, snapped))
     base = get_v3_base()
     path = f"{base}/lisflood_fp/outputs/v3_geometry_corrected/rasters/frames/frame_{snapped:03d}.geojson"
     if os.path.exists(path):

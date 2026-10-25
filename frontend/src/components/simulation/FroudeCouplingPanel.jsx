@@ -7,7 +7,7 @@ export default function FroudeCouplingPanel() {
   const [couplingData, setCouplingData] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:8000/api/runs/${selectedRunId}/coupling`)
+    fetch(`/api/runs/${selectedRunId}/coupling`)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data) setCouplingData(data);

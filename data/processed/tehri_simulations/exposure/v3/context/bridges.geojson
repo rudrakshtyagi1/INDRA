@@ -1,0 +1,124 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.484,
+          30.38
+        ]
+      },
+      "properties": {
+        "name": "Tehri Crest Spillway Bridge",
+        "arrival_time_hr": 0.008,
+        "arrival_time_sec": 30,
+        "structural_type": "Suspension / Truss",
+        "collapse_probability": 0.94
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.484,
+          30.365
+        ]
+      },
+      "properties": {
+        "name": "Zero Bridge (Bhagirathi Tailrace)",
+        "arrival_time_hr": 0.042,
+        "arrival_time_sec": 150,
+        "structural_type": "Suspension / Truss",
+        "collapse_probability": 0.94
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.528,
+          30.285
+        ]
+      },
+      "properties": {
+        "name": "Koteshwar Dam Crossing",
+        "arrival_time_hr": 0.333,
+        "arrival_time_sec": 1200,
+        "structural_type": "Suspension / Truss",
+        "collapse_probability": 0.94
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.549,
+          30.228
+        ]
+      },
+      "properties": {
+        "name": "Maletha Suspension Bridge",
+        "arrival_time_hr": 0.514,
+        "arrival_time_sec": 1850,
+        "structural_type": "Suspension / Truss",
+        "collapse_probability": 0.94
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.599,
+          30.146
+        ]
+      },
+      "properties": {
+        "name": "Devprayag Confluence Suspension Bridge",
+        "arrival_time_hr": 0.764,
+        "arrival_time_sec": 2750,
+        "structural_type": "Suspension / Truss",
+        "collapse_probability": 0.94
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.32,
+          30.124
+        ]
+      },
+      "properties": {
+        "name": "Lakshman Jhula Suspension Bridge",
+        "arrival_time_hr": 0.972,
+        "arrival_time_sec": 3500,
+        "structural_type": "Suspension / Truss",
+        "collapse_probability": 0.94
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.31,
+          30.118
+        ]
+      },
+      "properties": {
+        "name": "Ram Jhula Cable Bridge",
+        "arrival_time_hr": 1.0,
+        "arrival_time_sec": 3600,
+        "structural_type": "Suspension / Truss",
+        "collapse_probability": 0.94
+      }
+    }
+  ]
+}
