@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   Clock,
   Info,
@@ -2357,7 +2357,7 @@ export default function SimulationLab({ initialTimeMin, onTimeChange, onNavigate
                             population: s.population?.toLocaleString(),
                             demographics: s.demographics,
                             elevation: `${s.elevation_m} m`,
-                            chainage: `${s.distance_from_dam_km} km downstream`,
+                            chainage: `${s.distance_from_dam_km} km downstream of Tehri Dam`,
                             arrivalMin: s.flood_arrival_time_min,
                             roadCutoffMin: s.road_cutoff_time_min,
                             countdownMin: s.time_to_isolation_countdown_min,

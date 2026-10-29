@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse
 
@@ -6,20 +7,34 @@ router = APIRouter()
 
 
 def get_v3_base() -> str:
+    """Resolve the precomputed Tehri V3 benchmark data directory across local and container layouts."""
+    candidates = []
+
     env_dir = os.environ.get("DATA_DIR")
     if env_dir:
-        return env_dir
-    if os.path.exists("/app/data/processed/tehri_simulations"):
-        return "/app/data/processed/tehri_simulations"
-    if os.path.exists("/data/processed/tehri_simulations"):
-        return "/data/processed/tehri_simulations"
+        candidates.append(Path(env_dir))
+
     for candidate in [
-        "data/processed/tehri_simulations",
-        "../data/processed/tehri_simulations",
-        "../../data/processed/tehri_simulations",
+        "/app/data/processed/tehri_simulations",
+        "/data/processed/tehri_simulations",
     ]:
-        if os.path.exists(candidate):
-            return os.path.abspath(candidate)
+        candidates.append(Path(candidate))
+
+    project_root = Path(__file__).resolve().parents[4]
+    candidates.extend(
+        [
+            project_root / "data" / "processed" / "tehri_simulations",
+            project_root / "backend" / "data" / "processed" / "tehri_simulations",
+            Path.cwd() / "data" / "processed" / "tehri_simulations",
+            Path.cwd() / "../data/processed/tehri_simulations",
+            Path.cwd() / "../../data/processed/tehri_simulations",
+        ]
+    )
+
+    for candidate in candidates:
+        if candidate.exists():
+            return str(candidate)
+
     return "/app/data/processed/tehri_simulations"
 
 
